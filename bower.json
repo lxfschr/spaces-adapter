@@ -1,0 +1,27 @@
+{
+  "name": "playground-api",
+  "version": "0.0.1",
+  "homepage": "https://github.com/adobe-photoshop/playground-api",
+  "authors": [
+    "Joel Brandt <joelrbrandt@gmail.com>"
+  ],
+  "description": "JS middleware layer for Playground",
+  "main": "src/playground.js",
+  "moduleType": [
+    "amd"
+  ],
+  "license": "Closed",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bluebird": "~1.2.4",
+    "qunit": "~1.14.0",
+    "requirejs": "~2.1.11"
+  }
+}

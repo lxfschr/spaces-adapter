@@ -45,13 +45,13 @@
     "supernew"      : false,
     "validthis"     : false,
     
-    "browser"       : false,
+    "browser"       : true,
     "couch"         : false,
     "devel"         : false,
     "dojo"          : false,
     "jquery"        : false,
     "mootools"      : false,
-    "node"          : true,
+    "node"          : false,
     "nonstandard"   : false,
     "prototypejs"   : false,
     "rhino"         : false,
@@ -62,5 +62,7 @@
     "nomen"         : false,
     "onevar"        : false,
     "passfail"      : false,
-    "white"         : true
+    "white"         : true,
+
+    "predef"        : ["define"]
 }
