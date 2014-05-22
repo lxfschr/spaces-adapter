@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014 Adobe Systems Incorporated. All rights reserved.
+ * Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
  *  
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"), 
@@ -21,37 +21,37 @@
  * 
  */
 
-/* global require */
+/* jshint browser: false, node: true */
 
-require.config({
-    baseUrl : "src/",
-    paths: {
-        "bluebird" : "../thirdparty/bluebird/js/browser/bluebird"
-    }
-});
-
-define(function (require) {
+module.exports = function (grunt) {
     "use strict";
 
-    var Promise = require("bluebird"),
-        hello = require("hello");
+    grunt.initConfig({
+        qunit: {
+            all: ["test/index.html"]
+        },
+        jshint : {
+            options : {
+                jshintrc : ".jshintrc"
+            },
+            all : [
+                "*.js",
+                "package.json",
+                "bower.json",
+                ".jshintrc",
+                ".bowerrc",
+                "src/**/*.js",
+                "test/**/*.js",
+                "example/**/*.js"
+            ]
+        }
+    });
 
-    var _asyncDouble = Promise.promisify(hello.asyncDouble);
+    grunt.loadNpmTasks("grunt-contrib-qunit");
+    grunt.loadNpmTasks("grunt-contrib-jshint");
 
-    var _setup = function () {
-        var link = document.getElementsByClassName("hello-link")[0];
-        link.onclick = function () {
-            /* global alert */
-            _asyncDouble(4).then(alert);
-            return false;
-        };
-    };
+    grunt.registerTask("test", ["jshint", "qunit"]);
 
-    if (document.readyState === "complete") {
-        _setup();
-    } else {
-        window.addEventListener("load", _setup);
-    }
+    grunt.registerTask("default", ["test"]);
 
-
-});
+};

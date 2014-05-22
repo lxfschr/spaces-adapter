@@ -24,10 +24,18 @@
 define(function (require, exports) {
     "use strict";
 
+    exports.double = function (n) {
+        if (typeof(n) !== "number") {
+            throw new Error("Argument error: must specify a number");
+        } else {
+            return n * 2;
+        }
+    };
+
     exports.asyncDouble = function (n, callback) {
         setTimeout(function () {
             if (typeof(n) !== "number") {
-                callback("must specify a number", null);
+                callback("Argument error: must specify a number", null);
             } else {
                 callback(null, n * 2);
             }

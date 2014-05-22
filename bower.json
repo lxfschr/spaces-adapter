@@ -3,10 +3,11 @@
   "version": "0.0.1",
   "homepage": "https://github.com/adobe-photoshop/playground-api",
   "authors": [
-    "Joel Brandt <joelrbrandt@gmail.com>"
+    "Joel Brandt <joelrbrandt@gmail.com>",
+    "Ian Wehrman <iwehrman@gmail.com>"
   ],
   "description": "JS middleware layer for Playground",
-  "main": "src/playground.js",
+  "main": "src/main.js",
   "moduleType": [
     "amd"
   ],
@@ -15,13 +16,14 @@
   "ignore": [
     "**/.*",
     "node_modules",
-    "bower_components",
-    "test",
-    "tests"
+    "thirdparty",
+    "test"
   ],
   "dependencies": {
-    "bluebird": "~1.2.4",
-    "qunit": "~1.14.0",
-    "requirejs": "~2.1.11"
+    "bluebird": "~1.2.4"
+  },
+  "devDependencies": {
+    "requirejs": "~2.1.11",
+    "qunit": "~1.14.0"
   }
 }

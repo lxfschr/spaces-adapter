@@ -24,17 +24,12 @@
 /* global require */
 
 require.config({
-    baseUrl : "../src/",
-    paths: {
-        "spec" : "../test/spec",
-        "qunit" : "../thirdparty/qunit/qunit/qunit",
-        "bluebird" : "../thirdparty/bluebird/js/browser/bluebird"
-    }
+    packages : [{ name: "playground", location: "../src" }],
 });
 
 define(function (require) {
     "use strict";
 
-    // Test specs run
+    // Test specs
     require("spec/hello-test");
 });

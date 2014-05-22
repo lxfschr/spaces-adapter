@@ -21,30 +21,10 @@
  * 
  */
 
-/* global asyncTest, expect, ok, equal, start */
-
-define(function (require) {
+define(function (require, exports) {
     "use strict";
 
-    var doubler = require("playground/hello/doubler");
-
-    asyncTest("asyncDouble doubles a number", function () {
-        expect(2);
-
-        doubler.asyncDouble(3, function (err, n) {
-            ok(!err, "callback received no error");
-            equal(n, 6, "3 * 2 = 6");
-            start();
-        });
-    });
-
-    asyncTest("asyncDouble fails on argument error", function () {
-        expect(1);
-
-        doubler.asyncDouble("hi", function (err) {
-            ok(err, "callback received error");
-            start();
-        });
-    });
+    exports.version = "0.0.1";
+    exports.six = require("./hello/doubler").double(3);
 
 });

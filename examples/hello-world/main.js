@@ -21,30 +21,43 @@
  * 
  */
 
-/* global asyncTest, expect, ok, equal, start */
+/* global require, alert */
+
+require.config({
+    baseUrl: "../../",
+    packages : [{ name: "playground", location: "src" }],
+    paths: {
+        "bluebird" : "thirdparty/bluebird/js/browser/bluebird",
+    }
+});
 
 define(function (require) {
     "use strict";
 
-    var doubler = require("playground/hello/doubler");
+    var doubler = require("playground/hello/doubler"),
+        playground = require("playground"),
+        Promise = require("bluebird");
 
-    asyncTest("asyncDouble doubles a number", function () {
-        expect(2);
+    var _asyncDoublePromise = Promise.promisify(doubler.asyncDouble);
 
-        doubler.asyncDouble(3, function (err, n) {
-            ok(!err, "callback received no error");
-            equal(n, 6, "3 * 2 = 6");
-            start();
-        });
-    });
+    var _setup = function () {
+        var versionText = document.getElementsByClassName("version-text")[0];
+        if (versionText) {
+            versionText.innerText = playground.version;
+        }
+        var link = document.getElementsByClassName("hello-link")[0];
+        if (link) {
+            link.onclick = function () {
+                _asyncDoublePromise(4).then(alert);
+                return false;
+            };
+        }
+    };
 
-    asyncTest("asyncDouble fails on argument error", function () {
-        expect(1);
-
-        doubler.asyncDouble("hi", function (err) {
-            ok(err, "callback received error");
-            start();
-        });
-    });
+    if (document.readyState === "complete") {
+        _setup();
+    } else {
+        window.addEventListener("load", _setup);
+    }
 
 });
