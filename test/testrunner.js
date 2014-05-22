@@ -35,8 +35,6 @@ require.config({
 define(function (require) {
     "use strict";
 
-    require("qunit");
-
     // Test specs run
     require("spec/hello-test");
 });

@@ -38,15 +38,20 @@ define(function (require) {
 
     var _asyncDouble = Promise.promisify(hello.asyncDouble);
 
-    window.addEventListener("load", function () {
+    var _setup = function () {
         var link = document.getElementsByClassName("hello-link")[0];
         link.onclick = function () {
             /* global alert */
             _asyncDouble(4).then(alert);
             return false;
         };
-    });
+    };
 
+    if (document.readyState === "complete") {
+        _setup();
+    } else {
+        window.addEventListener("load", _setup);
+    }
 
 
 });

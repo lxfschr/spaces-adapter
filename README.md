@@ -10,14 +10,6 @@ Development Setup
 4. Clone this repo
 5. In the root directory of this repo, run `bower install`
 
-File URL caveat
----------------
-
-For some reason, qunit doesn't work correctly from `file://` URLs. So, consider installing serf:
-
-1. `npm install -g serf`
-2. `serf -o` from the root of the repo
-
 Directories
 -----------
 
