@@ -21,23 +21,14 @@
  * 
  */
 
-/* global require */
-
-require.config({
-    paths: {
-        "bluebird" : "../thirdparty/bluebird/js/browser/bluebird",
-        "EventEmitter": "../thirdparty/eventEmitter/EventEmitter"
-    },
-    packages : [
-        { name: "playground", location: "../src" },
-        { name: "node-connection", location: "../thirdparty/node-connection/", main: "index.js" }
-    ],
-});
-
-define(function (require) {
+define(function (require, exports) {
     "use strict";
 
-    // Test specs
-    require("spec/hello-test");
-    require("spec/generator/generator-test");
+    var NodeDomain = require("node-connection").NodeDomain;
+
+    var createDomain = function (domainName, domainSpecPath) {
+        return new NodeDomain(domainName, domainSpecPath);
+    };
+
+    exports.createDomain = createDomain;
 });

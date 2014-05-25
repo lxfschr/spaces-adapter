@@ -20,7 +20,8 @@
     "test"
   ],
   "dependencies": {
-    "bluebird": "~1.2.4"
+    "bluebird": "~1.2.4",
+    "node-connection": "https://github.com/iwehrman/node-connection.git"
   },
   "devDependencies": {
     "requirejs": "~2.1.11",
