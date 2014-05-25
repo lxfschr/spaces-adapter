@@ -12,6 +12,7 @@ Development Setup
 6. Optional: If you want to run tests and jshint from the command line:
    a. Install grunt-cli with `npm install -g grunt-cli`
    b. Run `npm install` from the root of this repo
+7. Install and run the [generator-domains](https://github.com/iwehrman/generator-domains) Generator plug-in.
 
 Directories
 -----------
