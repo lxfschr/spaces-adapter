@@ -21,12 +21,14 @@
  * 
  */
 
-/* global asyncTest, expect, ok, equal, start */
+/* global module, asyncTest, expect, ok, equal, start */
 
 define(function (require) {
     "use strict";
 
     var doubler = require("playground/hello/doubler");
+
+    module("hello-world");
 
     asyncTest("asyncDouble doubles a number", function () {
         expect(2);
