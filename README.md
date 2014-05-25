@@ -21,12 +21,15 @@ Put middleware code in `src/`.
 
 Put examples of how to use the middleware in `examples/`
 
-Put unit test specs in `test/spec/` and then add them to `test/testrunner.js`
+Put unit test specs in `test/unit/spec/` and then add them to `test/unit/testrunner.js`.
+
+Put integration test specs in `test/integration/spec/` and then add them to `test/integration/testrunner.js`.
 
 Running Tests
 -------------
 
-Open `test/index.html` in a web browser. Or, install grunt (see optional development setup steps above) and run `grunt test`.
+1. To run the unit tests, open `test/unit/index.html` in a web browser. Or, install grunt (see optional development setup steps above) and run `grunt test`.
+2. To run the integration tests, open `test/integration/index.html` in a web browser.
 
 Coding Conventions
 ------------------

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
+ * Copyright (c) 2014 Adobe Systems Incorporated. All rights reserved.
  *  
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"), 
@@ -21,37 +21,17 @@
  * 
  */
 
-/* jshint browser: false, node: true */
+/* global require */
 
-module.exports = function (grunt) {
+require.config({
+    packages : [
+        { name: "playground", location: "../../src" }
+    ]
+});
+
+define(function (require) {
     "use strict";
 
-    grunt.initConfig({
-        qunit: {
-            all: ["test/unit/index.html"]
-        },
-        jshint : {
-            options : {
-                jshintrc : ".jshintrc"
-            },
-            all : [
-                "*.js",
-                "package.json",
-                "bower.json",
-                ".jshintrc",
-                ".bowerrc",
-                "src/**/*.js",
-                "test/**/*.js",
-                "example/**/*.js"
-            ]
-        }
-    });
-
-    grunt.loadNpmTasks("grunt-contrib-qunit");
-    grunt.loadNpmTasks("grunt-contrib-jshint");
-
-    grunt.registerTask("test", ["jshint", "qunit"]);
-
-    grunt.registerTask("default", ["test"]);
-
-};
+    // Test specs
+    require("spec/hello-test");
+});

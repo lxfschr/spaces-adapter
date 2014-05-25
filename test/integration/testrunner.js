@@ -25,12 +25,12 @@
 
 require.config({
     paths: {
-        "bluebird" : "../thirdparty/bluebird/js/browser/bluebird",
-        "EventEmitter": "../thirdparty/eventEmitter/EventEmitter"
+        "bluebird" : "../../thirdparty/bluebird/js/browser/bluebird",
+        "EventEmitter": "../../thirdparty/eventEmitter/EventEmitter"
     },
     packages : [
-        { name: "playground", location: "../src" },
-        { name: "node-connection", location: "../thirdparty/node-connection/", main: "index.js" }
+        { name: "playground", location: "../../src" },
+        { name: "node-connection", location: "../../thirdparty/node-connection/", main: "index.js" }
     ],
 });
 
@@ -38,6 +38,5 @@ define(function (require) {
     "use strict";
 
     // Test specs
-    require("spec/hello-test");
     require("spec/generator/generator-test");
 });
