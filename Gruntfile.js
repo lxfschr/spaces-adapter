@@ -32,7 +32,10 @@ module.exports = function (grunt) {
         },
         jshint : {
             options : {
-                jshintrc : ".jshintrc"
+                jshintrc : ".jshintrc",
+                ignores : [
+                    "src/thirdparty/**"
+                ]
             },
             all : [
                 "*.js",

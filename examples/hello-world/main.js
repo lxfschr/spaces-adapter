@@ -27,7 +27,7 @@ require.config({
     baseUrl: "../../",
     packages : [{ name: "playground", location: "src" }],
     paths: {
-        "bluebird" : "thirdparty/bluebird/js/browser/bluebird",
+        "bluebird" : "src/thirdparty/bluebird/js/browser/bluebird",
     }
 });
 

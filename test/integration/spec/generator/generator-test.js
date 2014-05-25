@@ -27,7 +27,7 @@ define(function (require) {
     "use strict";
 
     // TODO: Figure out how to just require("playground/generator")
-    var generator = require("playground/generator/main"),
+    var generator = require("playground/generator"),
         testDomain = null;
 
     module("Generator");
