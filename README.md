@@ -36,7 +36,7 @@ Trying out the `playground-example` example
 
 1. Set up Playground
 2. Tell Playground where to find the `playground-example` directory with `defaults write com.adobe.photoshop Playground.Root <<path to playground-example>>`
-3. Flush your defaults cache with `killall -u `whoami` cfprefsd`
+3. Flush your defaults cache with ```killall -u `whoami` cfprefsd```
 4. Start Playground
 
 Coding Conventions
