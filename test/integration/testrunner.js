@@ -25,13 +25,13 @@
 
 require.config({
     paths: {
-        "bluebird" : "../../src/thirdparty/bluebird/js/browser/bluebird",
-        "EventEmitter": "../../src/thirdparty/eventEmitter/EventEmitter"
+        "bluebird" : "../../bower_components/bluebird/js/browser/bluebird",
+        "EventEmitter": "../../bower_components/eventEmitter/EventEmitter"
     },
     packages : [
-        { name: "playground", location: "../../src" },
-        { name: "playground/generator", location: "../../src/generator" },
-        { name: "node-connection", location: "../../src/thirdparty/node-connection/", main: "index.js" }
+        { name: "playground", location: "../../lib" },
+        { name: "playground/generator", location: "../../lib/generator" },
+        { name: "node-connection", location: "../../bower_components/node-connection/", main: "index.js" }
     ],
 });
 

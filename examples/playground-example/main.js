@@ -25,10 +25,10 @@
 
 require.config({
     baseUrl: "../../",
-    packages : [{ name: "playground", location: "src" }],
+    packages : [{ name: "playground", location: "lib" }],
     paths: {
-        "bluebird" : "src/thirdparty/bluebird/js/browser/bluebird",
-        "EventEmitter": "src/thirdparty/eventEmitter/EventEmitter"
+        "bluebird" : "bower_components/bluebird/js/browser/bluebird",
+        "EventEmitter": "bower_components/eventEmitter/EventEmitter"
     }
 });
 

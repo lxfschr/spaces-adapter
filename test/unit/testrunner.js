@@ -25,7 +25,7 @@
 
 require.config({
     packages : [
-        { name: "playground", location: "../../src" }
+        { name: "playground", location: "../../lib" }
     ]
 });
 

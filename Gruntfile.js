@@ -32,10 +32,7 @@ module.exports = function (grunt) {
         },
         jshint : {
             options : {
-                jshintrc : ".jshintrc",
-                ignores : [
-                    "src/thirdparty/**"
-                ]
+                jshintrc : ".jshintrc"
             },
             all : [
                 "*.js",
@@ -43,7 +40,7 @@ module.exports = function (grunt) {
                 "bower.json",
                 ".jshintrc",
                 ".bowerrc",
-                "src/**/*.js",
+                "lib/**/*.js",
                 "test/**/*.js",
                 "examples/**/*.js"
             ]

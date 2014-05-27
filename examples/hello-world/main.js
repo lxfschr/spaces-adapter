@@ -25,7 +25,7 @@
 
 require.config({
     baseUrl: "../../",
-    packages : [{ name: "playground", location: "src" }],
+    packages : [{ name: "playground", location: "lib" }],
 });
 
 define(function (require) {

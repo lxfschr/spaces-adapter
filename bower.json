@@ -7,10 +7,11 @@
     "Ian Wehrman <iwehrman@gmail.com>"
   ],
   "description": "JS middleware layer for Playground",
-  "main": "src/main.js",
   "moduleType": [
-    "amd"
+    "node"
   ],
+  "main": "main.js",
+  "location" :"lib",
   "license": "Closed",
   "private": true,
   "ignore": [
