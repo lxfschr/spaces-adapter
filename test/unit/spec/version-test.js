@@ -21,32 +21,17 @@
  * 
  */
 
-/* global module, asyncTest, expect, ok, equal, start */
+/* global module, test, ok */
 
 define(function (require) {
     "use strict";
 
-    var doubler = require("playground/hello/doubler");
+    var playground = require("playground");
 
-    module("hello-world");
+    module("version");
 
-    asyncTest("asyncDouble doubles a number", function () {
-        expect(2);
-
-        doubler.asyncDouble(3, function (err, n) {
-            ok(!err, "callback received no error");
-            equal(n, 6, "3 * 2 = 6");
-            start();
-        });
-    });
-
-    asyncTest("asyncDouble fails on argument error", function () {
-        expect(1);
-
-        doubler.asyncDouble("hi", function (err) {
-            ok(err, "callback received error");
-            start();
-        });
+    test("playground.version is set to a string", function () {
+        ok(typeof(playground.version) === "string", "type of playground version is a string");
     });
 
 });

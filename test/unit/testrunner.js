@@ -33,5 +33,5 @@ define(function (require) {
     "use strict";
 
     // Test specs
-    require("spec/hello-test");
+    require("spec/version-test");
 });

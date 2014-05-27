@@ -24,7 +24,8 @@
 define(function (require, exports) {
     "use strict";
 
-    exports.version = "0.0.1";
-    exports.six = require("./hello/doubler").double(3);
+    var PLAYGROUND_API_VERSION = "0.0.1";
+
+    exports.version = PLAYGROUND_API_VERSION;
 
 });

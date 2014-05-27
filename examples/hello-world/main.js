@@ -21,36 +21,22 @@
  * 
  */
 
-/* global require, alert */
+/* global require */
 
 require.config({
     baseUrl: "../../",
     packages : [{ name: "playground", location: "src" }],
-    paths: {
-        "bluebird" : "src/thirdparty/bluebird/js/browser/bluebird",
-    }
 });
 
 define(function (require) {
     "use strict";
 
-    var doubler = require("playground/hello/doubler"),
-        playground = require("playground"),
-        Promise = require("bluebird");
-
-    var _asyncDoublePromise = Promise.promisify(doubler.asyncDouble);
+    var playground = require("playground");
 
     var _setup = function () {
         var versionText = document.getElementsByClassName("version-text")[0];
         if (versionText) {
             versionText.innerText = playground.version;
-        }
-        var link = document.getElementsByClassName("hello-link")[0];
-        if (link) {
-            link.onclick = function () {
-                _asyncDoublePromise(4).then(alert);
-                return false;
-            };
         }
     };
 
