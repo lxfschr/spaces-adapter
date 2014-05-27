@@ -25,14 +25,27 @@ define(function (require, exports) {
     "use strict";
 
     /**
-     * Version of the Playground API.
-     * Follows Semver 2.0.0 conventions: http://semver.org/spec/v2.0.0.html
+     * Inherit the prototype methods from one constructor into another. 
      *
-     * @const
-     * @type{string}
+     * Modeled after Node's util.inherits, which is licensed under the MIT license
+     *   Implementation: https://github.com/joyent/node/blob/master/lib/util.js#L628
+     *   License: https://github.com/joyent/node/blob/master/LICENSE
+     *
+     * @param {function} ctor Constructor function which needs to inherit the prototype.
+     * @param {function} superCtor Constructor function to inherit prototype from.
      */
-    var PLAYGROUND_API_VERSION = "0.0.1";
+    var inherits = function(ctor, superCtor) {
+        ctor.super_ = superCtor;
+        ctor.prototype = Object.create(superCtor.prototype, {
+            constructor: {
+                value: ctor,
+                enumerable: false,
+                writable: true,
+                configurable: true
+            }
+        });
+    };
 
-    Object.defineProperty(exports, "version", {enumerable: true, value: PLAYGROUND_API_VERSION});
+    exports.inherits = inherits;
 
 });

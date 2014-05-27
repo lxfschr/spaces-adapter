@@ -21,18 +21,42 @@
  * 
  */
 
-define(function (require, exports) {
+/* global require */
+
+require.config({
+    baseUrl: "../../",
+    packages : [{ name: "playground", location: "src" }],
+    paths: {
+        "bluebird" : "src/thirdparty/bluebird/js/browser/bluebird",
+        "EventEmitter": "src/thirdparty/eventEmitter/EventEmitter"
+    }
+});
+
+define(function (require) {
     "use strict";
 
-    /**
-     * Version of the Playground API.
-     * Follows Semver 2.0.0 conventions: http://semver.org/spec/v2.0.0.html
-     *
-     * @const
-     * @type{string}
-     */
-    var PLAYGROUND_API_VERSION = "0.0.1";
+    var playground = require("playground"),
+        adapter = require("playground/adapter"),
+        dm = require("playground/documentmanager");
 
-    Object.defineProperty(exports, "version", {enumerable: true, value: PLAYGROUND_API_VERSION});
+    var _setup = function () {
+        adapter.log("Version: " + playground.version);
+        dm.getActiveDocument().then(function (doc) {
+            adapter.log("Current document name: " + doc["Ttl "]);
+        });
+        dm.on("documentChanged", function (doc) {
+            adapter.log("Doc changed to " + doc["Ttl "]);
+            var docNameText = document.getElementsByClassName("doc-name-text")[0];
+            if (docNameText) {
+                docNameText.innerText = doc["Ttl "];
+            }
+        });
+    };
+
+    if (document.readyState === "complete") {
+        _setup();
+    } else {
+        window.addEventListener("load", _setup);
+    }
 
 });
