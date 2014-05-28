@@ -29,9 +29,7 @@ require.config({
         "EventEmitter": "../../bower_components/eventEmitter/EventEmitter"
     },
     packages : [
-        { name: "playground", location: "../../lib" },
-        { name: "playground/generator", location: "../../lib/generator" },
-        { name: "node-connection", location: "../../bower_components/node-connection/", main: "index.js" }
+        { name: "playground", location: "../../lib" }
     ],
 });
 
