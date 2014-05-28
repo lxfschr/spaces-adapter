@@ -17,7 +17,7 @@ Development Setup
 Directories
 -----------
 
-Put middleware code in `src/`.
+Put middleware code in `lib/`.
 
 Put examples of how to use the middleware in `examples/`
 
