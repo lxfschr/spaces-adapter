@@ -26,7 +26,7 @@
 require.config({
     paths: {
         "bluebird" : "../../bower_components/bluebird/js/browser/bluebird",
-        "EventEmitter": "../../bower_components/eventEmitter/EventEmitter"
+        "eventEmitter": "../../bower_components/eventEmitter/EventEmitter"
     },
     packages : [
         { name: "playground", location: "../../lib" }
