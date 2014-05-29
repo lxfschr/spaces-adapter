@@ -44,13 +44,20 @@ module.exports = function (grunt) {
                 "test/**/*.js",
                 "examples/**/*.js"
             ]
+        },
+        jscs: {
+            src: "<%= jshint.all %>",
+            options: {
+                config: ".jscsrc"
+            }
         }
     });
 
     grunt.loadNpmTasks("grunt-contrib-qunit");
     grunt.loadNpmTasks("grunt-contrib-jshint");
+    grunt.loadNpmTasks("grunt-jscs-checker");
 
-    grunt.registerTask("test", ["jshint", "qunit"]);
+    grunt.registerTask("test", ["jshint", "jscs", "qunit"]);
 
     grunt.registerTask("default", ["test"]);
 

@@ -30,7 +30,7 @@ require.config({
     },
     packages : [
         { name: "playground", location: "../../lib" }
-    ],
+    ]
 });
 
 define(function (require) {
