@@ -53,6 +53,15 @@
         "|", "^", "&&", "||", "===", "==", ">=",
         "<=", "<", ">", "!=", "!=="
     ],
+    "requireSpaceAfterBinaryOperators": [
+        "=", "+=", "-=", "*=", "/=", "%=", "<<=", ">>=", ">>>=",
+        "&=", "|=", "^=", "+=",
+
+        "+", "-", "*", "/", "%", "<<", ">>", ">>>", "&",
+        "|", "^", "&&", "||", "===", "==", ">=",
+        "<=", "<", ">", "!=", "!==",
+        ","
+    ],
     "requireSpaceBeforeBlockStatements": true,
     "requireSpacesInConditionalExpression": true,
     "requireSpacesInFunctionExpression": true,
