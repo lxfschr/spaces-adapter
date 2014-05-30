@@ -39,6 +39,7 @@ module.exports = function (grunt) {
                 "package.json",
                 "bower.json",
                 ".jshintrc",
+                ".jscsrc",
                 ".bowerrc",
                 "lib/**/*.js",
                 "test/**/*.js",
