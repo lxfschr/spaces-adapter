@@ -114,6 +114,29 @@ function init(domainManager) {
         ]
     );
 
+    domainManager.registerCommand(
+        DOMAIN,
+        "progressTest",
+        function (notifications, callback, progress) {
+            if (!notifications || notifications < 0) {
+                callback("notifications must be >= 0");
+                return;
+            }
+
+            var counter = 0;
+            var timer = setInterval(function () {
+                if (counter === notifications) {
+                    clearInterval(timer);
+                    callback(null, counter);
+                } else {
+                    progress(counter++);
+                }
+            }, 1000);
+        },
+        true,
+        "Send n progress notifications before calling back"
+    );
+
 }
 
 exports.init = init;

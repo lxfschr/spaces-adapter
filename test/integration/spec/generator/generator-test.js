@@ -98,4 +98,18 @@ define(function (require) {
         });
     });
 
+    asyncTest("Progress works", function () {
+        var notifications = 3;
+        expect(notifications + 1);
+
+        testDomain.exec("progressTest", notifications)
+            .progressed(function (value) {
+                ok(value <= notifications, "Received progress");
+            })
+            .then(function (value) {
+                ok(value === notifications, "Progress command finished");
+                start();
+            });
+    });
+
 });
