@@ -29,8 +29,8 @@ require.config({
         { name: "ds", location: "js" }
     ],
     paths: {
-        "bluebird" : "bower_components/bluebird/js/browser/bluebird",
-        "eventEmitter": "bower_components/eventEmitter/EventEmitter"
+        "bluebird" : "../../bower_components/bluebird/js/browser/bluebird",
+        "eventEmitter": "../../bower_components/eventEmitter/EventEmitter"
     }
 });
 
@@ -38,11 +38,12 @@ define(function (require) {
     "use strict";
 
     var playground = require("playground"),
+        dm = require("playground/documentmanager"),
         ds = require("ds"),
         layers = require("ds/layers");
 
     var _setup = function () {
-        console.log("stuff", playground, ds, layers);
+        console.log("stuff", playground, dm, ds, layers);
     };
 
     if (document.readyState === "complete") {
