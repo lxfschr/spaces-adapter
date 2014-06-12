@@ -28,7 +28,7 @@ module.exports = function (grunt) {
 
     grunt.initConfig({
         qunit: {
-            all: ["test/unit/index.html"]
+            all: ["test/index.html"]
         },
         jshint : {
             options : {
