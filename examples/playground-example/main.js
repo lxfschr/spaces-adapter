@@ -37,20 +37,27 @@ define(function (require) {
 
     var playground = require("playground"),
         adapter = require("playground/adapter"),
-        dm = require("playground/documentmanager");
+        layerManager = require("playground/layermanager");
 
     var _setup = function () {
         adapter.log("Version: " + playground.version);
-        dm.getActiveDocument().then(function (doc) {
-            adapter.log("Current document name: " + doc["Ttl "]);
-        });
-        dm.on("documentChanged", function (doc) {
-            adapter.log("Doc changed to " + doc["Ttl "]);
-            var docNameText = document.getElementsByClassName("doc-name-text")[0];
-            if (docNameText) {
-                docNameText.innerText = doc["Ttl "];
+        
+        // set up new layer button handler
+        var buttonNewLayer = document.getElementsByClassName("button-new-layer")[0];
+        if (buttonNewLayer) {
+            buttonNewLayer.onclick = function () {
+                layerManager.createNewLayer();
+            };
+        }
+
+        // register for selection changed events to update layer display
+        layerManager.on("selectionChanged", function (layerName) {
+            var layerNameText = document.getElementsByClassName("layer-name-text")[0];
+            if (layerNameText) {
+                layerNameText.innerText = layerName;
             }
         });
+
     };
 
     if (document.readyState === "complete") {
