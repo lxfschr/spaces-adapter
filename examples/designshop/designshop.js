@@ -37,13 +37,14 @@ require.config({
 define(function (require) {
     "use strict";
 
-    var playground = require("playground"),
-        dm = require("playground/documentmanager"),
+    var adapter = require("playground/adapter"),
         ds = require("ds"),
-        layers = require("ds/layers");
+        dm = require("playground/documentmanager"),
+        layers = require("ds/layers"),
+        layermanager = require("playground/layermanager");
 
     var _setup = function () {
-        console.log("stuff", playground, dm, ds, layers);
+        console.log("stuff", adapter, ds, dm, layers, layermanager);
     };
 
     if (document.readyState === "complete") {
