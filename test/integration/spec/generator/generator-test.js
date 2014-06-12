@@ -51,6 +51,11 @@ define(function (require) {
         testDomain.promise()
             .then(function () {
                 equal(testDomain.ready(), true, "Test domain is ready");
+            })
+            .catch(function () {
+                ok(false);
+            })
+            .finally(function () {
                 start();
             });
     });
@@ -61,6 +66,11 @@ define(function (require) {
         testDomain.exec("increment", 99)
             .then(function (value) {
                 equal(value, 100, "++99 === 100");
+            })
+            .catch(function () {
+                ok(false);
+            })
+            .finally(function () {
                 start();
             });
     });
@@ -71,6 +81,11 @@ define(function (require) {
         testDomain.exec("incrementAsync", 99)
             .then(function (value) {
                 equal(value, 100, "++99 === 100");
+            })
+            .catch(function () {
+                ok(false);
+            })
+            .finally(function () {
                 start();
             });
     });
@@ -81,6 +96,10 @@ define(function (require) {
         testDomain.exec("emitTestEvent", "hello world")
             .then(function () {
                 ok(true, "emitTestEvent command completed");
+            })
+            .catch(function () {
+                ok(false);
+                start();
             });
 
         testDomain.once("testEvent", function (value) {
@@ -92,10 +111,16 @@ define(function (require) {
     asyncTest("Non-existent commands fail gracefully", function () {
         expect(1);
 
-        testDomain.exec("nonexistentCommand", "lol", "bbq").catch(function () {
-            ok(true, "Exec of nonexistent command failed gracefully");
-            start();
-        });
+        testDomain.exec("nonexistentCommand", "lol", "bbq")
+            .then(function () {
+                ok(false);
+            })
+            .catch(function () {
+                ok(true, "Exec of nonexistent command failed gracefully");
+            })
+            .finally(function () {
+                start();
+            });
     });
 
     asyncTest("Progress works", function () {
@@ -108,8 +133,12 @@ define(function (require) {
             })
             .then(function (value) {
                 ok(value === notifications, "Progress command finished");
+            })
+            .catch(function () {
+                ok(false);
+            })
+            .finally(function () {
                 start();
             });
     });
-
 });
