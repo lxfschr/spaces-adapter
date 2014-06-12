@@ -21,25 +21,21 @@
  * 
  */
 
-/* global require, QUnit */
+/* global module, test, ok, _playground, expect */
 
-require.config({
-    paths: {
-        "bluebird" : "../../bower_components/bluebird/js/browser/bluebird",
-        "eventEmitter": "../../bower_components/eventEmitter/EventEmitter"
-    },
-    packages : [
-        { name: "playground", location: "../../lib" }
-    ]
-});
-
-define(function (require) {
+define(function () {
     "use strict";
 
-    // Test specs
-    require("spec/low-level-test");
-    require("spec/generator/generator-test");
+    module("low-level");
 
-    // Start QUnit after all test specs are loaded
-    QUnit.start();
+    test("_playground object exists", function () {
+        expect(1);
+        ok(!!_playground, "_playground object exists");
+    });
+
+    test("_playground.ps property exists", function () {
+        expect(1);
+        ok(!!_playground.ps, "_playground.ps property exists");
+    });
+
 });

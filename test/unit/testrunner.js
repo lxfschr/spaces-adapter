@@ -21,7 +21,7 @@
  * 
  */
 
-/* global require */
+/* global require, QUnit */
 
 require.config({
     packages : [
@@ -34,4 +34,7 @@ define(function (require) {
 
     // Test specs
     require("spec/version-test");
+
+    // Start QUnit after all test specs are loaded
+    QUnit.start();
 });
