@@ -21,7 +21,7 @@
  * 
  */
 
-/* global module, test, asyncTest, expect, ok, start */
+/* global module, test, asyncTest, expect, ok, equal, start */
 
 define(function (require) {
     "use strict";
@@ -67,4 +67,25 @@ define(function (require) {
             });
     });
     
+    asyncTest("getDocumentInfo returns an object", function () {
+        expect(1);
+
+        generator.bridge.exec("getOpenDocumentIDs")
+            .then(function (ids) {
+                var id = ids.length > 0 ? ids[0] : null;
+                return generator.bridge.exec("getDocumentInfo", id)
+                    .then(function (info) {
+                        equal(info.id, id, "Result has correct ID");
+                    })
+                    .catch(function (err) {
+                        equal(err, "Error: No image open", "No document is open");
+                    });
+            })
+            .catch(function () {
+                ok(false);
+            })
+            .finally(function () {
+                start();
+            });
+    });
 });
