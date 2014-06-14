@@ -26,25 +26,26 @@
 define(function (require) {
     "use strict";
 
-    var generator = require("playground/generator"),
-        testDomain = null;
+    var generator = require("playground/generator");
 
     module("Generator");
 
+    var href = window.location.href,
+        playgroundHref = href.substring(0, href.lastIndexOf("/test")).substring(),
+        playgroundPath = playgroundHref.substring("file://".length),
+        domainSpecPath = playgroundPath + "/test/integration/spec/generator/generator-test-domain.js";
+
     test("createDomain creates the generator-test domain", function () {
+        var testDomain = generator.createDomain("generator-test", domainSpecPath);
+
         expect(1);
-
-        var href = window.location.href,
-            playgroundHref = href.substring(0, href.lastIndexOf("/test")).substring(),
-            playgroundPath = playgroundHref.substring("file://".length),
-            domainSpecPath = playgroundPath + "/test/integration/spec/generator/generator-test-domain.js";
-
-        testDomain = generator.createDomain("generator-test", domainSpecPath);
-
+        
         ok(testDomain, "Test domain created");
     });
 
     asyncTest("generator-test domain becomes ready", function () {
+        var testDomain = generator.createDomain("generator-test", domainSpecPath);
+
         expect(1);
 
         testDomain.promise()
@@ -60,6 +61,8 @@ define(function (require) {
     });
 
     asyncTest("Synchronous commands work", function () {
+        var testDomain = generator.createDomain("generator-test", domainSpecPath);
+
         expect(1);
 
         testDomain.exec("increment", 99)
@@ -75,6 +78,8 @@ define(function (require) {
     });
 
     asyncTest("Asynchronous commands work", function () {
+        var testDomain = generator.createDomain("generator-test", domainSpecPath);
+
         expect(1);
 
         testDomain.exec("incrementAsync", 99)
@@ -90,6 +95,8 @@ define(function (require) {
     });
 
     asyncTest("Events work", function () {
+        var testDomain = generator.createDomain("generator-test", domainSpecPath);
+
         expect(2);
 
         testDomain.exec("emitTestEvent", "hello world")
@@ -108,6 +115,8 @@ define(function (require) {
     });
 
     asyncTest("Non-existent commands fail gracefully", function () {
+        var testDomain = generator.createDomain("generator-test", domainSpecPath);
+
         expect(1);
 
         testDomain.exec("nonexistentCommand", "lol", "bbq")
@@ -123,7 +132,9 @@ define(function (require) {
     });
 
     asyncTest("Progress works", function () {
-        var notifications = 3;
+        var testDomain = generator.createDomain("generator-test", domainSpecPath),
+            notifications = 3;
+
         expect(notifications + 1);
 
         testDomain.exec("progressTest", notifications)
