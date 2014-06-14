@@ -21,27 +21,50 @@
  * 
  */
 
-/* global require, QUnit */
-
-require.config({
-    paths: {
-        "bluebird" : "../../bower_components/bluebird/js/browser/bluebird",
-        "eventEmitter": "../../bower_components/eventEmitter/EventEmitter",
-        "lodash": "../../bower_components/lodash/dist/lodash"
-    },
-    packages : [
-        { name: "playground", location: "../../lib" }
-    ]
-});
+/* global module, test, asyncTest, expect, ok, start */
 
 define(function (require) {
     "use strict";
 
-    // Test specs
-    require("spec/low-level-test");
-    require("spec/generator/generator-test");
-    require("spec/generator/generator-bridge-test");
+    var _ = require("lodash"),
+        generator = require("playground/generator");
 
-    // Start QUnit after all test specs are loaded
-    QUnit.start();
+    module("Generator Bridge");
+
+    test("Bridge domain is created", function () {
+        expect(1);
+
+        ok(generator.bridge, "Bridge domain created");
+    });
+
+    asyncTest("Bridge domain becomes ready", function () {
+        expect(1);
+
+        generator.bridge.promise()
+            .then(function () {
+                ok(generator.bridge.ready(), "Bridge domain is ready");
+            })
+            .catch(function () {
+                ok(false);
+            })
+            .finally(function () {
+                start();
+            });
+    });
+
+    asyncTest("getOpenDocumentIDs returns an array", function () {
+        expect(1);
+
+        generator.bridge.exec("getOpenDocumentIDs")
+            .then(function (ids) {
+                ok(_.isArray(ids), "Result is an array");
+            })
+            .catch(function () {
+                ok(false);
+            })
+            .finally(function () {
+                start();
+            });
+    });
+    
 });
