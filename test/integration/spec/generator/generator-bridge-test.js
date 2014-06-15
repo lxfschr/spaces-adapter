@@ -40,9 +40,9 @@ define(function (require) {
     asyncTest("Bridge domain becomes ready", function () {
         expect(1);
 
-        generator.bridge.promise()
+        generator.bridge._domain.promise()
             .then(function () {
-                ok(generator.bridge.ready(), "Bridge domain is ready");
+                ok(generator.bridge._domain.ready(), "Bridge domain is ready");
             })
             .catch(function () {
                 ok(false);
@@ -55,7 +55,7 @@ define(function (require) {
     asyncTest("getOpenDocumentIDs returns an array", function () {
         expect(1);
 
-        generator.bridge.exec("getOpenDocumentIDs")
+        generator.bridge.getOpenDocumentIDs()
             .then(function (ids) {
                 ok(_.isArray(ids), "Result is an array");
             })
@@ -70,10 +70,10 @@ define(function (require) {
     asyncTest("getDocumentInfo returns an object", function () {
         expect(1);
 
-        generator.bridge.exec("getOpenDocumentIDs")
+        generator.bridge.getOpenDocumentIDs()
             .then(function (ids) {
                 var id = ids.length > 0 ? ids[0] : null;
-                return generator.bridge.exec("getDocumentInfo", id)
+                return generator.bridge.getDocumentInfo(id)
                     .then(function (info) {
                         equal(info.id, id, "Result has correct ID");
                     })
