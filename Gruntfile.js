@@ -44,7 +44,7 @@ module.exports = function (grunt) {
                 "lib/**/*.js",
                 "test/**/*.js",
                 "examples/**/*.js",
-                "!examples/designshop/**/*.js"
+                "!examples/xdlib/**/*.js"
             ]
         },
         jscs: {
