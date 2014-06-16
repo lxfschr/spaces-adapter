@@ -28,16 +28,15 @@ Put integration test specs in `test/integration/spec/` and then add them to `tes
 Running Tests
 -------------
 
-1. To run the unit tests, open `test/unit/index.html` in a web browser. Or, install grunt (see optional development setup steps above) and run `grunt test`.
-2. To run the integration tests, open `test/integration/index.html` in a web browser.
+1. To run the unit tests, open `test/index.html?section=unit` in a web browser. Or, install grunt (see optional development setup steps above) and run `grunt test`.
+2. To run the integration tests, open `test/index.html?section=all` inside Playground.
 
 Trying out the `playground-example` example
 -------------------------------------------
 
-1. Set up Playground
-2. Tell Playground where to find the `playground-example` directory with `defaults write com.adobe.photoshop Playground.Root <<path to playground-example>>`
-3. Flush your defaults cache with ```killall -u `whoami` cfprefsd```
-4. Start Playground
+1. Set up Playground, and then run Playground
+2. Open the development console
+3. Redirect Playground to the root of this repo (with something like `window.location.href = "file:///Users/jbrandt/development/playground-api/index.html"`).
 
 Coding Conventions
 ------------------
