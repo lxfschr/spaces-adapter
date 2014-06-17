@@ -21,49 +21,40 @@
  * 
  */
 
-/* global require, QUnit */
-
-require.config({
-    paths: {
-        "bluebird" : "../bower_components/bluebird/js/browser/bluebird",
-        "eventEmitter": "../bower_components/eventEmitter/EventEmitter",
-        "lodash": "../bower_components/lodash/dist/lodash"
-    },
-    packages : [
-        { name: "playground", location: "../lib" }
-    ]
-});
-
-define(function (require) {
+define(function (require, exports) {
     "use strict";
 
-    var specs = require("./specs");
+    var _ = require("lodash");
 
-    var _parseQueryString = function () {
-        var queryString = window.location.search.substr(1), // trims off initial "?"
-            parts = queryString.split("&"),
-            result = {};
-
-        parts.forEach(function (part) {
-            var a = part.split("=");
-            if (a.length === 2) {
-                result[a[0]] = a[1];
-            }
-        });
-
-        return result;
+    var TEST_SECTION_MAP = {
+        unit : [
+            "spec/version-test"
+        ],
+        lowlevel : [
+            "spec/low-level-test"
+        ],
+        integration : [
+            "spec/generator/generator-test",
+            "spec/generator/generator-bridge-test"
+        ]
     };
 
-    var _loadTestsAndStart = function () {
-        var parsedQueryString = _parseQueryString(),
-            section = parsedQueryString.section,
-            specsToTest = specs.getSpecsByClass(section);
+    var getSpecsByClass = function (specClass) {
+        var section = specClass || "unit",
+            tests = [];
 
-        require(specsToTest, function () {
-            // Start QUnit after all test specs are loaded
-            QUnit.start();
-        });
+        if (section !== "all" && !TEST_SECTION_MAP.hasOwnProperty(section)) {
+            section = "unit";
+        }
+
+        if (section === "all") {
+            tests = Array.prototype.concat.apply([], _.values(TEST_SECTION_MAP));
+        } else if (TEST_SECTION_MAP.hasOwnProperty(section)) {
+            tests = TEST_SECTION_MAP[section];
+        }
+
+        return tests;
     };
 
-    _loadTestsAndStart();
+    exports.getSpecsByClass = getSpecsByClass;
 });
