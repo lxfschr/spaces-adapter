@@ -17,8 +17,7 @@
   "ignore": [
     "**/.*",
     "node_modules",
-    "src/thirdparty",
-    "test"
+    "src/thirdparty"
   ],
   "dependencies": {
     "eventEmitter": "~4.2.7",
