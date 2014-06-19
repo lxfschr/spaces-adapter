@@ -88,4 +88,21 @@ define(function (require) {
                 start();
             });
     });
+
+    asyncTest("evaluateJSXString returns the result of ExtendScript evaluation", function () {
+        expect(1);
+
+        // In Photoshop, app.typename === "Application"
+
+        generator.bridge.evaluateJSXString("app.typename")
+            .then(function (response) {
+                equal(response, "Application");
+            })
+            .catch(function () {
+                ok(false);
+            })
+            .finally(function () {
+                start();
+            });
+    });
 });
