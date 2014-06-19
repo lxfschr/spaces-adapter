@@ -28,6 +28,10 @@ define(function () {
 
     module("low-level");
 
+    function validateNotifierResult(result) {
+        ok(result == undefined || result.valueOf() == 0, "notifier invoked with error: " + (result == undefined ? "n.a." : result.toString()));
+    }
+
     test("_playground object exists", function () {
         expect(1);
         ok(!!_playground, "_playground object exists");
@@ -42,8 +46,8 @@ define(function () {
         expect(3);
         
         _playground.ui.getScaleFactor(function (result, scaleFactor) {
-                ok (true, "got scale factor: " + scaleFactor);
-                ok(result == undefined || result.valueOf() == 0, "notifier for _playground.ui.getScaleFactor invoked with error: " + (result == undefined ? "n.a." : result.toString()));
+                ok(true, "got scale factor: " + scaleFactor);
+                validateNotifierResult(result);
                 ok(scaleFactor == 1 || scaleFactor == 2, "scale factor not the expected value. returned value is: " + scaleFactor);
                 start();
             }
