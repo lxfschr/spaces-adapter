@@ -38,4 +38,15 @@ define(function () {
         ok(!!_playground.ps, "_playground.ps property exists");
     });
 
+    asyncTest("_playground.ui.getScaleFactor property", function () {
+        expect(3);
+        
+        _playground.ui.getScaleFactor(function (result, scaleFactor) {
+                ok (true, "got scale factor: " + scaleFactor);
+                ok(result == undefined || result.valueOf() == 0, "notifier for _playground.ui.getScaleFactor invoked with error: " + (result == undefined ? "n.a." : result.toString()));
+                ok(scaleFactor == 1 || scaleFactor == 2, "scale factor not the expected value. returned value is: " + scaleFactor);
+                start();
+            }
+        );
+    });
 });
