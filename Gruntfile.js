@@ -44,7 +44,6 @@ module.exports = function (grunt) {
                 "lib/**/*.js",
                 "test/**/*.js",
                 "examples/**/*.js",
-                "!examples/xdlib/js/playgroundStub.js", // never lint
                 "!examples/xdlib/**/*.js"  // temporary reprieve
             ]
         },
