@@ -58,7 +58,7 @@ define(function (require) {
                 if (newLayerNameField.value !== "") {
                     newLayerName = newLayerNameField.value;
                 }
-                layerManager.duplicateCurrentLayer(newLayerName);
+                layerManager.duplicateLayer(null, newLayerName);
             };
         }
 
