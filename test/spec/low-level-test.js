@@ -21,12 +21,17 @@
  * 
  */
 
-/* global module, test, ok, _playground, expect */
+/* global module, test, asyncTest, ok, _playground, expect, start */
 
 define(function () {
     "use strict";
 
     module("low-level");
+
+    var validateNotifierResult = function (result) {
+        ok(result === undefined || result.valueOf() === 0,
+            "notifier invoked with error: " + (result === undefined ? "n.a." : result.toString()));
+    };
 
     test("_playground object exists", function () {
         expect(1);
@@ -38,4 +43,15 @@ define(function () {
         ok(!!_playground.ps, "_playground.ps property exists");
     });
 
+    asyncTest("_playground.ui.getScaleFactor property", function () {
+        expect(2);
+        
+        _playground.ui.getScaleFactor(function (result, scaleFactor) {
+            validateNotifierResult(result);
+            ok(scaleFactor === 1 || scaleFactor === 2,
+                "scale factor not the expected value. returned value is: " + scaleFactor);
+
+            start();
+        });
+    });
 });

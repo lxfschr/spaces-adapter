@@ -33,7 +33,7 @@ define(function (require) {
     var href = window.location.href,
         playgroundHref = href.substring(0, href.lastIndexOf("/test")).substring(),
         playgroundPath = playgroundHref.substring("file://".length),
-        domainSpecPath = playgroundPath + "/test/integration/spec/generator/generator-test-domain.js";
+        domainSpecPath = playgroundPath + "/test/spec/generator/generator-test-domain.js";
 
     test("createDomain creates the generator-test domain", function () {
         var testDomain = generator.createDomain("generator-test", domainSpecPath);
