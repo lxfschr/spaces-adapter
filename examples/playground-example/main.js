@@ -50,6 +50,18 @@ define(function (require) {
             };
         }
 
+        var buttonDupeLayer = document.getElementsByClassName("button-dupe-layer")[0];
+        var newLayerNameField = document.getElementsByName("new-layer-name")[0];
+        if (buttonDupeLayer) {
+            buttonDupeLayer.onclick = function () {
+                var newLayerName = null;
+                if (newLayerNameField.value !== "") {
+                    newLayerName = newLayerNameField.value;
+                }
+                layerManager.duplicateCurrentLayer(newLayerName);
+            };
+        }
+
         // register for selection changed events to update layer display
         layerManager.on("selectionChanged", function (layerName) {
             var layerNameText = document.getElementsByClassName("layer-name-text")[0];
