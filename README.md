@@ -4,11 +4,10 @@ Playground JS API
 Development Setup
 -----------------
 
-1. Install [Node](http://nodejs.org/)
-2. Install [Bower](http://bower.io/)
-3. If you're inside a corporate firewall that disallows `git://` URLs, see the note below and act accordingly
-4. Clone this repo
-5. In the root directory of this repo, run `bower install`
+1. Install [Node and NPM](http://nodejs.org/)
+2. Install [Bower](http://bower.io/) using NPM: `$ [sudo] npm install -g bower`. (If you're inside a corporate firewall that disallows `git://` URLs, see the note below and act accordingly.)
+4. Clone this repo: `$ git clone https://github.com/adobe-photoshop/playground-api.git`
+5. From the root directory of your local copy of this repo, install the bower dependencies: `$ bower install`
 6. Optional: If you want to run tests and jshint from the command line:
    a. Install grunt-cli with `npm install -g grunt-cli`
    b. Run `npm install` from the root of this repo
@@ -61,3 +60,12 @@ To undo that after you've quit your job at a large corporate institution, run:
 ```bash
 git config --global --unset url."https://".insteadOf
 ```
+
+### Github authentication without SSH keys
+A side effect of using git over HTTPS instead of SSH (as with `git://` URLS) is that you will be asked to enter your Github password before every command that modifies a remote repository. An imperfect but functional workaround for this is to add your github username and password to your `~/.netrc` file:
+```
+machine github.com
+login your-username
+password your-password
+```
+Once you do this, git will automatically submit those credentials when modifying a remote repository, and you won't ever have to enter your password on the command line. 
