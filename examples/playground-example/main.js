@@ -62,6 +62,21 @@ define(function (require) {
             };
         }
 
+        var buttonAdapterGet = document.getElementsByClassName("button-adapter-get")[0];
+        var textGetInput = document.getElementsByName("get-input")[0];
+        var textOutput = document.getElementsByName("get-output")[0];
+        if (buttonAdapterGet) {
+            buttonAdapterGet.onclick = function () {
+                var getInput = "$Dcmn";
+                if (textGetInput.value !== "") {
+                    getInput = textGetInput.value;
+                }
+                adapter.get(getInput).then(function (value) {
+                    textOutput.value = JSON.stringify(value, null, "  ");
+                });
+            };
+        }
+
         // register for selection changed events to update layer display
         layerManager.on("selectionChanged", function (layerName) {
             var layerNameText = document.getElementsByClassName("layer-name-text")[0];
