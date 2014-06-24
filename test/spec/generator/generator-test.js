@@ -30,10 +30,22 @@ define(function (require) {
 
     module("Generator");
 
+    var TEST_DOMAIN_REL_PATH = "/playground-api/test/spec/generator/generator-test-domain.js";
+
     var href = window.location.href,
-        playgroundHref = href.substring(0, href.lastIndexOf("/test")).substring(),
-        playgroundPath = playgroundHref.substring("file://".length),
-        domainSpecPath = playgroundPath + "/test/spec/generator/generator-test-domain.js";
+        playgroundAPIIndex = href.lastIndexOf("/playground-api"),
+        playgroundURI,
+        domainSpecURI;
+
+    if (playgroundAPIIndex > 0) {
+        playgroundURI = href.substring(0, playgroundAPIIndex);
+        domainSpecURI = playgroundURI + TEST_DOMAIN_REL_PATH;
+    } else {
+        playgroundURI = href.substring(0, href.lastIndexOf("/playground-www"));
+        domainSpecURI = playgroundURI + "/playground-www/bower_components" + TEST_DOMAIN_REL_PATH;
+    }
+
+    var domainSpecPath = domainSpecURI.substring("file://".length);
 
     test("createDomain creates the generator-test domain", function () {
         var testDomain = generator.createDomain("generator-test", domainSpecPath);
