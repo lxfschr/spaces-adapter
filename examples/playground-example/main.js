@@ -62,9 +62,10 @@ define(function (require) {
             };
         }
 
+        var textOutput = document.getElementsByName("get-output")[0];
+
         var buttonAdapterGet = document.getElementsByClassName("button-adapter-get")[0];
         var textGetInput = document.getElementsByName("get-input")[0];
-        var textOutput = document.getElementsByName("get-output")[0];
         if (buttonAdapterGet) {
             buttonAdapterGet.onclick = function () {
                 var getInput = "$Dcmn";
@@ -77,11 +78,31 @@ define(function (require) {
             };
         }
 
+        var textGetPropertyInput = document.getElementsByName("get-property-input")[0];
+        var textGetPropertyRef = document.getElementsByName("get-property-ref")[0];
+        var buttonGetProperty = document.getElementsByClassName("button-adapter-get-property")[0];
+        if (buttonGetProperty) {
+            buttonGetProperty.onclick = function () {
+                var getPropertyRef = "document";
+                if (textGetPropertyRef.value !== "") {
+                    getPropertyRef = textGetPropertyRef.value;
+                }
+                var getPropertyInput = "numberOfLayers";
+                if (textGetPropertyInput.value !== "") {
+                    getPropertyInput = textGetPropertyInput.value;
+                }
+                adapter.getProperty(getPropertyRef, getPropertyInput).then(function (value) {
+                    textOutput.value = JSON.stringify(value, null, "  ");
+                });
+            };
+        }
+
+
         // register for selection changed events to update layer display
-        layerManager.on("selectionChanged", function (layerName) {
+        layerManager.on("selectionChanged", function (selection) {
             var layerNameText = document.getElementsByClassName("layer-name-text")[0];
             if (layerNameText) {
-                layerNameText.innerText = layerName;
+                layerNameText.innerText = selection.join();
             }
         });
 
