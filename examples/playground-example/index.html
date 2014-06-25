@@ -35,10 +35,19 @@
 </head>
 <body>
     <h1>Playground</h1>
-    <p>Current layer: <span class="layer-name-text"></span></p>
+    <p>Current layer selection: <span class="layer-name-text"></span></p>
     <p><button class="button-new-layer">New Layer</button></p>
     <p><input type="text" name="new-layer-name"><button class="button-dupe-layer">Dupe Layer</button></p>
-    <p><input type="text" name="get-input"><button class="button-adapter-get">adapter.get()</button></p>
+    <p>
+        Input: <input type="text" name="get-input" value="document">
+        <button class="button-adapter-get">adapter.get(input)</button>
+    </p>
+    <p>
+        Ref:<input type="text" name="get-property-ref" value="document">
+        Property:<input type="text" name="get-property-input" value="numberOfLayers">
+        <button class="button-adapter-get-property">adapter.getProperty(ref, property)</button>
+    </p>
+    <p>Adapter Call Result:</p>
     <textarea rows="4" cols="50" name="get-output"></textarea>
 </body>
 </html>
