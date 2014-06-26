@@ -28,9 +28,60 @@ define(function () {
 
     module("low-level");
 
-    var validateNotifierResult = function (result) {
-        ok(result === undefined || result.valueOf() === 0,
-            "notifier invoked with error: " + (result === undefined ? "n.a." : result.toString()));
+    /* Validates that the returned result-value is a success code
+    */
+    var validateNotifierResult = function (err) {
+        /* Acceptable success codes are: undefined, or an object with a
+        number property that has the value 0
+        */
+        var testPasses = (err === undefined);
+        if (!testPasses) {
+            testPasses = (err.number != undefined && err.number === 0);
+        }
+        ok(testPasses, "result is success");
+        if (!testPasses) {
+            console.log("validateNotifierResult failed for err:");
+            console.log(err);
+        }
+    };
+
+    /* Validates that the returned result-value is an error object containing
+    number and message properties.
+    Other properties are possible too
+    */
+    var validateNotifierResultError = function (err, expectedError) {
+
+        var testPasses = false;
+        do {
+            if (err === undefined)
+                break;
+            if (!(err instanceof Error))
+                break;
+            if (err.number === undefined)
+                break;
+            if (err.message === undefined)
+                break;
+
+            testPasses = true;
+        }
+        while (false);
+
+        if (!testPasses) {
+            console.log("Invalid form of an error resultValue:");
+            console.log(err);
+        }
+        else
+        {
+            // test the returned error code
+            // REVISIT: Replace the hard coded number with an enumeration
+            // when that becomes available
+            testPasses = (err.number === expectedError);
+
+            if (!testPasses) {
+                console.log("resultValue did not have the expected error code:" + expectedError + " Actual error is: " + err.number);
+            }
+        }
+        ok(testPasses, "error resultValue validation");
     };
 
     test("_playground object exists", function () {
@@ -43,13 +94,58 @@ define(function () {
         ok(!!_playground.ps, "_playground.ps property exists");
     });
 
-    asyncTest("_playground.ui.getScaleFactor property", function () {
+    test("_playground.ps.descriptor property exists", function () {
+        expect(1);
+        ok(!!_playground.ps.descriptor, "_playground.ps.descriptor property exists");
+    });
+
+    test("_playground.ps.ui property exists", function () {
+        expect(1);
+        ok(!!_playground.ps.ui, "_playground.ps.ui property exists");
+    });
+
+    test("_playground._debug property exists", function () {
+        expect(1);
+        ok(!!_playground._debug, "_playground.debug property exists");
+    });
+
+    // Basic test for obtaining a value with no arguments
+    asyncTest("_playground.ps.ui.getScaleFactor property", function () {
         expect(2);
-        
-        _playground.ui.getScaleFactor(function (result, scaleFactor) {
-            validateNotifierResult(result);
-            ok(scaleFactor === 1 || scaleFactor === 2,
-                "scale factor not the expected value. returned value is: " + scaleFactor);
+
+        _playground.ps.ui.getScaleFactor(function (err, scaleFactor) {
+            validateNotifierResult(err);
+
+            var scaleFactorValidation = (scaleFactor === 1 || scaleFactor === 2);
+            ok(scaleFactorValidation, "scale factor validation");
+            if (!scaleFactorValidation) {
+                console.log("scale factor not the expected value. returned value is: " + scaleFactor);
+            }
+
+            start();
+        });
+    });
+
+    // Negative test: Invoke a host method without providing a notifier
+    test("_playground.ps.ui.getScaleFactor property (negative)", function () {
+        expect(1);
+
+        var result = undefined;
+        try {
+            _playground.ps.ui.getScaleFactor("some value");
+        } catch (err)
+        {
+            result = err;
+        }
+        ok(result !== undefined, "missing notifier exception")
+    });
+
+    // Negative test. Invoke a host method with an incorrect number/typs of arguments
+    asyncTest("_playground._debug.forcePlayArgumentFailure", function () {
+        expect(1);
+
+        _playground._debug.forcePlayArgumentFailure( function (err) {
+            validateNotifierResultError(err, 1003);
 
             start();
         });
