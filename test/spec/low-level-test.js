@@ -21,6 +21,7 @@
  * 
  */
 
+/*jslint devel: true*/
 /* global module, test, asyncTest, ok, _playground, expect, start */
 
 define(function () {
@@ -28,61 +29,73 @@ define(function () {
 
     module("low-level");
 
-    /* Validates that the returned result-value is a success code
-    */
-    var validateNotifierResult = function (err) {
-        /* Acceptable success codes are: undefined, or an object with a
-        number property that has the value 0
-        */
+    /**
+     * Validates that the returned result-value is a success code
+     * 
+     * @private
+     * @param {Error=} err
+     */
+    var _validateNotifierResult = function (err) {
+        // Acceptable success codes are: undefined, or an object with a
+        // number property that has the value 0
         var testPasses = (err === undefined);
         if (!testPasses) {
-            testPasses = (err.number != undefined && err.number === 0);
+            testPasses = (err.number !== undefined && err.number === 0);
         }
+
         ok(testPasses, "result is success");
+
         if (!testPasses) {
             console.log("validateNotifierResult failed for err:");
             console.log(err);
         }
     };
 
-    /* Validates that the returned result-value is an error object containing
-    number and message properties.
-    Other properties are possible too
-    */
-    var validateNotifierResultError = function (err, expectedError) {
+    /** 
+     * Validates that the returned result-value is an error object containing
+     * number and message properties. Other properties are possible too.
+     * 
+     * @private
+     * @param {Error=} err
+     * @param {number=} expectedError
+     */
+    var _validateNotifierResultError = function (err, expectedError) {
 
         var testPasses = false;
         do {
-            if (err === undefined)
+            if (err === undefined) {
                 break;
-            if (!(err instanceof Error))
+            }
+            if (!(err instanceof Error)) {
                 break;
-            if (err.number === undefined)
+            }
+            if (err.number === undefined) {
                 break;
-            if (err.message === undefined)
+            }
+            if (err.message === undefined) {
                 break;
+            }
 
             testPasses = true;
-        }
-        while (false);
+        } while (false);
 
         if (!testPasses) {
             console.log("Invalid form of an error resultValue:");
             console.log(err);
-        }
-        else
-        {
+        } else {
             // test the returned error code
             // REVISIT: Replace the hard coded number with an enumeration
             // when that becomes available
             testPasses = (err.number === expectedError);
 
             if (!testPasses) {
-                console.log("resultValue did not have the expected error code:" + expectedError + " Actual error is: " + err.number);
+                console.log("resultValue did not have the expected error code:" +
+                    expectedError + " Actual error is: " + err.number);
             }
         }
         ok(testPasses, "error resultValue validation");
     };
+
 
     test("_playground object exists", function () {
         expect(1);
@@ -114,10 +127,11 @@ define(function () {
         expect(2);
 
         _playground.ps.ui.getScaleFactor(function (err, scaleFactor) {
-            validateNotifierResult(err);
+            _validateNotifierResult(err);
 
             var scaleFactorValidation = (scaleFactor === 1 || scaleFactor === 2);
             ok(scaleFactorValidation, "scale factor validation");
+
             if (!scaleFactorValidation) {
                 console.log("scale factor not the expected value. returned value is: " + scaleFactor);
             }
@@ -130,22 +144,22 @@ define(function () {
     test("_playground.ps.ui.getScaleFactor property (negative)", function () {
         expect(1);
 
-        var result = undefined;
+        var result;
         try {
             _playground.ps.ui.getScaleFactor("some value");
-        } catch (err)
-        {
+        } catch (err) {
             result = err;
         }
-        ok(result !== undefined, "missing notifier exception")
+
+        ok(result !== undefined, "missing notifier exception");
     });
 
     // Negative test. Invoke a host method with an incorrect number/typs of arguments
     asyncTest("_playground._debug.forcePlayArgumentFailure", function () {
         expect(1);
 
-        _playground._debug.forcePlayArgumentFailure( function (err) {
-            validateNotifierResultError(err, 1003);
+        _playground._debug.forcePlayArgumentFailure(function (err) {
+            _validateNotifierResultError(err, 1003);
 
             start();
         });
