@@ -168,22 +168,27 @@ define(function () {
     // _playground.ps.ui.setPointerPropagationMode
     test("_playground.ps.ui.setPointerPropagationMode property exists", function () {
         expect(1);
-        ok(!!_playground.ps.ui.setPointerPropagationMode, "_playground.ps.ui.setPointerPropagationMode property exists");
+        ok(!!_playground.ps.ui.setPointerPropagationMode,
+            "_playground.ps.ui.setPointerPropagationMode property exists");
     });
 
     // _playground.ps.ui.getPointerPropagationMode
     test("_playground.ps.ui.getPointerPropagationMode property exists", function () {
         expect(1);
-        ok(!!_playground.ps.ui.getPointerPropagationMode, "_playground.ps.ui.getPointerPropagationMode property exists");
+        ok(!!_playground.ps.ui.getPointerPropagationMode,
+            "_playground.ps.ui.getPointerPropagationMode property exists");
     });
 
     asyncTest("_playground.ps.ui.getPointerPropagationMode property", function () {
         expect(2);
 
         _playground.ps.ui.getPointerPropagationMode(function (err, mode) {
-            validateNotifierResult(err);
+            _validateNotifierResult(err);
 
-            var modeValidation = (mode === _playground.ps.ui.pointerPropagationMode.ALPHA_PROPAGATE || mode === _playground.ps.ui.pointerPropagationMode.NEVER_PROPAGATE || mode === _playground.ps.ui.pointerPropagationMode.ALWAYS_PROPAGATE);
+            var modeValidation = (mode === _playground.ps.ui.pointerPropagationMode.ALPHA_PROPAGATE ||
+                mode === _playground.ps.ui.pointerPropagationMode.NEVER_PROPAGATE ||
+                mode === _playground.ps.ui.pointerPropagationMode.ALWAYS_PROPAGATE);
+
             ok(modeValidation, "mode factor validation");
             if (!modeValidation) {
                 console.log("mode not the expected value. returned value is: " + mode);
@@ -196,8 +201,12 @@ define(function () {
     asyncTest("_playground.ps.ui.setPointerPropagationMode property", function () {
         expect(1);
 
-        _playground.ps.ui.setPointerPropagationMode({ defaultMode: _playground.ps.ui.pointerPropagationMode.ALPHA_PROPAGATE }, function (err) {
-            validateNotifierResult(err);
+        var options = {
+            defaultMode: _playground.ps.ui.pointerPropagationMode.ALPHA_PROPAGATE
+        };
+
+        _playground.ps.ui.setPointerPropagationMode(options, function (err) {
+            _validateNotifierResult(err);
 
             start();
         });
