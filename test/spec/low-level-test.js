@@ -212,7 +212,7 @@ define(function () {
         });
     });
 
-    asyncTest("_playground.ps.descriptor.get application reference", function () {
+    asyncTest("_playground.ps.descriptor.get", function () {
         expect(5);
 
         var reference = {
@@ -231,7 +231,20 @@ define(function () {
 
             start();
         });
+    });
 
+    asyncTest("_playground.ps.descriptor.play", function () {
+        expect(4);
+
+        _playground.ps.descriptor.play("jsonAction", {}, {}, function (err, descriptor) {
+            _validateNotifierResult(err);
+            ok(!err, "Call succeeded");
+            
+            equal(typeof descriptor, "object", "Result is a descriptor");
+            equal(Object.keys(descriptor), 0, "Result object is empty");
+
+            start();
+        });
     });
 
 });
