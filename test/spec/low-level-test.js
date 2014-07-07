@@ -22,7 +22,7 @@
  */
 
 /*jslint devel: true*/
-/* global module, test, asyncTest, ok, _playground, expect, start */
+/* global module, test, asyncTest, ok, _playground, expect, start, equal */
 
 define(function () {
     "use strict";
@@ -210,6 +210,28 @@ define(function () {
 
             start();
         });
+    });
+
+    asyncTest("_playground.ps.descriptor.get application reference", function () {
+        expect(5);
+
+        var reference = {
+            "ref": "$capp",
+            "enum": "$Ordn",
+            "value": "$Trgt"
+        };
+
+        _playground.ps.descriptor.get(reference, function (err, descriptor) {
+            _validateNotifierResult(err);
+            ok(!err, "Call succeeded");
+            
+            equal(typeof descriptor, "object", "Result is a descriptor");
+            ok(descriptor.hasOwnProperty("hostName"), "Descriptor has the hostName property");
+            equal(descriptor.hostName.indexOf("Adobe Photoshop"), 0, "hostName property starts with 'Adobe Photoshop'");
+
+            start();
+        });
+
     });
 
 });
