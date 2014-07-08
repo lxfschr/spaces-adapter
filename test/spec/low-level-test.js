@@ -212,7 +212,7 @@ define(function () {
         });
     });
 
-    asyncTest("_playground.ps.descriptor.get", function () {
+    asyncTest("_playground.ps.descriptor.get: success", function () {
         expect(5);
 
         var reference = {
@@ -233,7 +233,35 @@ define(function () {
         });
     });
 
-    asyncTest("_playground.ps.descriptor.play", function () {
+    asyncTest("_playground.ps.descriptor.get: semantic failure", function () {
+        expect(2);
+
+        var reference = {
+            "ref": "xxx-ref-does-not-exist-xxx",
+            "enum": "$Ordn",
+            "value": "$Trgt"
+        };
+
+        _playground.ps.descriptor.get(reference, function (err, descriptor) {
+            _validateNotifierResultError(err, _playground.errorCodes.UNKNOWN_ERROR);
+            ok(!descriptor, "Call failed");
+
+            start();
+        });
+    });
+
+    asyncTest("_playground.ps.descriptor.get: argument failure", function () {
+        expect(2);
+
+        _playground.ps.descriptor.get("xxx-ref-does-not-exist-xxx", function (err, descriptor) {
+            _validateNotifierResultError(err, _playground.errorCodes.ARGUMENT_ERROR);
+            ok(!descriptor, "Call failed");
+
+            start();
+        });
+    });
+
+    asyncTest("_playground.ps.descriptor.play: success", function () {
         expect(4);
 
         _playground.ps.descriptor.play("jsonAction", {}, {}, function (err, descriptor) {
@@ -242,6 +270,28 @@ define(function () {
             
             equal(typeof descriptor, "object", "Result is a descriptor");
             equal(Object.keys(descriptor), 0, "Result object is empty");
+
+            start();
+        });
+    });
+
+    asyncTest("_playground.ps.descriptor.play: argument failure", function () {
+        expect(2);
+
+        _playground.ps.descriptor.play("jsonAction", undefined, undefined, function (err, descriptor) {
+            _validateNotifierResultError(err, _playground.errorCodes.ARGUMENT_ERROR);
+            ok(!descriptor, "Call failed");
+
+            start();
+        });
+    });
+
+    asyncTest("_playground.ps.descriptor.play: semantic failure", function () {
+        expect(2);
+
+        _playground.ps.descriptor.play("xxx-ref-does-not-exist-xxx", {}, {}, function (err, descriptor) {
+            _validateNotifierResultError(err, _playground.errorCodes.UNKNOWN_ERROR);
+            ok(!descriptor, "Call failed");
 
             start();
         });
