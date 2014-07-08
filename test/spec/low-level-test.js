@@ -66,9 +66,10 @@ define(function () {
             if (err === undefined) {
                 break;
             }
-            if (!(err instanceof Error)) {
-                break;
-            }
+            // FIXME: restore this check once we always return Error objects
+            // if (!(err instanceof Error)) {
+            //     break;
+            // }
             if (err.number === undefined) {
                 break;
             }
@@ -292,6 +293,163 @@ define(function () {
         _playground.ps.descriptor.play("xxx-ref-does-not-exist-xxx", {}, {}, function (err, descriptor) {
             _validateNotifierResultError(err, _playground.errorCodes.UNKNOWN_ERROR);
             ok(!descriptor, "Call failed");
+
+            start();
+        });
+    });
+
+    asyncTest("_playground.ps.descriptor.batchPlay: success", function () {
+        expect(13);
+
+        var commands = [
+            {
+                name: "jsonAction",
+                descriptor: {}
+            },
+            {
+                name: "jsonAction",
+                descriptor: {}
+            },
+            {
+                name: "jsonAction",
+                descriptor: {}
+            }
+        ];
+
+        _playground.ps.descriptor.batchPlay(commands, {}, {}, function (err, descriptors, errors) {
+            _validateNotifierResult(err);
+            ok(!err, "Call succeeded");
+            
+            equal(descriptors.length, 3, "Received three possible results");
+            equal(errors.length, 3, "Received three possible errors");
+
+            equal(typeof descriptors[0], "object", "Result is a descriptor");
+            equal(Object.keys(descriptors[0]), 0, "Result object is empty");
+            ok(!errors[0], "Error is falsy");
+
+            equal(typeof descriptors[1], "object", "Result is a descriptor");
+            equal(Object.keys(descriptors[1]), 0, "Result object is empty");
+            ok(!errors[1], "Error is falsy");
+
+            equal(typeof descriptors[2], "object", "Result is a descriptor");
+            equal(Object.keys(descriptors[2]), 0, "Result object is empty");
+            ok(!errors[1], "Error is falsy");
+
+            start();
+        });
+    });
+
+    asyncTest("_playground.ps.descriptor.batchPlay: partial semantic failure", function () {
+        expect(9);
+
+        var commands = [
+            {
+                name: "jsonAction",
+                descriptor: {}
+            },
+            {
+                name: "xxx-no-such-descriptor-xxx",
+                descriptor: {}
+            },
+            {
+                name: "jsonAction",
+                descriptor: {}
+            }
+        ];
+
+        _playground.ps.descriptor.batchPlay(commands, {}, {}, function (err, descriptors, errors) {
+            _validateNotifierResult(err);
+            ok(!err, "Call succeeded");
+            
+            equal(descriptors.length, 2, "Received three possible results");
+            equal(errors.length, 2, "Received three possible errors");
+
+            equal(typeof descriptors[0], "object", "Result is a descriptor");
+            equal(Object.keys(descriptors[0]), 0, "Result object is empty");
+            ok(!errors[0], "Error is falsy");
+            
+            ok(!descriptors[1], "Result is falsy");
+            _validateNotifierResultError(errors[1], _playground.errorCodes.UNKNOWN_ERROR);
+
+            start();
+        });
+    });
+
+    asyncTest("_playground.ps.descriptor.batchPlay: partial argument failure", function () {
+        expect(9);
+
+        var commands = [
+            {
+                name: "jsonAction",
+                descriptor: {}
+            },
+            {
+                "xxx-bad-property-name-xxx": "jsonAction",
+                descriptor: {}
+            },
+            {
+                name: "jsonAction",
+                descriptor: {}
+            }
+        ];
+
+        _playground.ps.descriptor.batchPlay(commands, {}, {}, function (err, descriptors, errors) {
+            _validateNotifierResult(err);
+            ok(!err, "Call succeeded");
+            
+            equal(descriptors.length, 2, "Received three possible results");
+            equal(errors.length, 2, "Received three possible errors");
+
+            equal(typeof descriptors[0], "object", "Result is a descriptor");
+            equal(Object.keys(descriptors[0]), 0, "Result object is empty");
+            ok(!errors[0], "Error is falsy");
+            
+            ok(!descriptors[1], "Result is falsy");
+            _validateNotifierResultError(errors[1], _playground.errorCodes.ARGUMENT_ERROR);
+
+            start();
+        });
+    });
+
+    asyncTest("_playground.ps.descriptor.batchPlay with continueOnError: partial semantic failure", function () {
+        expect(12);
+
+        var commands = [
+            {
+                name: "jsonAction",
+                descriptor: {}
+            },
+            {
+                name: "xxx-no-such-descriptor-xxx",
+                descriptor: {}
+            },
+            {
+                name: "jsonAction",
+                descriptor: {}
+            }
+        ];
+
+        var batchOptions = {
+            continueOnError: true
+        };
+
+        _playground.ps.descriptor.batchPlay(commands, {}, batchOptions, function (err, descriptors, errors) {
+            _validateNotifierResult(err);
+            ok(!err, "Call succeeded");
+            
+            equal(descriptors.length, 3, "Received three possible results");
+            equal(errors.length, 3, "Received three possible errors");
+
+            equal(typeof descriptors[0], "object", "Result is a descriptor");
+            equal(Object.keys(descriptors[0]), 0, "Result object is empty");
+            ok(!errors[0], "Error is falsy");
+            
+            ok(!descriptors[1], "Result is falsy");
+            _validateNotifierResultError(errors[1], _playground.errorCodes.UNKNOWN_ERROR);
+
+            equal(typeof descriptors[2], "object", "Result is a descriptor");
+            equal(Object.keys(descriptors[2]), 0, "Result object is empty");
+            ok(!errors[2], "Error is falsy");
 
             start();
         });
