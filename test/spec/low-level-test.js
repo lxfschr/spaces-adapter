@@ -159,7 +159,7 @@ define(function () {
         expect(1);
 
         _playground._debug.forcePlayArgumentFailure(function (err) {
-            _validateNotifierResultError(err, 1002);
+            _validateNotifierResultError(err, _playground.errorCodes.ARGUMENT_ERROR);
 
             start();
         });
