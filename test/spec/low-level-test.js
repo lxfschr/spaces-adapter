@@ -217,10 +217,18 @@ define(function () {
         expect(5);
 
         var reference = {
-            "ref": "$capp",
-            "enum": "$Ordn",
-            "value": "$Trgt"
-        };
+            ref: [
+                    {
+                        ref: "property",
+                        property: "hostName"
+                    },
+                    {
+                        ref: "application",
+                        enum: "ordinal",
+                        value: "targetEnum"
+                    }
+                ]
+            };
 
         _playground.ps.descriptor.get(reference, function (err, descriptor) {
             _validateNotifierResult(err);
