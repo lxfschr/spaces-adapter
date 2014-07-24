@@ -218,17 +218,17 @@ define(function () {
 
         var reference = {
             ref: [
-                    {
-                        ref: "property",
-                        property: "hostName"
-                    },
-                    {
-                        ref: "application",
-                        enum: "ordinal",
-                        value: "targetEnum"
-                    }
-                ]
-            };
+                {
+                    ref: "property",
+                    property: "hostName"
+                },
+                {
+                    ref: "application",
+                    enum: "ordinal",
+                    value: "targetEnum"
+                }
+            ]
+        };
 
         _playground.ps.descriptor.get(reference, function (err, descriptor) {
             _validateNotifierResult(err);
