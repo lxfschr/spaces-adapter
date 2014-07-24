@@ -284,10 +284,21 @@ define(function () {
         });
     });
 
-    asyncTest("_playground.ps.descriptor.play: argument failure", function () {
+    asyncTest("_playground.ps.descriptor.play: undefined argument failure", function () {
         expect(2);
 
         _playground.ps.descriptor.play("jsonAction", undefined, undefined, function (err, descriptor) {
+            _validateNotifierResultError(err, _playground.errorCodes.ARGUMENT_ERROR);
+            ok(!descriptor, "Call failed");
+
+            start();
+        });
+    });
+
+    asyncTest("_playground.ps.descriptor.play: non-JSON-stringifyable argument failure", function () {
+        expect(2);
+
+        _playground.ps.descriptor.play("jsonAction", { ref: NaN }, {}, function (err, descriptor) {
             _validateNotifierResultError(err, _playground.errorCodes.ARGUMENT_ERROR);
             ok(!descriptor, "Call failed");
 
