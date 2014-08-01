@@ -213,6 +213,54 @@ define(function () {
         });
     });
 
+    // _playground.ps.ui.setOverscrollMode
+    test("_playground.ps.ui.setOverscrollMode property exists", function () {
+        expect(1);
+        ok(!!_playground.ps.ui.setOverscrollMode,
+            "_playground.ps.ui.setOverscrollMode property exists");
+    });
+
+    // _playground.ps.ui.getOverscrollMode
+    test("_playground.ps.ui.getOverscrollMode property exists", function () {
+        expect(1);
+        ok(!!_playground.ps.ui.getOverscrollMode,
+            "_playground.ps.ui.getOverscrollMode property exists");
+    });
+
+    asyncTest("_playground.ps.ui.getOverscrollMode property", function () {
+        expect(2);
+
+        _playground.ps.ui.getOverscrollMode(function (err, mode) {
+            _validateNotifierResult(err);
+
+            var modeValidation = (mode === _playground.ps.ui.overscrollMode.NORMAL_OVERSCROLL ||
+                mode === _playground.ps.ui.overscrollMode.ALWAYS_OVERSCROLL ||
+                mode === _playground.ps.ui.overscrollMode.ALWAYS_OVERSCROLL_NO_SCROLLBARS ||
+                mode === _playground.ps.ui.overscrollMode.NEVER_OVERSCROLL);
+
+            ok(modeValidation, "mode factor validation");
+            if (!modeValidation) {
+                console.log("mode not the expected value. returned value is: " + mode);
+            }
+
+            start();
+        });
+    });
+
+    asyncTest("_playground.ps.ui.setOverscrollMode property", function () {
+        expect(1);
+
+        var options = {
+            defaultMode: _playground.ps.ui.overscrollMode.ALWAYS_OVERSCROLL_NO_SCROLLBARS
+        };
+
+        _playground.ps.ui.setOverscrollMode(options, function (err) {
+            _validateNotifierResult(err);
+
+            start();
+        });
+    });
+
     asyncTest("_playground.ps.descriptor.get: success", function () {
         expect(5);
 
