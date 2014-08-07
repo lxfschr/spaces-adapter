@@ -66,6 +66,11 @@ define(function () {
             if (err === undefined) {
                 break;
             }
+            // Allow NULL until we can create error objects (or undefined) for any result argument
+            if (err === null) {
+                break;
+            }
+
             // FIXME: restore this check once we always return Error objects
             // if (!(err instanceof Error)) {
             //     break;
@@ -235,7 +240,6 @@ define(function () {
 
             var modeValidation = (mode === _playground.ps.ui.overscrollMode.NORMAL_OVERSCROLL ||
                 mode === _playground.ps.ui.overscrollMode.ALWAYS_OVERSCROLL ||
-                mode === _playground.ps.ui.overscrollMode.ALWAYS_OVERSCROLL_NO_SCROLLBARS ||
                 mode === _playground.ps.ui.overscrollMode.NEVER_OVERSCROLL);
 
             ok(modeValidation, "mode factor validation");
@@ -251,7 +255,7 @@ define(function () {
         expect(1);
 
         var options = {
-            defaultMode: _playground.ps.ui.overscrollMode.ALWAYS_OVERSCROLL_NO_SCROLLBARS
+            defaultMode: _playground.ps.ui.overscrollMode.ALWAYS_OVERSCROLL
         };
 
         _playground.ps.ui.setOverscrollMode(options, function (err) {
@@ -284,7 +288,11 @@ define(function () {
             
             equal(typeof descriptor, "object", "Result is a descriptor");
             ok(descriptor.hasOwnProperty("hostName"), "Descriptor has the hostName property");
-            equal(descriptor.hostName.indexOf("Adobe Photoshop"), 0, "hostName property starts with 'Adobe Photoshop'");
+
+            var osxValidation = (descriptor.hostName.indexOf("Adobe Photoshop") == 0);
+            var winValidation = (descriptor.hostName.indexOf("Photoshop") == 0);
+
+            ok(osxValidation || winValidation, "hostName property starts with 'Adobe Photoshop'");
 
             start();
         });
@@ -392,15 +400,15 @@ define(function () {
 
             equal(typeof descriptors[0], "object", "Result is a descriptor");
             equal(Object.keys(descriptors[0]), 0, "Result object is empty");
-            ok(!errors[0], "Error is falsy");
+            ok(!errors[0], "Error is false");
 
             equal(typeof descriptors[1], "object", "Result is a descriptor");
             equal(Object.keys(descriptors[1]), 0, "Result object is empty");
-            ok(!errors[1], "Error is falsy");
+            ok(!errors[1], "Error is false");
 
             equal(typeof descriptors[2], "object", "Result is a descriptor");
             equal(Object.keys(descriptors[2]), 0, "Result object is empty");
-            ok(!errors[1], "Error is falsy");
+            ok(!errors[1], "Error is false");
 
             start();
         });
@@ -433,9 +441,9 @@ define(function () {
 
             equal(typeof descriptors[0], "object", "Result is a descriptor");
             equal(Object.keys(descriptors[0]), 0, "Result object is empty");
-            ok(!errors[0], "Error is falsy");
+            ok(!errors[0], "Error is false");
             
-            ok(!descriptors[1], "Result is falsy");
+            ok(!descriptors[1], "Result is false");
             _validateNotifierResultError(errors[1], _playground.errorCodes.UNKNOWN_ERROR);
 
             start();
@@ -443,7 +451,7 @@ define(function () {
     });
 
     asyncTest("_playground.ps.descriptor.batchPlay: partial argument failure", function () {
-        expect(9);
+        expect(3);
 
         var commands = [
             {
@@ -461,18 +469,9 @@ define(function () {
         ];
 
         _playground.ps.descriptor.batchPlay(commands, {}, {}, function (err, descriptors, errors) {
-            _validateNotifierResult(err);
-            ok(!err, "Call succeeded");
-            
-            equal(descriptors.length, 2, "Received three possible results");
-            equal(errors.length, 2, "Received three possible errors");
-
-            equal(typeof descriptors[0], "object", "Result is a descriptor");
-            equal(Object.keys(descriptors[0]), 0, "Result object is empty");
-            ok(!errors[0], "Error is falsy");
-            
-            ok(!descriptors[1], "Result is falsy");
-            _validateNotifierResultError(errors[1], _playground.errorCodes.ARGUMENT_ERROR);
+            _validateNotifierResultError(err, _playground.errorCodes.ARGUMENT_ERROR);
+            ok(descriptors === undefined, "Call failed");
+            ok(errors === undefined, "Call failed");
 
             start();
         });
@@ -509,14 +508,42 @@ define(function () {
 
             equal(typeof descriptors[0], "object", "Result is a descriptor");
             equal(Object.keys(descriptors[0]), 0, "Result object is empty");
-            ok(!errors[0], "Error is falsy");
+            ok(!errors[0], "Error is false");
             
-            ok(!descriptors[1], "Result is falsy");
+            ok(!descriptors[1], "Result is false");
             _validateNotifierResultError(errors[1], _playground.errorCodes.UNKNOWN_ERROR);
 
             equal(typeof descriptors[2], "object", "Result is a descriptor");
             equal(Object.keys(descriptors[2]), 0, "Result object is empty");
-            ok(!errors[2], "Error is falsy");
+            ok(!errors[2], "Error is false");
+
+            start();
+        });
+    });
+
+    test("_playground.ps.ui.setEventPropagationPolicy object exists", function () {
+        expect(1);
+        ok(!!_playground.ps.ui.setEventPropagationPolicy, "_playground.ps.ui.setEventPropagationPolicy object exists");
+    });
+
+    asyncTest("_playground.ps.ui.setEventPropagationPolicy with empty options", function () {
+        expect(1);
+
+        var options = {};
+        _playground.ps.ui.setEventPropagationPolicy(options, function (err) {
+            _validateNotifierResult(err, _playground.errorCodes.UNKNOWN_ERROR);
+
+            start();
+        });
+    });
+
+    // LEAVE THIS CASE AS LAST TO BE SURE POLICY IS RESET!
+    asyncTest("_playground.ps.ui.setEventPropagationPolicy with empty policy", function () {
+        expect(1);
+
+        var options = { policyList: [] };
+        _playground.ps.ui.setEventPropagationPolicy(options, function (err) {
+            _validateNotifierResult(err);
 
             start();
         });
