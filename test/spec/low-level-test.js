@@ -400,15 +400,15 @@ define(function () {
 
             equal(typeof descriptors[0], "object", "Result is a descriptor");
             equal(Object.keys(descriptors[0]), 0, "Result object is empty");
-            ok(!errors[0], "Error is false");
+            ok(!errors[0], "Error is falsy");
 
             equal(typeof descriptors[1], "object", "Result is a descriptor");
             equal(Object.keys(descriptors[1]), 0, "Result object is empty");
-            ok(!errors[1], "Error is false");
+            ok(!errors[1], "Error is falsy");
 
             equal(typeof descriptors[2], "object", "Result is a descriptor");
             equal(Object.keys(descriptors[2]), 0, "Result object is empty");
-            ok(!errors[1], "Error is false");
+            ok(!errors[1], "Error is falsy");
 
             start();
         });
@@ -441,9 +441,9 @@ define(function () {
 
             equal(typeof descriptors[0], "object", "Result is a descriptor");
             equal(Object.keys(descriptors[0]), 0, "Result object is empty");
-            ok(!errors[0], "Error is false");
+            ok(!errors[0], "Error is falsy");
             
-            ok(!descriptors[1], "Result is false");
+            ok(!descriptors[1], "Result is falsy");
             _validateNotifierResultError(errors[1], _playground.errorCodes.UNKNOWN_ERROR);
 
             start();
@@ -508,14 +508,14 @@ define(function () {
 
             equal(typeof descriptors[0], "object", "Result is a descriptor");
             equal(Object.keys(descriptors[0]), 0, "Result object is empty");
-            ok(!errors[0], "Error is false");
+            ok(!errors[0], "Error is falsy");
             
-            ok(!descriptors[1], "Result is false");
+            ok(!descriptors[1], "Result is falsy");
             _validateNotifierResultError(errors[1], _playground.errorCodes.UNKNOWN_ERROR);
 
             equal(typeof descriptors[2], "object", "Result is a descriptor");
             equal(Object.keys(descriptors[2]), 0, "Result object is empty");
-            ok(!errors[2], "Error is false");
+            ok(!errors[2], "Error is falsy");
 
             start();
         });
