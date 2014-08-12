@@ -289,8 +289,8 @@ define(function () {
             equal(typeof descriptor, "object", "Result is a descriptor");
             ok(descriptor.hasOwnProperty("hostName"), "Descriptor has the hostName property");
 
-            var osxValidation = (descriptor.hostName.indexOf("Adobe Photoshop") == 0);
-            var winValidation = (descriptor.hostName.indexOf("Photoshop") == 0);
+            var osxValidation = (descriptor.hostName.indexOf("Adobe Photoshop") === 0);
+            var winValidation = (descriptor.hostName.indexOf("Photoshop") === 0);
 
             ok(osxValidation || winValidation, "hostName property starts with 'Adobe Photoshop'");
 
