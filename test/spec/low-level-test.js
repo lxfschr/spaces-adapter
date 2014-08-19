@@ -773,7 +773,7 @@ define(function () {
             equal(Object.keys(descriptors[0]), 0, "Result object is empty");
             ok(!errors[0], "Error is falsy");
             
-            ok(!descriptors[1], "Result is false");
+            ok(!descriptors[1], "Result is falsy");
             _validateNotifierResultError(errors[1], _playground.errorCodes.UNKNOWN_ERROR);
 
             equal(typeof descriptors[2], "object", "Result is a descriptor");
