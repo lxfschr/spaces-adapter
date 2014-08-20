@@ -802,7 +802,7 @@ define(function () {
     test("_playground.ps.ui.setPointerEventPropagationPolicy object exists", function () {
         expect(1);
         ok(!!_playground.ps.ui.setPointerEventPropagationPolicy,
-		   "_playground.ps.ui.setPointerEventPropagationPolicy object exists");
+        "_playground.ps.ui.setPointerEventPropagationPolicy object exists");
     });
 
     asyncTest("_playground.ps.ui.setPointerEventPropagationPolicy with empty options", function () {
