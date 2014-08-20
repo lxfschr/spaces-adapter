@@ -116,22 +116,22 @@ define(function () {
 
         var actualSize = Object.getOwnPropertyNames(_playground.errorCodes).length;
         try {
-            ok(typeof _playground.errorCodes == "object", "_playground.errorCodes is defined");
+            ok(typeof _playground.errorCodes === "object", "_playground.errorCodes is defined");
             equal(actualSize, expectedSize, "_playground.errorCodes size");
             // constants
-            ok(typeof _playground.errorCodes.NO_ERROR == "number",
+            ok(typeof _playground.errorCodes.NO_ERROR === "number",
                "_playground.errorCodes.NO_ERROR");
-            ok(typeof _playground.errorCodes.UNKNOWN_ERROR == "number",
+            ok(typeof _playground.errorCodes.UNKNOWN_ERROR === "number",
                "_playground.errorCodes.UNKNOWN_ERROR");
-            ok(typeof _playground.errorCodes.CANT_DISPATCH_MESSAGE_TO_HOST == "number",
+            ok(typeof _playground.errorCodes.CANT_DISPATCH_MESSAGE_TO_HOST === "number",
                "_playground.errorCodes.CANT_DISPATCH_MESSAGE_TO_HOST");
-            ok(typeof _playground.errorCodes.ARGUMENT_ERROR == "number",
+            ok(typeof _playground.errorCodes.ARGUMENT_ERROR === "number",
                "_playground.errorCodes.ARGUMENT_ERROR");
-            ok(typeof _playground.errorCodes.MISSING_NOTIFIER == "number",
+            ok(typeof _playground.errorCodes.MISSING_NOTIFIER === "number",
                "_playground.errorCodes.MISSING_NOTIFIER");
-            ok(typeof _playground.errorCodes.CONVERSION_ERROR == "number",
+            ok(typeof _playground.errorCodes.CONVERSION_ERROR === "number",
                "_playground.errorCodes.CONVERSION_ERROR");
-            ok(typeof _playground.errorCodes.REENTRANCY_ERROR == "number",
+            ok(typeof _playground.errorCodes.REENTRANCY_ERROR === "number",
                "_playground.errorCodes.REENTRANCY_ERROR");
         } catch (err) {
             console.error("_playground.errorCodes constants object test, unexpected exception: ",
@@ -156,15 +156,15 @@ define(function () {
 
         var actualSize = Object.getOwnPropertyNames(_playground.ps.descriptor.interactionMode).length;
         try {
-            ok(typeof _playground.ps.descriptor.interactionMode == "object",
+            ok(typeof _playground.ps.descriptor.interactionMode === "object",
                "_playground.ps.descriptor.interactionMode is defined");
             equal(actualSize, expectedSize, "_playground.ps.descriptor.interactionMode size");
             // constants
-            ok(typeof _playground.ps.descriptor.interactionMode.DONT_DISPLAY == "number",
+            ok(typeof _playground.ps.descriptor.interactionMode.DONT_DISPLAY === "number",
                "_playground.ps.descriptor.interactionMode.DONT_DISPLAY");
-            ok(typeof _playground.ps.descriptor.interactionMode.DISPLAY == "number",
+            ok(typeof _playground.ps.descriptor.interactionMode.DISPLAY === "number",
                "_playground.ps.descriptor.interactionMode.DISPLAY");
-            ok(typeof _playground.ps.descriptor.interactionMode.SILENT == "number",
+            ok(typeof _playground.ps.descriptor.interactionMode.SILENT === "number",
                "_playground.ps.descriptor.interactionMode.SILENT");
         } catch (err) {
             console.error("_playground.ps.descriptor.interactionMode constants object test, unexpected exception: ",
@@ -184,23 +184,23 @@ define(function () {
 
         var actualSize = Object.getOwnPropertyNames(_playground.ps.ui.widgetTypes).length;
         try {
-            ok(typeof _playground.ps.ui.widgetTypes == "object",
+            ok(typeof _playground.ps.ui.widgetTypes === "object",
                "_playground.ps.ui.widgetTypes is defined");
             equal(actualSize, expectedSize, "_playground.ps.ui.widgetTypes size");
             // constants
-            ok(typeof _playground.ps.ui.widgetTypes.TOOLBAR == "number",
+            ok(typeof _playground.ps.ui.widgetTypes.TOOLBAR === "number",
                "_playground.ps.ui.widgetTypes.TOOLBAR");
-            ok(typeof _playground.ps.ui.widgetTypes.CONTROLBAR == "number",
+            ok(typeof _playground.ps.ui.widgetTypes.CONTROLBAR === "number",
                "_playground.ps.ui.widgetTypes.CONTROLBAR");
-            ok(typeof _playground.ps.ui.widgetTypes.PALETTE == "number",
+            ok(typeof _playground.ps.ui.widgetTypes.PALETTE === "number",
                "_playground.ps.ui.widgetTypes.PALETTE");
-            ok(typeof _playground.ps.ui.widgetTypes.DOCUMENT == "number",
+            ok(typeof _playground.ps.ui.widgetTypes.DOCUMENT === "number",
                "_playground.ps.ui.widgetTypes.DOCUMENT");
-            ok(typeof _playground.ps.ui.widgetTypes.APPLICATIONBAR == "number",
+            ok(typeof _playground.ps.ui.widgetTypes.APPLICATIONBAR === "number",
                "_playground.ps.ui.widgetTypes.APPLICATIONBAR");
-            ok(typeof _playground.ps.ui.widgetTypes.DOCUMENT_TABS == "number",
+            ok(typeof _playground.ps.ui.widgetTypes.DOCUMENT_TABS === "number",
                "_playground.ps.ui.widgetTypes.DOCUMENT_TABS");
-            ok(typeof _playground.ps.ui.widgetTypes.ALL == "number",
+            ok(typeof _playground.ps.ui.widgetTypes.ALL === "number",
                "_playground.ps.ui.widgetTypes.ALL");
         } catch (err) {
             console.error("_playground.ps.ui.widgetTypes constants object test, unexpected exception: ",
@@ -215,15 +215,15 @@ define(function () {
 
         var actualSize = Object.getOwnPropertyNames(_playground.ps.ui.pointerPropagationMode).length;
         try {
-            ok(typeof _playground.ps.ui.pointerPropagationMode == "object",
+            ok(typeof _playground.ps.ui.pointerPropagationMode === "object",
                "_playground.ps.ui.pointerPropagationMode is defined");
             equal(actualSize, expectedSize, "_playground.ps.ui.pointerPropagationMode size");
             // constants
-            ok(typeof _playground.ps.ui.pointerPropagationMode.ALPHA_PROPAGATE == "number",
+            ok(typeof _playground.ps.ui.pointerPropagationMode.ALPHA_PROPAGATE === "number",
                "_playground.ps.ui.pointerPropagationMode.ALPHA_PROPAGATE");
-            ok(typeof _playground.ps.ui.pointerPropagationMode.ALWAYS_PROPAGATE == "number",
+            ok(typeof _playground.ps.ui.pointerPropagationMode.ALWAYS_PROPAGATE === "number",
                "_playground.ps.ui.pointerPropagationMode.ALWAYS_PROPAGATE");
-            ok(typeof _playground.ps.ui.pointerPropagationMode.NEVER_PROPAGATE == "number",
+            ok(typeof _playground.ps.ui.pointerPropagationMode.NEVER_PROPAGATE === "number",
                "_playground.ps.ui.pointerPropagationMode.NEVER_PROPAGATE");
         } catch (err) {
             console.error("_playground.ps.ui.pointerPropagationMode constants object test, unexpected exception: ",
@@ -231,7 +231,7 @@ define(function () {
         }
     });
 
-    if (navigator.platform == "MacIntel") {
+    if (navigator.platform === "MacIntel") {
         test("_playground.ps.ui.PolicyAction constants object", function () {
             // CHANGE THIS VALUE WHEN ADDING OR REMOVING PolicyAction PROPERTIES!
             var expectedSize = 3;
@@ -239,15 +239,15 @@ define(function () {
 
             var actualSize = Object.getOwnPropertyNames(_playground.ps.ui.PolicyAction).length;
             try {
-                ok(typeof _playground.ps.ui.PolicyAction == "object",
+                ok(typeof _playground.ps.ui.PolicyAction === "object",
                    "_playground.ps.ui.PolicyAction is defined");
                 equal(actualSize, expectedSize, "_playground.ps.ui.PolicyAction size");
                 // constants
-                ok(typeof _playground.ps.ui.PolicyAction.ALPHA_PROPAGATE == "number",
+                ok(typeof _playground.ps.ui.PolicyAction.ALPHA_PROPAGATE === "number",
                    "_playground.ps.ui.PolicyAction.ALPHA_PROPAGATE");
-                ok(typeof _playground.ps.ui.PolicyAction.ALWAYS_PROPAGATE == "number",
+                ok(typeof _playground.ps.ui.PolicyAction.ALWAYS_PROPAGATE === "number",
                    "_playground.ps.ui.PolicyAction.ALWAYS_PROPAGATE");
-                ok(typeof _playground.ps.ui.PolicyAction.NEVER_PROPAGATE == "number",
+                ok(typeof _playground.ps.ui.PolicyAction.NEVER_PROPAGATE === "number",
                    "_playground.ps.ui.PolicyAction.NEVER_PROPAGATE");
             } catch (err) {
                 console.error("_playground.ps.ui.PolicyAction constants object test, unexpected exception: ",
@@ -263,13 +263,13 @@ define(function () {
 
         var actualSize = Object.getOwnPropertyNames(_playground.ps.ui.keyboardPropagationMode).length;
         try {
-            ok(typeof _playground.ps.ui.keyboardPropagationMode == "object",
+            ok(typeof _playground.ps.ui.keyboardPropagationMode === "object",
                "_playground.ps.ui.keyboardPropagationMode is defined");
             equal(actualSize, expectedSize, "_playground.ps.ui.keyboardPropagationMode size");
             // constants
             ok(typeof _playground.ps.ui.keyboardPropagationMode.ALWAYS_PROPAGATE== "number",
                "_playground.ps.ui.keyboardPropagationMode.ALWAYS_PROPAGATE");
-            ok(typeof _playground.ps.ui.keyboardPropagationMode.NEVER_PROPAGATE == "number",
+            ok(typeof _playground.ps.ui.keyboardPropagationMode.NEVER_PROPAGATE === "number",
                "_playground.ps.ui.keyboardPropagationMode.NEVER_PROPAGATE");
         } catch (err) {
             console.error("_playground.ps.ui.keyboardPropagationMode constants object test, unexpected exception: ",
@@ -284,15 +284,15 @@ define(function () {
 
         var actualSize = Object.getOwnPropertyNames(_playground.ps.ui.overscrollMode).length;
         try {
-            ok(typeof _playground.ps.ui.overscrollMode == "object",
+            ok(typeof _playground.ps.ui.overscrollMode === "object",
                "_playground.ps.ui.overscrollMode is defined");
             equal(actualSize, expectedSize, "_playground.ps.ui.overscrollMode size");
             // constants
-            ok(typeof _playground.ps.ui.overscrollMode.NORMAL_OVERSCROLL == "number",
+            ok(typeof _playground.ps.ui.overscrollMode.NORMAL_OVERSCROLL === "number",
                "_playground.ps.ui.overscrollMode.NORMAL_OVERSCROLL");
-            ok(typeof _playground.ps.ui.overscrollMode.ALWAYS_OVERSCROLL == "number",
+            ok(typeof _playground.ps.ui.overscrollMode.ALWAYS_OVERSCROLL === "number",
                "_playground.ps.ui.overscrollMode.ALWAYS_OVERSCROLL");
-            ok(typeof _playground.ps.ui.overscrollMode.NEVER_OVERSCROLL == "number",
+            ok(typeof _playground.ps.ui.overscrollMode.NEVER_OVERSCROLL === "number",
                "_playground.ps.ui.overscrollMode.NEVER_OVERSCROLL");
         } catch (err) {
             console.error("_playground.ps.ui.overscrollMode constants object test, unexpected exception: ",
@@ -313,15 +313,15 @@ define(function () {
 
         var actualSize = Object.getOwnPropertyNames(_playground.os.eventKind).length;
         try {
-            ok(typeof _playground.os.eventKind == "object",
+            ok(typeof _playground.os.eventKind === "object",
                "_playground.os.eventKind is defined");
             equal(actualSize, expectedSize, "_playground.os.eventKind size");
             // constants
-            ok(typeof _playground.os.eventKind.LEFT_MOUSE_DOWN == "number",
+            ok(typeof _playground.os.eventKind.LEFT_MOUSE_DOWN === "number",
                "_playground.os.eventKind.LEFT_MOUSE_DOWN");
-            ok(typeof _playground.os.eventKind.KEY_DOWN == "number",
+            ok(typeof _playground.os.eventKind.KEY_DOWN === "number",
                "_playground.os.eventKind.KEY_DOWN");
-            ok(typeof _playground.os.eventKind.KEY_UP == "number",
+            ok(typeof _playground.os.eventKind.KEY_UP === "number",
                "_playground.os.eventKind.KEY_UP");
         } catch (err) {
             console.error("_playground.os.eventKind constants object test, unexpected exception: ",
@@ -336,19 +336,19 @@ define(function () {
 
         var actualSize = Object.getOwnPropertyNames(_playground.os.eventModifiers).length;
         try {
-            ok(typeof _playground.os.eventModifiers == "object",
+            ok(typeof _playground.os.eventModifiers === "object",
                "_playground.os.eventModifiers is defined");
             equal(actualSize, expectedSize, "_playground.os.eventModifiers size");
             // constants
-            ok(typeof _playground.os.eventModifiers.NONE == "number",
+            ok(typeof _playground.os.eventModifiers.NONE === "number",
                "_playground.os.eventModifiers.NONE");
-            ok(typeof _playground.os.eventModifiers.SHIFT == "number",
+            ok(typeof _playground.os.eventModifiers.SHIFT === "number",
                "_playground.os.eventModifiers.SHIFT");
-            ok(typeof _playground.os.eventModifiers.CONTROL == "number",
+            ok(typeof _playground.os.eventModifiers.CONTROL === "number",
                "_playground.os.eventModifiers.CONTROL");
-            ok(typeof _playground.os.eventModifiers.ALT == "number",
+            ok(typeof _playground.os.eventModifiers.ALT === "number",
                "_playground.os.eventModifiers.ALT");
-            ok(typeof _playground.os.eventModifiers.COMMAND == "number",
+            ok(typeof _playground.os.eventModifiers.COMMAND === "number",
                "_playground.os.eventModifiers.COMMAND");
         } catch (err) {
             console.error("_playground.os.eventModifiers constants object test, unexpected exception: ",
@@ -363,19 +363,19 @@ define(function () {
 
         var actualSize = Object.getOwnPropertyNames(_playground.os.eventTypes).length;
         try {
-            ok(typeof _playground.os.eventTypes == "object",
+            ok(typeof _playground.os.eventTypes === "object",
                "_playground.os.eventTypes is defined");
             equal(actualSize, expectedSize, "_playground.os.eventTypes size");
             // constants
-            ok(typeof _playground.os.eventTypes.MOUSE_CAPTURE_LOST == "string",
+            ok(typeof _playground.os.eventTypes.MOUSE_CAPTURE_LOST === "string",
                "_playground.os.eventTypes.MOUSE_CAPTURE_LOST");
-            ok(typeof _playground.os.eventTypes.ACTIVATION_CHANGED == "string",
+            ok(typeof _playground.os.eventTypes.ACTIVATION_CHANGED === "string",
                "_playground.os.eventTypes.ACTIVATION_CHANGED");
-            ok(typeof _playground.os.eventTypes.KEYBOARDFOCUS_CHANGED == "string",
+            ok(typeof _playground.os.eventTypes.KEYBOARDFOCUS_CHANGED === "string",
                "_playground.os.eventTypes.KEYBOARDFOCUS_CHANGED");
-            ok(typeof _playground.os.eventTypes.EXTERNAL_MOUSE_DOWN == "string",
+            ok(typeof _playground.os.eventTypes.EXTERNAL_MOUSE_DOWN === "string",
                "_playground.os.eventTypes.EXTERNAL_MOUSE_DOWN");
-            ok(typeof _playground.os.eventTypes.TOUCH == "string",
+            ok(typeof _playground.os.eventTypes.TOUCH === "string",
                "_playground.os.eventTypes.TOUCH");
         } catch (err) {
             console.error("_playground.os.eventTypes constants object test, unexpected exception: ",
@@ -550,13 +550,13 @@ define(function () {
             ok(descriptor.hasOwnProperty("hostName"), "Descriptor has the hostName property");
 
             var expected = null;
-            if (navigator.platform == "Win32") {
+            if (navigator.platform === "Win32") {
                 expected = "Photoshop";
             } else {
                 expected = "Adobe Photoshop CC";
             }
             var actual = descriptor.hostName;
-            ok(actual.indexOf(expected) == 0, "descriptor hostName property");
+            ok(actual.indexOf(expected) === 0, "descriptor hostName property");
             start();
         });
     });
