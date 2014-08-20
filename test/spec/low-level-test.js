@@ -42,7 +42,7 @@ define(function () {
         // Acceptable success codes are: undefined, or an object with a
         // number property that has the value 0
         var testPasses = (err === undefined);
-        if (!testPasses && err != null) {
+        if (!testPasses && err !== null) {
             testPasses = (err.number !== undefined && err.number === 0);
         }
 
@@ -267,7 +267,7 @@ define(function () {
                "_playground.ps.ui.keyboardPropagationMode is defined");
             equal(actualSize, expectedSize, "_playground.ps.ui.keyboardPropagationMode size");
             // constants
-            ok(typeof _playground.ps.ui.keyboardPropagationMode.ALWAYS_PROPAGATE== "number",
+            ok(typeof _playground.ps.ui.keyboardPropagationMode.ALWAYS_PROPAGATE === "number",
                "_playground.ps.ui.keyboardPropagationMode.ALWAYS_PROPAGATE");
             ok(typeof _playground.ps.ui.keyboardPropagationMode.NEVER_PROPAGATE === "number",
                "_playground.ps.ui.keyboardPropagationMode.NEVER_PROPAGATE");
@@ -786,7 +786,8 @@ define(function () {
 
     test("_playground.ps.ui.setPointerEventPropagationPolicy object exists", function () {
         expect(1);
-        ok(!!_playground.ps.ui.setPointerEventPropagationPolicy, "_playground.ps.ui.setPointerEventPropagationPolicy object exists");
+        ok(!!_playground.ps.ui.setPointerEventPropagationPolicy,
+		   "_playground.ps.ui.setPointerEventPropagationPolicy object exists");
     });
 
     asyncTest("_playground.ps.ui.setPointerEventPropagationPolicy with empty options", function () {
