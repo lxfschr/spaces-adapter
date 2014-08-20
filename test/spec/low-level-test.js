@@ -258,7 +258,7 @@ define(function () {
 
     test("_playground.ps.ui.keyboardPropagationMode constants object", function () {
         // CHANGE THIS VALUE WHEN ADDING OR REMOVING keyboardPropagationMode PROPERTIES!
-        var expectedSize = 2;
+        var expectedSize = 3;
         expect(2 + expectedSize); // 2 + # of constants
 
         var actualSize = Object.getOwnPropertyNames(_playground.ps.ui.keyboardPropagationMode).length;
@@ -267,6 +267,8 @@ define(function () {
                "_playground.ps.ui.keyboardPropagationMode is defined");
             equal(actualSize, expectedSize, "_playground.ps.ui.keyboardPropagationMode size");
             // constants
+            ok(typeof _playground.ps.ui.keyboardPropagationMode.FOCUS_PROPAGATE === "number",
+               "_playground.ps.ui.keyboardPropagationMode.FOCUS_PROPAGATE");
             ok(typeof _playground.ps.ui.keyboardPropagationMode.ALWAYS_PROPAGATE === "number",
                "_playground.ps.ui.keyboardPropagationMode.ALWAYS_PROPAGATE");
             ok(typeof _playground.ps.ui.keyboardPropagationMode.NEVER_PROPAGATE === "number",
