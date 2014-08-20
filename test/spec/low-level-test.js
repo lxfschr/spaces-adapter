@@ -302,7 +302,6 @@ define(function () {
         }
     });
 
-    // _playground.os
     test("_playground.os property exists", function () {
         expect(1);
         ok(!!_playground.ps, "_playground.os property exists");
@@ -390,7 +389,9 @@ define(function () {
         ok(!!_playground._debug, "_playground.debug property exists");
     });
 
-    // Basic test for obtaining a value with no arguments
+    /* Basic test for obtaining a value with no arguments
+	 *
+	 */
     asyncTest("_playground.ps.ui.getScaleFactor property", function () {
         expect(2);
 
@@ -408,7 +409,9 @@ define(function () {
         });
     });
 
-    // Negative test: Invoke a host method without providing a notifier
+    /* Negative test: Invoke a host method without providing a notifier
+	 *
+	 */
     test("_playground.ps.ui.getScaleFactor property (negative)", function () {
         expect(1);
 
@@ -422,7 +425,9 @@ define(function () {
         ok(result !== undefined, "missing notifier exception");
     });
 
-    // Negative test. Invoke a host method with an incorrect number/typs of arguments
+    /* Negative test. Invoke a host method with an incorrect number/typs of arguments
+	 *
+	 */
     asyncTest("_playground._debug.forcePlayArgumentFailure", function () {
         expect(1);
 
@@ -433,14 +438,18 @@ define(function () {
         });
     });
 
-    // _playground.ps.ui.setPointerPropagationMode
+    /* _playground.ps.ui.setPointerPropagationMode
+	 *
+	 */
     test("_playground.ps.ui.setPointerPropagationMode property exists", function () {
         expect(1);
         ok(!!_playground.ps.ui.setPointerPropagationMode,
             "_playground.ps.ui.setPointerPropagationMode property exists");
     });
 
-    // _playground.ps.ui.getPointerPropagationMode
+    /* _playground.ps.ui.getPointerPropagationMode
+	 *
+	 */
     test("_playground.ps.ui.getPointerPropagationMode property exists", function () {
         expect(1);
         ok(!!_playground.ps.ui.getPointerPropagationMode,
@@ -480,14 +489,18 @@ define(function () {
         });
     });
 
-    // _playground.ps.ui.setOverscrollMode
+    /* _playground.ps.ui.setOverscrollMode
+	 *
+	 */
     test("_playground.ps.ui.setOverscrollMode property exists", function () {
         expect(1);
         ok(!!_playground.ps.ui.setOverscrollMode,
             "_playground.ps.ui.setOverscrollMode property exists");
     });
 
-    // _playground.ps.ui.getOverscrollMode
+    /* _playground.ps.ui.getOverscrollMode
+	 *
+	 */
     test("_playground.ps.ui.getOverscrollMode property exists", function () {
         expect(1);
         ok(!!_playground.ps.ui.getOverscrollMode,
@@ -829,9 +842,9 @@ define(function () {
     });
 
     /* Get the scrollbar mode. While it is initialized to false, at this point we cannot
-    make assumptions about its value.
-    Value validation is also an issue as we are invoking setter tests asynchronously
-    */
+     * make assumptions about its value.
+     * Value validation is also an issue as we are invoking setter tests asynchronously.
+     */
     asyncTest("_playground.ps.ui.getSuppressScrollbars property", function () {
         expect(2);
 
