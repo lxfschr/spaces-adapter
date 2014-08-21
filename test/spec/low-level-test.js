@@ -111,7 +111,7 @@ define(function () {
 
     test("_playground.errorCodes constants object", function () {
         // CHANGE THIS VALUE WHEN ADDING OR REMOVING errorCode PROPERTIES!
-        var expectedSize = 7;
+        var expectedSize = 9;
         expect(2 + expectedSize); // 2 + # of constants
 
         var actualSize = Object.getOwnPropertyNames(_playground.errorCodes).length;
@@ -129,6 +129,10 @@ define(function () {
                "_playground.errorCodes.ARGUMENT_ERROR");
             ok(typeof _playground.errorCodes.MISSING_NOTIFIER === "number",
                "_playground.errorCodes.MISSING_NOTIFIER");
+            ok(typeof _playground.errorCodes.SUITEPEA_ERROR === "number",
+               "_playground.errorCodes.UNKNOWN_FUNCTION_ERROR");
+            ok(typeof _playground.errorCodes.SUITEPEA_ERROR === "number",
+               "_playground.errorCodes.CONVERSION_ERROR");
             ok(typeof _playground.errorCodes.CONVERSION_ERROR === "number",
                "_playground.errorCodes.CONVERSION_ERROR");
             ok(typeof _playground.errorCodes.REENTRANCY_ERROR === "number",
@@ -359,7 +363,7 @@ define(function () {
 
     test("_playground.os.eventTypes constants object", function () {
         // CHANGE THIS VALUE WHEN ADDING OR REMOVING eventTypes PROPERTIES!
-        var expectedSize = 5;
+        var expectedSize = 6;
         expect(2 + expectedSize); // 2 + # of constants
 
         var actualSize = Object.getOwnPropertyNames(_playground.os.eventTypes).length;
@@ -378,6 +382,8 @@ define(function () {
                "_playground.os.eventTypes.EXTERNAL_MOUSE_DOWN");
             ok(typeof _playground.os.eventTypes.TOUCH === "string",
                "_playground.os.eventTypes.TOUCH");
+            ok(typeof _playground.os.eventTypes.CONVERTIBLE_SLATE_MODE_CHANGED === "string",
+               "_playground.os.eventTypes.CONVERTIBLE_SLATE_MODE_CHANGED");
         } catch (err) {
             console.error("_playground.os.eventTypes constants object test, unexpected exception: ",
                           typeof err);
@@ -802,7 +808,7 @@ define(function () {
     test("_playground.ps.ui.setPointerEventPropagationPolicy object exists", function () {
         expect(1);
         ok(!!_playground.ps.ui.setPointerEventPropagationPolicy,
-        "_playground.ps.ui.setPointerEventPropagationPolicy object exists");
+		   "_playground.ps.ui.setPointerEventPropagationPolicy object exists");
     });
 
     asyncTest("_playground.ps.ui.setPointerEventPropagationPolicy with empty options", function () {
@@ -875,4 +881,27 @@ define(function () {
         });
     });
 
+    // --------------------- ConvertibleSlateMode tests ---------------------
+
+    test("_playground.os.isConvertibleSlateMode property exists", function () {
+        expect(1);
+        ok(!!_playground.os.isConvertibleSlateMode,
+            "_playground.os.isConvertibleSlateMode property exists");
+    });
+
+    /* Get the ConvertibleSlateMode.
+    */
+    asyncTest("_playground.os.isConvertibleSlateMode property", function () {
+        expect(2);
+
+        _playground.os.isConvertibleSlateMode(function (err, value) {
+            _validateNotifierResult(err);
+            
+            equal(typeof value, "boolean", "Result is a boolean");
+
+            start();
+        });
+    });
+
+    // no test for setting this property, it is read-only.  
 });
