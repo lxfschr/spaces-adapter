@@ -129,12 +129,12 @@ define(function () {
                "_playground.errorCodes.ARGUMENT_ERROR");
             ok(typeof _playground.errorCodes.MISSING_NOTIFIER === "number",
                "_playground.errorCodes.MISSING_NOTIFIER");
-            ok(typeof _playground.errorCodes.SUITEPEA_ERROR === "number",
-               "_playground.errorCodes.UNKNOWN_FUNCTION_ERROR");
-            ok(typeof _playground.errorCodes.SUITEPEA_ERROR === "number",
-               "_playground.errorCodes.CONVERSION_ERROR");
             ok(typeof _playground.errorCodes.CONVERSION_ERROR === "number",
                "_playground.errorCodes.CONVERSION_ERROR");
+            ok(typeof _playground.errorCodes.UNKNOWN_FUNCTION_ERROR === "number",
+               "_playground.errorCodes.UNKNOWN_FUNCTION_ERROR");
+            ok(typeof _playground.errorCodes.SUITEPEA_ERROR === "number",
+               "_playground.errorCodes.SUITEPEA_ERROR");
             ok(typeof _playground.errorCodes.REENTRANCY_ERROR === "number",
                "_playground.errorCodes.REENTRANCY_ERROR");
         } catch (err) {
