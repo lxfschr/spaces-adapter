@@ -396,8 +396,8 @@ define(function () {
     });
 
     /* Basic test for obtaining a value with no arguments
-	 *
-	 */
+     *
+     */
     asyncTest("_playground.ps.ui.getScaleFactor property", function () {
         expect(2);
 
@@ -416,8 +416,8 @@ define(function () {
     });
 
     /* Negative test: Invoke a host method without providing a notifier
-	 *
-	 */
+     *
+     */
     test("_playground.ps.ui.getScaleFactor property (negative)", function () {
         expect(1);
 
@@ -432,8 +432,8 @@ define(function () {
     });
 
     /* Negative test. Invoke a host method with an incorrect number/typs of arguments
-	 *
-	 */
+     *
+     */
     asyncTest("_playground._debug.forcePlayArgumentFailure", function () {
         expect(1);
 
@@ -445,8 +445,8 @@ define(function () {
     });
 
     /* _playground.ps.ui.setPointerPropagationMode
-	 *
-	 */
+     *
+     */
     test("_playground.ps.ui.setPointerPropagationMode property exists", function () {
         expect(1);
         ok(!!_playground.ps.ui.setPointerPropagationMode,
@@ -454,8 +454,8 @@ define(function () {
     });
 
     /* _playground.ps.ui.getPointerPropagationMode
-	 *
-	 */
+     *
+     */
     test("_playground.ps.ui.getPointerPropagationMode property exists", function () {
         expect(1);
         ok(!!_playground.ps.ui.getPointerPropagationMode,
@@ -496,8 +496,8 @@ define(function () {
     });
 
     /* _playground.ps.ui.setOverscrollMode
-	 *
-	 */
+     *
+     */
     test("_playground.ps.ui.setOverscrollMode property exists", function () {
         expect(1);
         ok(!!_playground.ps.ui.setOverscrollMode,
@@ -505,8 +505,8 @@ define(function () {
     });
 
     /* _playground.ps.ui.getOverscrollMode
-	 *
-	 */
+     *
+     */
     test("_playground.ps.ui.getOverscrollMode property exists", function () {
         expect(1);
         ok(!!_playground.ps.ui.getOverscrollMode,
@@ -808,7 +808,7 @@ define(function () {
     test("_playground.ps.ui.setPointerEventPropagationPolicy object exists", function () {
         expect(1);
         ok(!!_playground.ps.ui.setPointerEventPropagationPolicy,
-		   "_playground.ps.ui.setPointerEventPropagationPolicy object exists");
+           "_playground.ps.ui.setPointerEventPropagationPolicy object exists");
     });
 
     asyncTest("_playground.ps.ui.setPointerEventPropagationPolicy with empty options", function () {
