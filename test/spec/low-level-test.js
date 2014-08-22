@@ -592,7 +592,7 @@ define(function () {
         };
 
         _playground.ps.descriptor.get(reference, function (err, descriptor) {
-            _validateNotifierResultError(err, _playground.errorCodes.UNKNOWN_ERROR);
+            _validateNotifierResultError(err, _playground.errorCodes.SUITEPEA_ERROR);
             ok(!descriptor, "Call failed");
 
             start();
@@ -650,7 +650,7 @@ define(function () {
         expect(2);
 
         _playground.ps.descriptor.play("xxx-ref-does-not-exist-xxx", {}, {}, function (err, descriptor) {
-            _validateNotifierResultError(err, _playground.errorCodes.UNKNOWN_ERROR);
+            _validateNotifierResultError(err, _playground.errorCodes.SUITEPEA_ERROR);
             ok(!descriptor, "Call failed");
 
             start();
