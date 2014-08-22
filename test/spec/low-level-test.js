@@ -129,12 +129,12 @@ define(function () {
                "_playground.errorCodes.ARGUMENT_ERROR");
             ok(typeof _playground.errorCodes.MISSING_NOTIFIER === "number",
                "_playground.errorCodes.MISSING_NOTIFIER");
-            ok(typeof _playground.errorCodes.SUITEPEA_ERROR === "number",
-               "_playground.errorCodes.UNKNOWN_FUNCTION_ERROR");
-            ok(typeof _playground.errorCodes.SUITEPEA_ERROR === "number",
-               "_playground.errorCodes.CONVERSION_ERROR");
             ok(typeof _playground.errorCodes.CONVERSION_ERROR === "number",
                "_playground.errorCodes.CONVERSION_ERROR");
+            ok(typeof _playground.errorCodes.UNKNOWN_FUNCTION_ERROR === "number",
+               "_playground.errorCodes.UNKNOWN_FUNCTION_ERROR");
+            ok(typeof _playground.errorCodes.SUITEPEA_ERROR === "number",
+               "_playground.errorCodes.SUITEPEA_ERROR");
             ok(typeof _playground.errorCodes.REENTRANCY_ERROR === "number",
                "_playground.errorCodes.REENTRANCY_ERROR");
         } catch (err) {
@@ -592,7 +592,7 @@ define(function () {
         };
 
         _playground.ps.descriptor.get(reference, function (err, descriptor) {
-            _validateNotifierResultError(err, _playground.errorCodes.UNKNOWN_ERROR);
+            _validateNotifierResultError(err, _playground.errorCodes.SUITEPEA_ERROR);
             ok(!descriptor, "Call failed");
 
             start();
@@ -650,7 +650,7 @@ define(function () {
         expect(2);
 
         _playground.ps.descriptor.play("xxx-ref-does-not-exist-xxx", {}, {}, function (err, descriptor) {
-            _validateNotifierResultError(err, _playground.errorCodes.UNKNOWN_ERROR);
+            _validateNotifierResultError(err, _playground.errorCodes.SUITEPEA_ERROR);
             ok(!descriptor, "Call failed");
 
             start();
