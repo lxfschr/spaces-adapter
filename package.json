@@ -1,23 +1,23 @@
 {
-  "name": "playground-api",
-  "description": "JS middleware layer for Playground",
-  "scripts": {
-    "test": "grunt test"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/adobe-photoshop/playground-api.git"
-  },
-  "license": "Closed",
-  "bugs": {
-    "url": "https://github.com/adobe-photoshop/playground-api/issues"
-  },
-  "homepage": "https://github.com/adobe-photoshop/playground-api",
-  "devDependencies": {
-    "grunt": "^0.4.5",
-    "grunt-contrib-qunit": "^0.4.0",
-    "grunt-jscs-checker": "^0.4.4",
-    "grunt-contrib-jshint": "^0.10.0",
-    "jscs-trailing-whitespace-in-source": "0.0.1"
-  }
+    "name": "playground-adapter",
+    "description": "JS middleware layer for Playground",
+    "scripts": {
+        "test": "grunt test"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/adobe-photoshop/playground-api.git"
+    },
+    "license": "Closed",
+    "bugs": {
+        "url": "https://github.com/adobe-photoshop/playground-api/issues"
+    },
+    "homepage": "https://github.com/adobe-photoshop/playground-api",
+    "devDependencies": {
+        "grunt": "^0.4.5",
+        "grunt-contrib-qunit": "^0.4.0",
+        "grunt-jscs": "^0.7.1",
+        "grunt-contrib-jshint": "^0.10.0",
+        "jscs-trailing-whitespace-in-source": "0.0.1"
+    }
 }

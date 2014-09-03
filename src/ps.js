@@ -23,7 +23,7 @@
 
 /* global _playground */
 
-define(function (require, exports, module) {
+define(function (require, exports) {
     "use strict";
 
     var Promise = require("bluebird");
@@ -32,7 +32,7 @@ define(function (require, exports, module) {
      * @private
      * Promisified version of _playground.ps functions.
      */
-    var _ps = Promise.promisifyAll(_playground.ps),
+    var _ps = Promise.promisifyAll(_playground.ps);
 
     
     /**
@@ -51,12 +51,12 @@ define(function (require, exports, module) {
      * Execute a Photoshop menu command.
      * Should only be used for items that are not yet implemented via ActionDescriptors
      *
-     * @param commandID {int} -- photoshop menu command ID
-     * @return {Promise.<*>} -- promise representing execution state of the menu command
+     * @param {number} commandID Photoshop menu command ID
+     * @return {Promise.<*>} Promise representing execution state of the menu command
      */
     var performMenuCommand = function (commandID) {
         return _ps.performMenuCommandAsync(commandID);
-    } 
+    };
 
     exports.endModalTextState = endModalTextState;
     exports.performMenuCommand = performMenuCommand;

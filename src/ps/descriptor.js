@@ -206,7 +206,7 @@ define(function (require, exports, module) {
      * @return {Promise.<object>} Resolves when the call is complete (Note: eventually, this will
      *     return the value resulting from the execution of the ActionDescriptor, if any).
      */
-    Descriptor.prototype.call = function (name, descriptor, options) {
+    Descriptor.prototype.play = function (name, descriptor, options) {
         descriptor = descriptor || {};
         options = options || {
             interactionMode: _playground.ps.descriptor.interactionMode.SILENT
@@ -224,7 +224,7 @@ define(function (require, exports, module) {
      *      ActionDescriptors is executed.
      * @return {Promise.<Array.object>} Resolves with the list of ActionDescriptor results. 
      */
-    Descriptor.prototype.batchCall = function (commands, options, batchOptions) {
+    Descriptor.prototype.batchPlay = function (commands, options, batchOptions) {
         batchOptions = batchOptions || {};
         options = options || {
             interactionMode: _playground.ps.descriptor.interactionMode.SILENT
