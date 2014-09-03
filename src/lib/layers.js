@@ -28,8 +28,8 @@ define(function (require, exports, module) {
 
     var Promise = require("bluebird"),
         EventEmitter = require("eventEmitter"),
-        adapter = require("./adapter"),
-        util = require("./util");
+        adapter = require("../ps/descriptor"),
+        util = require("../util");
 
     /**
      * The LayerManager provides an API for dealing with the layers of the

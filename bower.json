@@ -1,10 +1,10 @@
 {
-  "name": "playground-api",
+  "name": "playground-adapter",
   "version": "0.0.1",
   "homepage": "https://github.com/adobe-photoshop/playground-api",
   "authors": [
-    "Joel Brandt <joelrbrandt@gmail.com>",
-    "Ian Wehrman <iwehrman@gmail.com>"
+    "Joel Brandt <jobrandt@adobe.com>",
+    "Ian Wehrman <wehrman@adobe.com>"
   ],
   "description": "JS middleware layer for Playground",
   "moduleType": [
@@ -20,12 +20,12 @@
     "src/thirdparty"
   ],
   "dependencies": {
-    "eventEmitter": "~4.2.7",
-    "bluebird": "~1.2.4",
-    "lodash": "~2.4.1"
+    "eventEmitter": "~4.2.8",
+    "bluebird": "~2.3.2"
   },
   "devDependencies": {
     "requirejs": "~2.1.11",
-    "qunit": "~1.14.0"
+    "lodash": "~2.4.1",
+    "qunit": "~1.15.0"
   }
 }

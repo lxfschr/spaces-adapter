@@ -25,7 +25,7 @@
 
 require.config({
     baseUrl: "../../",
-    packages : [{ name: "playground", location: "lib" }],
+    packages : [{ name: "adapter", location: "src" }],
     paths: {
         "bluebird" : "bower_components/bluebird/js/browser/bluebird",
         "eventEmitter": "bower_components/eventEmitter/EventEmitter"
@@ -35,12 +35,13 @@ require.config({
 define(function (require) {
     "use strict";
 
-    var playground = require("playground"),
-        adapter = require("playground/adapter"),
-        layerManager = require("playground/layermanager");
+    var adapter = require("adapter"),
+        descriptor = require("adapter/ps/descriptor"),
+        os = require("adapter/os"),
+        layerManager = require("adapter/lib/layers");
 
     var _setup = function () {
-        adapter.log("Version: " + playground.version);
+        console.log("Version: " + adapter.version);
         
         // set up new layer button handler
         var buttonNewLayer = document.getElementsByClassName("button-new-layer")[0];
@@ -72,7 +73,7 @@ define(function (require) {
                 if (textGetInput.value !== "") {
                     getInput = textGetInput.value;
                 }
-                adapter.get(getInput).then(function (value) {
+                descriptor.get(getInput).done(function (value) {
                     textOutput.value = JSON.stringify(value, null, "  ");
                 });
             };
@@ -91,7 +92,7 @@ define(function (require) {
                 if (textGetPropertyInput.value !== "") {
                     getPropertyInput = textGetPropertyInput.value;
                 }
-                adapter.getProperty(getPropertyRef, getPropertyInput).then(function (value) {
+                descriptor.getProperty(getPropertyRef, getPropertyInput).done(function (value) {
                     textOutput.value = JSON.stringify(value, null, "  ");
                 });
             };
@@ -104,6 +105,21 @@ define(function (require) {
             if (layerNameText) {
                 layerNameText.innerText = selection.join();
             }
+        });
+
+        var inputs = document.body.querySelectorAll("input"),
+            textareas = document.body.querySelectorAll("textarea");
+
+        inputs = Array.prototype.slice.call(inputs);
+        textareas = Array.prototype.slice.call(textareas);
+
+        inputs = inputs.concat(textareas);
+        inputs.forEach(function (input) {
+            input.addEventListener("mousedown", function () {
+                os.acquireKeyboardFocus().catch(function (err) {
+                    console.error("Failed to acquire keyboard focus", err);
+                });
+            });
         });
 
     };

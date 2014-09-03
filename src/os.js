@@ -31,27 +31,27 @@ define(function (require, exports, module) {
         Promise = require("bluebird");
 
     /**
-     * Promisified version of low-level keyboard focus functions
-     */
-    var _keyboardFocus = Promise.promisifyAll(_playground.os.keyboardFocus);
-
-    /**
      * Promisified version of low-level os functions
      */
     var _os = Promise.promisifyAll(_playground.os);
 
     /**
-     * The OSAdapter object provides helper methods for dealing with operating
+     * Promisified version of low-level keyboard focus functions
+     */
+    var _keyboardFocus = Promise.promisifyAll(_playground.os.keyboardFocus);
+
+    /**
+     * The OS object provides helper methods for dealing with operating
      * system by way of Photoshop.
      *
      * @extends EventEmitter
      * @constructor
      * @private
      */
-    var OSAdapter = function () {
+    var OS = function () {
         EventEmitter.call(this);
     };
-    util.inherits(OSAdapter, EventEmitter);
+    util.inherits(OS, EventEmitter);
 
     /**
      * Event handler for events from the native bridge.
@@ -61,7 +61,7 @@ define(function (require, exports, module) {
      * @param {String} event Name of the event
      * @param {*} payload
      */
-    OSAdapter.prototype._eventHandler = function (err, event, payload) {
+    OS.prototype._eventHandler = function (err, event, payload) {
         if (err) {
             // TODO: emit an error event, as in adapter.js
             console.error("Failed to handle OS event: " + err);
@@ -78,7 +78,7 @@ define(function (require, exports, module) {
      * @param {object=} options Options passed directly to the low-level call
      * @return {Promise} Resolves once the status of focus has been determined.
      */
-    OSAdapter.prototype.hasKeyboardFocus = function (options) {
+    OS.prototype.hasKeyboardFocus = function (options) {
         options = options || {};
 
         return _keyboardFocus.isActiveAsync(options);
@@ -90,7 +90,7 @@ define(function (require, exports, module) {
      * @param {object=} options Options passed directly to the low-level aquire call
      * @return {Promise} Resolves once focus has been transferred.
      */
-    OSAdapter.prototype.acquireKeyboardFocus = function (options) {
+    OS.prototype.acquireKeyboardFocus = function (options) {
         options = options || {};
 
         return _keyboardFocus.acquireAsync(options);
@@ -102,7 +102,7 @@ define(function (require, exports, module) {
      * @param {object=} options Options passed directly to the low-level release call
      * @return {Promise} Resolves once focus has been transferred.
      */
-    OSAdapter.prototype.releaseKeyboardFocus = function (options) {
+    OS.prototype.releaseKeyboardFocus = function (options) {
         options = options || {};
 
         return _keyboardFocus.releaseAsync(options);
@@ -111,7 +111,7 @@ define(function (require, exports, module) {
     /**
      * @return {Promise}
      */
-    OSAdapter.prototype.postEvent = function (eventInfo, options) {
+    OS.prototype.postEvent = function (eventInfo, options) {
         options = options || {};
 
         return _os.postEventAsync(eventInfo, options);
@@ -123,7 +123,7 @@ define(function (require, exports, module) {
      * @const
      * @type{object.<string>}
      */
-    OSAdapter.prototype.notifierKind = _os.notifierKind;
+    OS.prototype.notifierKind = _os.notifierKind;
 
     /**
      * OS event kinds
@@ -131,7 +131,7 @@ define(function (require, exports, module) {
      * @const
      * @type{object.<number>}
      */
-    OSAdapter.prototype.eventKind = _os.eventKind;
+    OS.prototype.eventKind = _os.eventKind;
 
     /**
      * OS event modifiers
@@ -139,13 +139,13 @@ define(function (require, exports, module) {
      * @const
      * @type{object.<number>}
      */
-    OSAdapter.prototype.eventModifiers = _os.eventModifiers;
+    OS.prototype.eventModifiers = _os.eventModifiers;
 
-    /** @type {OSAdapter} The OSAdapter singleton */
-    var theOSAdapter = new OSAdapter();
+    /** @type {OS} The OS singleton */
+    var theOS = new OS();
 
     // bind native phtooshop event handler to our handler function
-    _playground.os.registerEventListener(theOSAdapter._eventHandler.bind(theOSAdapter));
+    _playground.os.registerEventListener(theOS._eventHandler.bind(theOS));
     
-    module.exports = theOSAdapter;
+    module.exports = theOS;
 });

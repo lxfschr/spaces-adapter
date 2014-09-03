@@ -21,22 +21,43 @@
  * 
  */
 
-define(function (require, exports) {
+/* global _playground */
+
+define(function (require, exports, module) {
     "use strict";
 
-    var NodeDomain = require("./generator/NodeDomain"),
-        bridge = require("./generator/bridge");
+    var Promise = require("bluebird");
 
     /**
-     * Instantiate the given domain at the given specification path.
-     * 
-     * @param {string} domainName The name of the domain to instantiate
-     * @param {string} domainSpecPath The full path to the domain specification source file.
+     * @private
+     * Promisified version of _playground.ps functions.
      */
-    var createDomain = function (domainName, domainSpecPath) {
-        return new NodeDomain(domainName, domainSpecPath);
+    var _ps = Promise.promisifyAll(_playground.ps),
+
+    
+    /**
+     * Commit or cancel the current modal text edit state.
+     *
+     * @param {boolean=} commit Commits if true; cancels otherwise
+     * @return {Promise} Resolves once the text state has ended
+     */
+    var endModalTextState = function (commit) {
+        commit = commit || false;
+        
+        return _ps.endModalTextStateAsync(commit);
     };
 
-    exports.createDomain = createDomain;
-    exports.bridge = bridge;
+    /**
+     * Execute a Photoshop menu command.
+     * Should only be used for items that are not yet implemented via ActionDescriptors
+     *
+     * @param commandID {int} -- photoshop menu command ID
+     * @return {Promise.<*>} -- promise representing execution state of the menu command
+     */
+    var performMenuCommand = function (commandID) {
+        return _ps.performMenuCommandAsync(commandID);
+    } 
+
+    exports.endModalTextState = endModalTextState;
+    exports.performMenuCommand = performMenuCommand;
 });

@@ -27,57 +27,18 @@ define(function (require, exports, module) {
     "use strict";
 
     var EventEmitter = require("eventEmitter"),
-        util = require("./util"),
+        util = require("../util"),
         Promise = require("bluebird");
-
-    /**
-     * Promisifyable versions of low-level _playground.ps.identity functions
-     *
-     * @private
-     */
-    var _identityDesc = function (desc, cb) {
-        _playground._debug.descriptorIdentity(desc, null, function (err, odesc) { cb(err, odesc); });
-    };
-
-    var _identityRef = function (ref, cb) {
-        _playground._debug.descriptorIdentity(null, ref, function (err, _, oref) { cb(err, oref); });
-    };
-    
-    var _identityString = function (string, cb) {
-        var nullInput = (typeof string !== "string" || string.length === 0),
-            ref = nullInput ? null : { ref: string };
-        
-        _playground._debug.descriptorIdentity(null, ref, function (err, _, oref) {
-            cb(err, oref ? oref.ref : null);
-        });
-    };
 
     /**
      * Promisified versions of low-level _playground.ps.descriptor functions
      *
      * @private
      */
-    var _descriptor = {
-        get: Promise.promisify(_playground.ps.descriptor.get),
-        play: Promise.promisify(_playground.ps.descriptor.play),
-        batchPlay: Promise.promisify(_playground.ps.descriptor.batchPlay),
-        loopbackDescriptor: Promise.promisify(_identityDesc),
-        loopbackReference: Promise.promisify(_identityRef),
-        loopbackString: Promise.promisify(_identityString)
-    };
+    var _descriptor = Promise.promisifyAll(_playground.ps.descriptor);
 
     /**
-     * Promisified version of low-level keyboard focus functions
-     */
-    var _ui = Promise.promisifyAll(_playground.ps.ui);
-
-    /**
-     * Promisified version of modal text edit state finishing funcion 
-     */
-    var _endModalTextState = Promise.promisify(_playground.ps.endModalTextState);
-
-    /**
-     * The Adapter object provides helper methods for dealing with the
+     * The Descriptor object provides helper methods for dealing with the
      * low-level native binding to Photoshop. This object will typically
      * not be used by user-level code.
      *
@@ -91,10 +52,10 @@ define(function (require, exports, module) {
      * @constructor
      * @private
      */
-    var Adapter = function () {
+    var Descriptor = function () {
         EventEmitter.call(this);
     };
-    util.inherits(Adapter, EventEmitter);
+    util.inherits(Descriptor, EventEmitter);
 
     /**
      * Event handler for events from the native bridge.
@@ -104,7 +65,7 @@ define(function (require, exports, module) {
      * @param {String} eventID typeID for event type
      * @param {Object} payload serialized ActionDescriptor for the event, dependent on event type
      */
-    Adapter.prototype._psEventHandler = function (err, eventID, payload) {
+    Descriptor.prototype._psEventHandler = function (err, eventID, payload) {
         if (err) {
             this.emit("error", "Failed to handle Photoshop event: " + err);
             return;
@@ -123,7 +84,7 @@ define(function (require, exports, module) {
      * @param {Array=} args Optional array of arguments to be passed to each listener
      * @return {object} Current instance for chaining
      */
-    Adapter.prototype.emitEvent = function (event, args) {
+    Descriptor.prototype.emitEvent = function (event, args) {
         if (event === "error") {
             var listeners = this.getListeners(event);
 
@@ -143,7 +104,7 @@ define(function (require, exports, module) {
             }
         }
 
-        Adapter.super_.prototype.emitEvent.call(this, event, args);
+        Descriptor.super_.prototype.emitEvent.call(this, event, args);
     };
 
     /**
@@ -154,7 +115,7 @@ define(function (require, exports, module) {
      * @param {object} listener
      * @return {object} Current instance of EventEmitter for chaining.
      */
-    Adapter.prototype.addListener = function (event, listener) {
+    Descriptor.prototype.addListener = function (event, listener) {
         var currentListeners = this.getListeners(event);
 
         if (currentListeners.length === 0) {
@@ -165,7 +126,7 @@ define(function (require, exports, module) {
             }.bind(this));
         }
 
-        return Adapter.super_.prototype.addListener.call(this, event, listener);
+        return Descriptor.super_.prototype.addListener.call(this, event, listener);
     };
 
     /**
@@ -175,8 +136,8 @@ define(function (require, exports, module) {
      * @param {string|RegExp} event
      * @param {object} listener
      */
-    Adapter.prototype.removeListener = function (event, listener) {
-        var result = Adapter.super_.prototype.removeListener.call(this, event, listener),
+    Descriptor.prototype.removeListener = function (event, listener) {
+        var result = Descriptor.super_.prototype.removeListener.call(this, event, listener),
             currentListeners = this.getListeners(event);
 
         if (currentListeners.length === 0) {
@@ -199,7 +160,7 @@ define(function (require, exports, module) {
      *     - An array of a combination of the above, which will get turned into the appropriate ActionReference
      * @return {Promise.<?>} The value of the reference, dependent on reference type
      */
-    Adapter.prototype.get = function (reference) {
+    Descriptor.prototype.get = function (reference) {
         var wrap = function (toWrap) {
             if (Array.isArray(toWrap)) {
                 return {ref: toWrap.map(wrap).reverse()};
@@ -210,7 +171,7 @@ define(function (require, exports, module) {
             }
         };
 
-        return _descriptor.get(wrap(reference));
+        return _descriptor.getAsync(wrap(reference));
     };
 
     /**
@@ -220,7 +181,7 @@ define(function (require, exports, module) {
      * @param {String} property The name of the property
      * @return {Promise.<?>} The value of the property, dependent on reference type
      */
-    Adapter.prototype.getProperty = function (reference, property) {
+    Descriptor.prototype.getProperty = function (reference, property) {
         var propertyDescriptor = {
             ref: "$Prpr",
             property: property
@@ -245,13 +206,13 @@ define(function (require, exports, module) {
      * @return {Promise.<object>} Resolves when the call is complete (Note: eventually, this will
      *     return the value resulting from the execution of the ActionDescriptor, if any).
      */
-    Adapter.prototype.call = function (name, descriptor, options) {
+    Descriptor.prototype.call = function (name, descriptor, options) {
         descriptor = descriptor || {};
         options = options || {
             interactionMode: _playground.ps.descriptor.interactionMode.SILENT
         };
 
-        return _descriptor.play(name, descriptor, options);
+        return _descriptor.playAsync(name, descriptor, options);
     };
 
     /**
@@ -263,133 +224,20 @@ define(function (require, exports, module) {
      *      ActionDescriptors is executed.
      * @return {Promise.<Array.object>} Resolves with the list of ActionDescriptor results. 
      */
-    Adapter.prototype.batchCall = function (commands, options, batchOptions) {
+    Descriptor.prototype.batchCall = function (commands, options, batchOptions) {
         batchOptions = batchOptions || {};
         options = options || {
             interactionMode: _playground.ps.descriptor.interactionMode.SILENT
         };
 
-        return _descriptor.batchPlay(commands, options, batchOptions);
-    };
-    
-    /**
-     * Commit or cancel the current modal text edit state.
-     *
-     * @param {boolean=} commit Commits if true; cancels otherwise
-     * @return {Promise} Resolves once the text state has ended
-     */
-    Adapter.prototype.endModalTextState = function (commit) {
-        commit = commit || false;
-        
-        return _endModalTextState(commit);
+        return _descriptor.batchPlayAsync(commands, options, batchOptions);
     };
 
-    /**
-     * Overscroll modes
-     * 
-     * @const
-     * @type{object.<number>}
-     */
-    Adapter.prototype.overscrollMode = _playground.ps.ui.overscrollMode;
-
-    /**
-     * Get the current Photoshop overscroll mode.
-     * 
-     * @see Adapter.prototype.overscrollMode
-     * @return {Promise.<number>} Resolves with the overscroll mode
-     */
-    Adapter.prototype.getOverscrollMode = function () {
-        return _ui.getOverscrollModeAsync();
-    };
-
-    /**
-     * Set the current Photoshop overscroll mode.
-     * 
-     * @see Adapter.prototype.overscrollMode
-     * @param {number} mode The desired overscroll model
-     * @return {Promise.<number>} Resolves once the overscroll mode is set
-     */
-    Adapter.prototype.setOverscrollMode = function (mode) {
-        var options = {
-            mode: mode
-        };
-
-        return _ui.setOverscrollModeAsync(options);
-    };
-
-    /**
-     * Determines whether the scrollbars are currently suppressed.
-     * 
-     * @return {Promise.<boolean>}
-     */
-    Adapter.prototype.getSuppressScrollbars = function () {
-        return _ui.getSuppressScrollbarsAsync();
-    };
-
-    /**
-     * Sets whether or not the scrollbars should be suppressed.
-     * 
-     * @param {boolean} suppress Whether or not the scrollbars should be suppressed
-     * @return {Promise}
-     */
-    Adapter.prototype.setSuppressScrollbars = function (suppress) {
-        return _ui.setSuppressScrollbarsAsync(suppress);
-    };
-
-    /**
-     * Executes a low-level "identity" call on the specified ActionDescriptor.
-     *  Used to verify notation by parsing to ActionDescriptor and then serializing back to JS Object representation
-     *
-     * @param {Object=} params JS Object representation of ActionDescriptor key/value pairs.
-     * @return {Promise.<Object>} The JS Object representation of the input ActionDescriptor
-     */
-
-    Adapter.prototype.loopbackDescriptor = _descriptor.loopbackDescriptor;
-
-    /**
-     * Executes a low-level "identity" call on the specified ActionReference.
-     *  Used to verify notation by parsing to ActionReference and then serializing back to JS Object representation
-     *
-     * @param {Object=} params JS Object representation of ActionReference key/value pairs.
-     * @return {Promise.<Object>} The JS Object representation of the input ActionReference
-     */
-    Adapter.prototype.loopbackReference = _descriptor.loopbackReference;
-
-    /**
-     * Executes a low-level "identity" call on the specified Action Descriptor ID.
-     *
-     * @param {String=} Runtime ID string (e.g: "name")  or $-prefixed OSType ID (e.g: "$Nm  ")
-     * @return {Promise.<String>} The Runtime ID string for the given ID, if available.
-     */
-    Adapter.prototype.loopbackString = _descriptor.loopbackString;
-
-    /**
-     * Logs a string to Photoshop's ScriptListener output.
-     *
-     * Note: when the ScriptListener output goes away, this command will change to log to
-     * Photoshop's stdout.
-     *
-     * @param {string} s The string to log (does NOT support string formatting like console.log).
-     */
-    Adapter.prototype.log = function (s) {
-        _playground._debug.logMessage("----\n[" + (new Date()).toTimeString() + "] " + s + "\n----");
-    };
-
-    /**
-     * Execute a PhotoShop menu command.
-     * Should only be used for items that are not yet implemented via ActionDescriptors
-     *
-     * @param commandID {int} -- photoshop menu command ID
-     * @return {Promise.<*>} -- promise representing execution state of the menu command
-     */
-    Adapter.prototype.performMenuCommand = _playground.ps.performMenuCommand &&
-        Promise.promisify(_playground.ps.performMenuCommand);
-
-    /** @type {Adapter} The Adapter singleton */
-    var theAdapter = new Adapter();
+    /** @type {Descriptor} The Descriptor singleton */
+    var theDescriptor = new Descriptor();
 
     // bind native phtooshop event handler to our handler function
-    _playground.ps.descriptor.registerEventListener(theAdapter._psEventHandler.bind(theAdapter));
+    _playground.ps.descriptor.registerEventListener(theDescriptor._psEventHandler.bind(theDescriptor));
     
-    module.exports = theAdapter;
+    module.exports = theDescriptor;
 });

@@ -28,8 +28,8 @@ define(function (require, exports, module) {
     "use strict";
 
     var EventEmitter = require("eventEmitter"),
-        adapter = require("./adapter"),
-        util = require("./util");
+        adapter = require("../ps/descriptor"),
+        util = require("../util");
 
     /**
      * The DocumentManager provides an API for keeping track of all open
