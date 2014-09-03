@@ -21,7 +21,7 @@
  * 
  */
 
-/* global require */
+/* global require, console */
 
 require.config({
     baseUrl: "../../",

@@ -41,7 +41,7 @@ module.exports = function (grunt) {
                 ".jshintrc",
                 ".jscsrc",
                 ".bowerrc",
-                "lib/**/*.js",
+                "src/**/*.js",
                 "test/**/*.js",
                 "examples/**/*.js",
                 "!examples/xdlib/**/*.js"  // temporary reprieve
@@ -57,7 +57,7 @@ module.exports = function (grunt) {
 
     grunt.loadNpmTasks("grunt-contrib-qunit");
     grunt.loadNpmTasks("grunt-contrib-jshint");
-    grunt.loadNpmTasks("grunt-jscs-checker");
+    grunt.loadNpmTasks("grunt-jscs");
 
     grunt.registerTask("test", ["jshint", "jscs", "qunit"]);
 
