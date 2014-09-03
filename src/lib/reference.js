@@ -44,7 +44,7 @@ define(function (require, exports, module) {
                 return {ref: values.map(referenceBy.bind(null, key))};
             } else {
                 var rval = {ref: className};
-                rval[key] = val;
+                rval[key] = values;
                 return rval;
             }
         };
@@ -52,8 +52,8 @@ define(function (require, exports, module) {
         /**
          * Creates a reference object to the given enumtype/value for the class
          *
-         * @param {string} enumeration Type
-         * @param {string} enumeration Value
+         * @param {string} type - Enumeration type
+         * @param {string} value - Enumeration value
          * @returns {ActionDescriptor} Enumeration of the value with type
          */
         var enumBy = function (type, value) {
@@ -107,4 +107,4 @@ define(function (require, exports, module) {
     };
 
     module.exports.wrapper = wrapper;
-};
+});

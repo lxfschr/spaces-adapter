@@ -21,14 +21,15 @@
  * 
  */
 
-define(function (require, exports, module) {
+define(function (require, exports) {
     "use strict";
     
-    var referenceBy = require("src/lib/reference").wrapper("layer");
+    var referenceBy = require("src/lib/reference").wrapper("layer"),
+        inUnits = require("src/lib/unit");
 
     var reorder = function (sourceRef, targetRef) {
-        return { 
-            command: "move", 
+        return {
+            command: "move",
             descriptor: {
                 "null": sourceRef,
                 "to": targetRef,
@@ -78,5 +79,183 @@ define(function (require, exports, module) {
         };
     };
     
-
+    var select = function (ref, makeVisible, modifier) {
+        modifier = modifier || "select";
+        makeVisible = makeVisible || false;
+        
+        return {
+            command: "select",
+            descriptor: {
+                "null": ref,
+                "makeVisible": makeVisible,
+                "selectionModifier": {
+                    enum: "selectionModifierType",
+                    value: select.vals[modifier]
+                }
+            }
+        };
+    };
+    select.vals = {
+        select: "0",
+        deselect: "removeFromSelection",
+        add: "addToSelection",
+        addUpTo: "addToSelectionContinuous"
+    };
+    
+    var deselectAll = function () {
+        return {
+            command: "selectNoLayers",
+            descriptor: {
+                "null": referenceBy.target
+            }
+        };
+    };
+    
+    var hide = function (ref) {
+        return {
+            command: "hide",
+            descriptor: {
+                "null": ref
+            }
+        };
+    };
+    
+    var show = function (ref) {
+        return {
+            command: "show",
+            descriptor: {
+                "null": ref
+            }
+        };
+    };
+    
+    var duplicate = function (ref, name) {
+        var rval = {
+            command: "duplicate",
+            descriptor: {
+                "null": ref
+            }
+        };
+        if (name) {
+            rval.descriptor[name] = name;
+        }
+        return rval;
+    };
+    
+    var flip = function (ref, orientation) {
+        return {
+            command: "flip",
+            descriptor: {
+                "null": ref,
+                "axis": {
+                    enum: "orientation",
+                    value: orientation
+                }
+            }
+        };
+    };
+    
+    var setHeight = function (ref, value, unit) {
+        return {
+            command: "transform",
+            descriptor: {
+                "null": ref,
+                "height": inUnits[unit](value)
+            }
+        };
+    };
+    
+    var setWidth = function (ref, value, unit) {
+        return {
+            command: "transform",
+            descriptor: {
+                "null": ref,
+                "width": inUnits[unit](value)
+            }
+        };
+    };
+    
+    var rotate = function (ref, angle) {
+        return {
+            command: "transform",
+            descriptor: {
+                "null": ref,
+                "angle": inUnits.angle(angle)
+            }
+        };
+    };
+    
+    var setOpacity = function (ref, opacity) {
+        return {
+            command: "set",
+            descriptor: {
+                "null": ref,
+                "to": {
+                    "obj": "to",
+                    "value": {
+                        "opacity": inUnits.percent(opacity)
+                    }
+                }
+            }
+        };
+    };
+    
+    var setFillOpacity = function (ref, opacity) {
+        return {
+            command: "set",
+            descriptor: {
+                "null": ref,
+                "to": {
+                    "obj": "to",
+                    "value": {
+                        "fillOpacity": inUnits.percent(opacity)
+                    }
+                }
+            }
+        };
+    };
+    
+    var setBlendMode = function (ref, mode) {
+        return {
+            command: "set",
+            descriptor: {
+                "null": ref,
+                "to": {
+                    "obj": "layer",
+                    "value": mode
+                }
+            }
+        };
+    };
+    
+    var deleteLayer =  function (ref) {
+        return {
+            command: "delete",
+            descriptor: {
+                "null": ref
+            }
+        };
+    };
+    
+    // Left overs:
+    // _offsetCommand
+    // rename
+    // setLock
+    
+    exports.reorder = reorder;
+    exports.align = align;
+    exports.distribute = distribute;
+    exports.select = select;
+    exports.deselectAll = deselectAll;
+    exports.hide = hide;
+    exports.show = show;
+    exports.duplicate = duplicate;
+    exports.flip = flip;
+    exports.setHeight = setHeight;
+    exports.setWidth = setWidth;
+    exports.rotate = rotate;
+    exports.setOpacity = setOpacity;
+    exports.setFillOpacity = setFillOpacity;
+    exports.setBlendMode = setBlendMode;
+    exports.delete = deleteLayer;
 });
