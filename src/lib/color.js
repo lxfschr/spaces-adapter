@@ -33,7 +33,7 @@ define(function (require, exports) {
      *
      * @returns {ActionDescriptor} RGBColor object for Photoshop
      */
-    var getColorObject = function (rgb) {
+    var colorObject = function (rgb) {
         var r, g, b;
         
         if (Array.isArray(rgb)) {
@@ -75,7 +75,7 @@ define(function (require, exports) {
     /**
      * Set foreground color
      *
-     * @param {array} rgb Acceptable form of color, see getColorObject
+     * @param {array} rgb Acceptable form of color, see colorObject
      *
      * @returns {PlayObject}
      */
@@ -87,7 +87,7 @@ define(function (require, exports) {
                     "ref": "color",
                     "property": "foregroundColor"
                 },
-                "to": getColorObject(rgb)
+                "to": colorObject(rgb)
             }
         };
     };
@@ -95,7 +95,7 @@ define(function (require, exports) {
     /**
      * Set background color
      *
-     * @param {array} rgb Acceptable form of color, see getColorObject
+     * @param {array} rgb Acceptable form of color, see colorObject
      *
      * @returns {PlayObject}
      */
@@ -107,12 +107,12 @@ define(function (require, exports) {
                     "ref": "color",
                     "property": "backgroundColor"
                 },
-                "to": getColorObject(rgb)
+                "to": colorObject(rgb)
             }
         };
     };
 
-    exports.getcolorObject = getColorObject;
+    exports.colorObject = colorObject;
     exports.setForegroundColor = setForegroundColor;
     exports.setBackgroundColor = setBackgroundColor;
 });
