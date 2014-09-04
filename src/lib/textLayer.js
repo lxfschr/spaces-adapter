@@ -25,6 +25,9 @@
 define(function (require, exports) {
     "use strict";
 
+    var unitsIn = require("src/lib/unit"),
+        colorObject = require("src/lib/color").colorObject;
+    
     /**
      * Create a text layer
      *
@@ -51,14 +54,8 @@ define(function (require, exports) {
                         "textClickPoint": {
                             "obj": "paint",
                             "value": {
-                                "horizontal": {
-                                    "unit": "percentUnit",
-                                    "value": numClickPointH
-                                },
-                                "vertical": {
-                                    "unit": "percentUnit",
-                                    "value": numClickPointV
-                                }
+                                "horizontal": unitsIn.percent(numClickPointH),
+                                "vertical": unitsIn.percent(numClickPointV)
                             }
                         },
                         "textStyleRange": [
@@ -69,12 +66,6 @@ define(function (require, exports) {
         };
     };
 
-    var _typeUnit = {
-        pt: "pointsUnit",
-        px: "pixelsUnit",
-        mm: "millimetersUnit"
-    };
-
     /**
      * Set the font face
      *
@@ -82,7 +73,7 @@ define(function (require, exports) {
      * @param {string} face The string of font family name
      * @param {string} weight The string of font style name
      *
-     * @return {object} The action descriptor of the text style.
+     * @returns {PlayObject} The action descriptor of the text style.
      *
      * Preconditions:
      * Select a text layer
@@ -129,10 +120,7 @@ define(function (require, exports) {
                 "to": {
                     "obj": "textStyle",
                     "value": {
-                        "size": {
-                            "unit": _typeUnit[unit],
-                            "value": val
-                        }
+                        "size": unitsIn[unit](val),
                     }
                 }
             }
@@ -201,10 +189,7 @@ define(function (require, exports) {
                         "obj": "textStyle",
                         "value": {
                             "autoLeading": auto,
-                            "leading": {
-                                "unit": _typeUnit[unit],
-                                "value": val
-                            }
+                            "leading": unitsIn[unit](val)
                         }
                     }
                 }
@@ -276,14 +261,7 @@ define(function (require, exports) {
                 "to": {
                     "obj": "textStyle",
                     "value": {
-                        "color": {
-                            "obj": "RGBColor",
-                            "value": {
-                                "blue": arrayTextColor[0],
-                                "grain": arrayTextColor[1],
-                                "red": arrayTextColor[2]
-                            }
-                        }
+                        "color": colorObject(arrayTextColor)
                     }
                 }
             }
@@ -391,18 +369,8 @@ define(function (require, exports) {
                                         "value": {
                                             "fontName" : face,
                                             "fontStyleName" : weight,
-                                            "size": {
-                                                "unit": _typeUnit[unit],
-                                                "value": size
-                                            },
-                                            "color": {
-                                                "obj": "RGBColor",
-                                                "value": {
-                                                    "blue": arrayTextColor[0],
-                                                    "grain": arrayTextColor[1],
-                                                    "red": arrayTextColor[2]
-                                                }
-                                            }
+                                            "size": unitsIn[unit](size),
+                                            "color": colorObject(arrayTextColor)
                                         }
                                     }
                                 }

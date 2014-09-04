@@ -55,9 +55,13 @@ define(function (require, exports)
 
 
     exports.density = _unit.bind(null, "density");
-    exports.pixels = _unit.bind(null, "pixels");
+    exports.pixels = exports.px = _unit.bind(null, "pixels");
     exports.percent = _unit.bind(null, "percent");
     exports.angle = _unit.bind(null, "angle");
+    
+    //Type uses these
+    exports.points = exports.pt = _unit.bind(null, "points");
+    exports.millimeters = exports.mm = _unit.bind(null, "millimeters");
 
     // exports.toPixels = toPixels;
 
