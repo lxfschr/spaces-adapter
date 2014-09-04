@@ -24,7 +24,8 @@
 define(function (require, exports) {
     "use strict";
 
-    var shape = require("src/lib/shape");
+    var unitsIn = require("src/lib/unit"),
+        shape = require("src/lib/shape");
 
     /**
      * Stroke alignment possible values
@@ -324,10 +325,7 @@ define(function (require, exports) {
                             "obj": "strokeStyle",
                             "value": {
                                 "strokeEnabled": true,
-                                "strokeStyleLineWidth": {
-                                    "unit": "pixelsUnit",
-                                    "value": strokeWidth
-                                },
+                                "strokeStyleLineWidth": unitsIn.pixels(strokeWidth),
                                 "strokeStyleVersion": 2
                             }
                         }
@@ -383,10 +381,7 @@ define(function (require, exports) {
                                                 "vertical": 0
                                             }
                                         },
-                                        "scale": {
-                                            "unit": "percentUnit",
-                                            "value": scaleVal
-                                        }
+                                        "scale": unitsIn.percent(scaleVal)
                                     }
                                 },
                                 "strokeStyleVersion": 2
@@ -440,10 +435,7 @@ define(function (require, exports) {
                                         "vertical": 0
                                     }
                                 },
-                                "scale": {
-                                    "unit": "percentUnit",
-                                    "value": scaleVal
-                                }
+                                "scale": unitsIn.percent(scaleVal)
                             }
                         },
                         "strokeStyle": shape.shapeFillStrokeStyle(true)
@@ -476,14 +468,8 @@ define(function (require, exports) {
                 "to": {
                     "obj": "offset",
                     "value": {
-                        "horizontal": {
-                            "unit": "distanceUnit",
-                            "value": hVal
-                        },
-                        "vertical": {
-                            "unit": "distanceUnit",
-                            "value": vVal
-                        }
+                        "horizontal": unitsIn.distance(hVal),
+                        "vertical": unitsIn.distance(vVal)
                     }
                 }
             }
@@ -573,24 +559,15 @@ define(function (require, exports) {
                                     "enum": "strokeStyleLineCapType",
                                     "value": _strokeCap[cap]
                                 },
-                                "strokeStyleLineDashOffset": {
-                                    "unit": "pointsUnit",
-                                    "value": 0
-                                },
+                                "strokeStyleLineDashOffset": unitsIn.points(0),
                                 "strokeStyleLineDashSet": [],
                                 "strokeStyleLineJoinType": {
                                     "enum": "strokeStyleLineJoinType",
                                     "value": _strokeCorner[corner]
                                 },
-                                "strokeStyleLineWidth": {
-                                    "unit": "pointsUnit",
-                                    "value": strokeWidth
-                                },
+                                "strokeStyleLineWidth": unitsIn.points(strokeWidth),
                                 "strokeStyleMiterLimit": 100,
-                                "strokeStyleOpacity": {
-                                    "unit": "percentUnit",
-                                    "value": 100
-                                },
+                                "strokeStyleOpacity": unitsIn.percent(100),
                                 "strokeStyleResolution": 72,
                                 "strokeStyleScaleLock": false,
                                 "strokeStyleStrokeAdjust": false,
