@@ -36,6 +36,8 @@ define(function (require, exports) {
      * @param {array} numClickPointH The horizontal text click point.
      * @param {array} numClickPointV The vertical text click point.
      *
+     * @return {PlayObject} The action descriptor of the text style.
+     *
      * Preconditions:
      * Open or create a document
      *
@@ -104,7 +106,7 @@ define(function (require, exports) {
      *      Millimeters: 0.00mm to 457.19mm
      * @param {string} unit The unit of the type.  "pt","px", or "mm"
      *
-     * @return {object} The action descriptor of the text style.
+     * @return {PlayObject} The action descriptor of the text style.
      *
      * Preconditions:
      * Select a text layer
@@ -133,7 +135,7 @@ define(function (require, exports) {
      * @param {ActionDescriptor} sourceRef Layer reference
      * @param {string} orient The alignment of the type.  "right", "center", "left", "justifyAll"
      *
-     * @return {object} The action descriptor of the paragraph style.
+     * @return {PlayObject} The action descriptor of the paragraph style.
      *
      * Preconditions:
      * Select a text layer
@@ -169,7 +171,7 @@ define(function (require, exports) {
      *      Millimeters: 0.00mm to 1763.88mm
      * @param {string} unit The unit of the type.  "pointsUnit","pixelsUnit", or "millimetersUnit"
      *
-     * @return {object} The action descriptor of the text style.
+     * @return {PlayObject} The action descriptor of the text style.
      *
      * Preconditions:
      * Select a text layer
@@ -216,7 +218,7 @@ define(function (require, exports) {
      * @param {ActionDescriptor} sourceRef Layer reference
      * @param {number} val The amount of space between a range of letters or characters. -1000 to 10000
      *
-     * @return {object} The action descriptor of the text style.
+     * @return {PlayObject} The action descriptor of the text style.
      *
      * Preconditions:
      * Select a text layer
@@ -245,7 +247,7 @@ define(function (require, exports) {
      * @param {ActionDescriptor} sourceRef Layer reference
      * @param {array} arrayTextColor The array of RGB color [red,green,blue]. 0 to 255
      *
-     * @return {object} The action descriptor of the text style.
+     * @return {PlayObject} The action descriptor of the text style.
      *
      * Preconditions:
      * Select a text layer
@@ -274,6 +276,8 @@ define(function (require, exports) {
      * @param {ActionDescriptor} sourceRef Layer reference
      * @param {string} strTextOrientation The text orientation. "horizontal" or "vertical"
      *
+     * @return {PlayObject} The action descriptor of the text style.
+     *
      * Preconditions:
      * Select a text layer
      *
@@ -298,6 +302,8 @@ define(function (require, exports) {
      *
      * @param {ActionDescriptor} sourceRef Layer reference
      * @param {string} strAntiAliasType The anti alias type. "none","sharp","crisp","strong","smooth","macLcd", or "mac"
+     *
+     * @return {PlayObject} The action descriptor of the text style.
      *
      * Preconditions:
      * Select a text layer
@@ -342,6 +348,8 @@ define(function (require, exports) {
      *      Pixels: 0.01px to 1296.00px
      *      Millimeters: 0.00mm to 457.19mm
      * @param {array} arrayTextColor The array of RGB color [red,green,blue]. 0 to 255
+     *
+     * @return {PlayObject} The action descriptor of the text style.
      *
      * Preconditions:
      * Select a text layer
