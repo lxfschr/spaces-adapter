@@ -41,7 +41,9 @@ define(function (require, exports) {
             g = rgb[1];
             b = rgb[2];
         } else if (typeof rgb === "object") {
-            if (rgb.hasOwnProperty("grain")) {
+            if (rgb.hasOwnProperty("obj") && rgb.hasOwnProperty("value")) {
+                return rgb; //Identity, as we don't need to change it
+            } else if (rgb.hasOwnProperty("grain")) {
                 r = rgb.red;
                 g = rgb.grain;
                 b = rgb.blue;
