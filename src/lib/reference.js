@@ -80,10 +80,15 @@ define(function (require, exports, module) {
             name: referenceBy.bind(null, "name"),
             
             /**
-             * @returns {ActionDescriptor} Reference to the given indices
+             * @returns {ActionDescriptor} Reference to the current target
              */
             target: enumBy("ordinal", "targetEnum"),
             
+            /**
+             * @returns {ActionDescriptor} Reference to the current target
+             */
+            current: enumBy("ordinal", "targetEnum"),
+        
             /**
              * @returns {ActionDescriptor} Reference to the front most object
              */
