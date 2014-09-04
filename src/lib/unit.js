@@ -37,6 +37,7 @@ define(function (require, exports)
         };
     };
 
+    // TODO: Later on we need a better translation method here
     // var _toInches = {
     //     rulerInches: 1,
     //     pointsUnit: 1 / 72,

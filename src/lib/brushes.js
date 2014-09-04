@@ -58,7 +58,7 @@ define(function (require, exports) {
         };
     };
     
-    // Commented out for now, cause this affects the current tool
+    // TODO: Commented out for now, cause this affects the current tool
     // var usePencil = function () {
     //     adapter.call("select", {
     //         "null": {
