@@ -25,10 +25,30 @@
 define(function (require, exports) {
     "use strict";
 
+    var unitsIn = require("src/lib/unit");
+    
+    /**
+     * @param {ActionDescriptor} sourceRef Guide reference
+     *
+     * @return {PlayObject}
+     *
+     * Preconditions:
+     * Have guide(s) in the active document.
+     */
+    var getGuide = function (sourceRef) {
+        return {
+            command: "get",
+            descriptor: {
+                "null": sourceRef
+            }
+        };
+    };
+    
     /**
      * Create a new guide
      *
      * @param {string} orientation The orientation of guide. "horizontal", "vertical"
+     * @param {string} unit Units for position of guide
      * @param {number} position The position of guide.
      *      -300000.000 px to 300000.000 px
      *      -4166.667 in to 4166.667 in
@@ -43,7 +63,7 @@ define(function (require, exports) {
      * Preconditions:
      * Create or open a document.
      */
-    var createGuide = function (orientation, position) {
+    var createGuide = function (orientation, unit, position) {
         return {
             command: "make",
             desciptor: {
@@ -54,10 +74,7 @@ define(function (require, exports) {
                             "enum": "orientation",
                             "value": orientation
                         },
-                        "position": {
-                            "unit": "distanceUnit",
-                            "value": position
-                        }
+                        "position": unitsIn[unit](position)
                     }
                 }
             }
@@ -104,27 +121,11 @@ define(function (require, exports) {
         };
     };
 
-    /**
-     * Get a guide by index
-     *
-     * @param {ActionDescriptor} sourceRef Guide reference
-     *
-     * @return {PlayObject}
-     *
-     * Preconditions:
-     * Have guide(s) in the active document.
-     */
-    var getGuideByIndex = function (sourceRef) {
-        return {
-            command: "get",
-            descriptor: {
-                "null": sourceRef
-            }
-        };
-    };
 
+
+    exports.getGuide = getGuide;
     exports.createGuide = createGuide;
     exports.deleteGuide = deleteGuide;
     exports.getGuideCount = getGuideCount;
-    exports.getGuideByIndex = getGuideByIndex;
+    
 });
