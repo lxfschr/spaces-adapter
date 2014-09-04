@@ -347,6 +347,8 @@ define(function (require, exports) {
     // rename
     // setLock
     
+    exports.referenceBy = referenceBy;
+    
     exports.reorder = reorder;
     exports.align = align;
     exports.distribute = distribute;
