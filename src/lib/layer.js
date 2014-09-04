@@ -27,6 +27,15 @@ define(function (require, exports) {
     var referenceBy = require("src/lib/reference").wrapper("layer"),
         inUnits = require("src/lib/unit");
 
+    /**
+     * Moves the source layer to right before target reference 
+     * (usually done by id)
+     * 
+     * @param {ActionDescriptor} sourceRef - Layer reference to move
+     * @param {ActionDescriptor} targetRef - Target layer that layers are being
+     *  moved next to
+     * @returns {PlayObject}
+     */
     var reorder = function (sourceRef, targetRef) {
         return {
             command: "move",
@@ -38,6 +47,14 @@ define(function (require, exports) {
         };
     };
     
+    /**
+     * Changes alignment of the given layers
+     *
+     * @param {ActionDescriptor} sourceRef - Reference of layers to align
+     * @param {string} alignment - Alignment value, refer to align.vals
+     *  moved next to
+     * @returns {PlayObject}
+     */
     var align = function (sourceRef, alignment) {
         return {
             command: "align",
@@ -50,6 +67,7 @@ define(function (require, exports) {
             }
         };
     };
+    
     align.vals = {
         left: "ADSLefts",
         right: "ADSRights",
@@ -66,6 +84,14 @@ define(function (require, exports) {
         bottom: "ADSBottoms"
     };
     
+    /**
+     * Distribute given layers
+     * 
+     * @param {ActionDescriptor} sourceRef - Reference of layers to distribute
+     * @param {string} alignment - Distribution spec
+     *
+     * @returns {PlayObject}
+     */
     var distribute = function (sourceRef, alignment) {
         return {
             command: "distort",
@@ -79,6 +105,13 @@ define(function (require, exports) {
         };
     };
     
+    /**
+     * @param {ActionDescriptor} ref - Reference of layer(s) to select
+     * @param {bool} makeVisible - Flag to hide/show the layer
+     * @param {string} modifier - Whether to select, add to selection, remove, or add upto
+     * 
+     * @returns {PlayObject}
+     */ 
     var select = function (ref, makeVisible, modifier) {
         modifier = modifier || "select";
         makeVisible = makeVisible || false;
@@ -102,6 +135,11 @@ define(function (require, exports) {
         addUpTo: "addToSelectionContinuous"
     };
     
+    /**
+     * Deselect all layers
+     *
+     * @returns {PlayObject}
+     */ 
     var deselectAll = function () {
         return {
             command: "selectNoLayers",
@@ -111,6 +149,11 @@ define(function (require, exports) {
         };
     };
     
+    /**
+     * @param {ActionDescriptor} ref - Reference of layer(s) to hide
+     * 
+     * @returns {PlayObject}
+     */ 
     var hide = function (ref) {
         return {
             command: "hide",
@@ -120,6 +163,11 @@ define(function (require, exports) {
         };
     };
     
+    /**
+     * @param {ActionDescriptor} ref - Reference of layer(s) to show
+     * 
+     * @returns {PlayObject}
+     */ 
     var show = function (ref) {
         return {
             command: "show",
@@ -129,6 +177,12 @@ define(function (require, exports) {
         };
     };
     
+    /**
+     * @param {ActionDescriptor} ref - Reference of layer(s) to duplicate
+     * @param {string} name - If provided, renames the copy
+     * 
+     * @returns {PlayObject}
+     */ 
     var duplicate = function (ref, name) {
         var rval = {
             command: "duplicate",
@@ -142,6 +196,12 @@ define(function (require, exports) {
         return rval;
     };
     
+    /**
+     * @param {ActionDescriptor} ref - Reference of layer(s) to flip
+     * @param {string} orientation - Which way to flip
+     * 
+     * @returns {PlayObject}
+     */ 
     var flip = function (ref, orientation) {
         return {
             command: "flip",
@@ -155,6 +215,13 @@ define(function (require, exports) {
         };
     };
     
+    /**
+     * @param {ActionDescriptor} ref - Reference of layer(s) to set height
+     * @param {number} value - Height to set to
+     * @param {string} unit - Unit of height
+     * 
+     * @returns {PlayObject}
+     */ 
     var setHeight = function (ref, value, unit) {
         return {
             command: "transform",
@@ -165,6 +232,13 @@ define(function (require, exports) {
         };
     };
     
+    /**
+     * @param {ActionDescriptor} ref - Reference of layer(s) to set width
+     * @param {number} value - Width to set to
+     * @param {string} unit - Unit of width
+     * 
+     * @returns {PlayObject}
+     */ 
     var setWidth = function (ref, value, unit) {
         return {
             command: "transform",
@@ -175,6 +249,14 @@ define(function (require, exports) {
         };
     };
     
+    /**
+     * Rotates the given layers angle degrees, rotation in Photoshop is stateless
+     * so rotate(x) + rotate(y) = rotate(x+y)
+     * @param {ActionDescriptor} ref - Reference of layer(s) to rotate
+     * @param {number} angle - Angle of rotation
+     * 
+     * @returns {PlayObject}
+     */ 
     var rotate = function (ref, angle) {
         return {
             command: "transform",
@@ -185,6 +267,12 @@ define(function (require, exports) {
         };
     };
     
+    /**
+     * @param {ActionDescriptor} ref - Reference of layer(s) to set opacity
+     * @param {number} opacity - Opacity in percentage
+     * 
+     * @returns {PlayObject}
+     */ 
     var setOpacity = function (ref, opacity) {
         return {
             command: "set",
@@ -200,6 +288,12 @@ define(function (require, exports) {
         };
     };
     
+    /**
+     * @param {ActionDescriptor} ref - Reference of layer(s) to set fill opacity
+     * @param {number} opacity - Fill opacity in percentage
+     * 
+     * @returns {PlayObject}
+     */ 
     var setFillOpacity = function (ref, opacity) {
         return {
             command: "set",
@@ -215,7 +309,13 @@ define(function (require, exports) {
         };
     };
     
-    var setBlendMode = function (ref, mode) {
+    /**
+     * @param {ActionDescriptor} ref - Reference of layer(s) to set blend mode
+     * @param {string} mode - Blend mode
+     * 
+     * @returns {PlayObject}
+     */ 
+     var setBlendMode = function (ref, mode) {
         return {
             command: "set",
             descriptor: {
@@ -228,7 +328,12 @@ define(function (require, exports) {
         };
     };
     
-    var deleteLayer =  function (ref) {
+    /**
+     * @param {ActionDescriptor} ref - Reference of layer(s) to delete
+     * 
+     * @returns {PlayObject}
+     */ 
+     var deleteLayer =  function (ref) {
         return {
             command: "delete",
             descriptor: {
