@@ -53,6 +53,21 @@ define(function (require, exports) {
         bevel: "strokeStyleBevelJoin"
     };
 
+    /**
+     * Pattern Name values
+     */
+    var _patternName = {
+        pBubbles: ["b7334da0-122f-11d4-8bb5-e27e45023b5f",
+        "$$$/Presets/Patterns/Patterns_pat/Bubbles=Bubbles"],
+        pTieDye: ["1b29876b-58b7-11d4-b895-a898787104c1",
+        "$$$/Presets/Patterns/Patterns_pat/TieDye=Tie Dye"],
+        pLaidhorizontal: ["52a93427-f5d6-1172-a989-8dc82a43aa51",
+        "$$$/Presets/Patterns/Patterns_pat/Laidhorizontal=Laid-horizontal"],
+        pFineGrain: ["c02fddff-f05a-1172-9a0f-f7bad69dd4b0",
+        "$$$/Presets/Patterns/Patterns_pat/FineGrain=Fine Grain"],
+        pGrayGranite: ["f293c3d4-57f7-1177-b70c-a0459fa92660",
+        "$$$/Presets/Patterns/Patterns_pat/GrayGranite=Gray Granite"]
+    };
 
     /**
      * @param {ActionDescriptor} sourceRef Reference to layer(s) to edit
@@ -82,7 +97,7 @@ define(function (require, exports) {
                     }
                 }
             }
-        }
+        };
     };
 
 
@@ -146,15 +161,16 @@ define(function (require, exports) {
                     }
                 }
             }
-        });
+        };
     };
 
     /**
      * Set shape fill to solid color with RGB color
      *
+     * @param {ActionDescriptor} sourceRef Reference to layer(s) to edit
      * @param {array | number | object } rgb The array of RGB color [red,green,blue] for shape fill color. 0 to 255
      *
-     * @return {object} The action descriptor of the shape style.
+     * @return {PlayObject}
      *
      * Preconditions:
      * Select a layer
@@ -165,34 +181,32 @@ define(function (require, exports) {
      *
      * raw.contentLayer.setShapeFillTypeSolidColor([100,200,150]);
      */
-    var setShapeFillTypeSolidColor = function (rgb) {
-
+    var setShapeFillTypeSolidColor = function (sourceRef, rgb) {
         if (rgb === null) {
             return _setShapeFillTypeNoColor();
         }
-
-        return adapter.call("set",{
-            "null": {
-                "enum": "ordinal",
-                "ref": "contentLayer",
-                "value": "targetEnum"
-            },
-            "to": {
-                "obj": "shapeStyle",
-                "value": {
-                    "fillContents": shape.fillContents("solidColorLayer",rgb),
-                    "strokeStyle": shape.shapeFillStrokeStyle(true)
+        return {
+            command: "set",
+            descriptor: {
+                "null": sourceRef,
+                "to": {
+                    "obj": "shapeStyle",
+                    "value": {
+                        "fillContents": shape.fillContents("solidColorLayer", rgb),
+                        "strokeStyle": shape.shapeFillStrokeStyle(true)
+                    }
                 }
             }
-        });
+        };
     };
 
     /**
      * Set shape stroke fill to solid color with RGB color
      *
+     * @param {ActionDescriptor} sourceRef Reference to layer(s) to edit
      * @param {array | object | number } rgb The array of RGB color [red,green,blue] for shape fill color. 0 to 255
      *
-     * @return {object} The action descriptor of the shape style.
+     * @return {PlayObject}
      *
      * Preconditions:
      * Select a layer
@@ -203,37 +217,37 @@ define(function (require, exports) {
      *
      * raw.contentLayer.setStrokeFillTypeSolidColor([100,200,150]);
      */
-    var setStrokeFillTypeSolidColor = function (rgb) {
-
-        if ( rgb === null) {
+    var setStrokeFillTypeSolidColor = function (sourceRef, rgb) {
+        if (rgb === null) {
             return _setStrokeFillTypeNoColor();
         }
-        return adapter.call("set", {
-            "null": {
-                "enum": "ordinal",
-                "ref": "contentLayer",
-                "value": "targetEnum"
-            },
-            "to": {
-                "obj": "shapeStyle",
-                "value": {
-                    "strokeStyle": {
-                        "obj": "strokeStyle",
-                        "value": {
-                            "strokeEnabled": true,
-                            "strokeStyleContent": shape.fillContents("solidColorLayer", rgb),
-                            "strokeStyleVersion": 2
+        return {
+            command: "set",
+            descriptor: {
+                "null": sourceRef,
+                "to": {
+                    "obj": "shapeStyle",
+                    "value": {
+                        "strokeStyle": {
+                            "obj": "strokeStyle",
+                            "value": {
+                                "strokeEnabled": true,
+                                "strokeStyleContent": shape.fillContents("solidColorLayer", rgb),
+                                "strokeStyleVersion": 2
+                            }
                         }
                     }
                 }
             }
-        });
+        };
     };
 
     /**
      * Set shape fill with no color
      *
-     * @return {object} The action descriptor of the shape style.
+     * @param {ActionDescriptor} sourceRef Reference to layer(s) to edit
+     *
+     * @return {PlayObject}
      *
      * Preconditions:
      * Select a layer
@@ -241,26 +255,27 @@ define(function (require, exports) {
      * Examples:
      * raw.contentLayer.setShapeFillTypeNoColor();
      */
-    var _setShapeFillTypeNoColor = function () {
-        return adapter.call("set", {
-            "null": {
-                "enum": "ordinal",
-                "ref": "contentLayer",
-                "value": "targetEnum"
-            },
-            "to": {
-                "obj": "shapeStyle",
-                "value": {
-                    "strokeStyle": shape.shapeFillStrokeStyle(false)
+    var _setShapeFillTypeNoColor = function (sourceRef) {
+        return {
+            command: "set",
+            descriptor: {
+                "null": sourceRef,
+                "to": {
+                    "obj": "shapeStyle",
+                    "value": {
+                        "strokeStyle": shape.shapeFillStrokeStyle(false)
+                    }
                 }
             }
-        });
+        };
     };
 
     /**
      * Set shape stroke with no color
      *
-     * @return {object} The action descriptor of the shape style.
+     * @param {ActionDescriptor} sourceRef Reference to layer(s) to edit
+     *
+     * @return {PlayObject}
      *
      * Preconditions:
      * Select a layer
@@ -268,28 +283,28 @@ define(function (require, exports) {
      * Examples:
      * raw.contentLayer.setStrokeFillTypeNoColor();
      */
-    var _setStrokeFillTypeNoColor = function () {
-        return adapter.call("set",{
-            "null": {
-                "enum": "ordinal",
-                "ref": "contentLayer",
-                "value": "targetEnum"
-            },
-            "to": {
-                "obj": "shapeStyle",
-                "value": {
-                    "strokeStyle": shape.strokeFillStrokeStyle(false)
+    var _setStrokeFillTypeNoColor = function (sourceRef) {
+        return {
+            command: "set",
+            descriptor: {
+                "null": sourceRef,
+                "to": {
+                    "obj": "shapeStyle",
+                    "value": {
+                        "strokeStyle": shape.strokeFillStrokeStyle(false)
+                    }
                 }
             }
-        });
+        };
     };
 
     /**
      * Set shape stroke width
      *
+     * @param {ActionDescriptor} sourceRef Reference to layer(s) to edit
      * @param {number} strokeWidth The width of shape stroke. For pt, 0.00 to 288.00
      *
-     * @return {object} The action descriptor of the shape style.
+     * @return {PlayObject}
      *
      * Preconditions:
      * Select a layer
@@ -297,53 +312,40 @@ define(function (require, exports) {
      * Examples:
      * raw.contentLayer.setShapeStrokeWidth(10);
      */
-    var setShapeStrokeWidth = function (strokeWidth) {
-        return adapter.call("set",{
-            "null": {
-                "enum": "ordinal",
-                "ref": "contentLayer",
-                "value": "targetEnum"
-            },
-            "to": {
-                "obj": "shapeStyle",
-                "value": {
-                    "strokeStyle": {
-                        "obj": "strokeStyle",
-                        "value": {
-                            "strokeEnabled": true,
-                            "strokeStyleLineWidth": {
-                                "unit": "pixelsUnit",
-                                "value": strokeWidth
-                            },
-                            "strokeStyleVersion": 2
+    var setShapeStrokeWidth = function (sourceRef, strokeWidth) {
+        return {
+            command: "set",
+            descriptor: {
+                "null": sourceRef,
+                "to": {
+                    "obj": "shapeStyle",
+                    "value": {
+                        "strokeStyle": {
+                            "obj": "strokeStyle",
+                            "value": {
+                                "strokeEnabled": true,
+                                "strokeStyleLineWidth": {
+                                    "unit": "pixelsUnit",
+                                    "value": strokeWidth
+                                },
+                                "strokeStyleVersion": 2
+                            }
                         }
                     }
                 }
             }
-        });
-    };
-
-    var _patternName = {
-        pBubbles: ["b7334da0-122f-11d4-8bb5-e27e45023b5f",
-            "$$$/Presets/Patterns/Patterns_pat/Bubbles=Bubbles"],
-        pTieDye: ["1b29876b-58b7-11d4-b895-a898787104c1",
-            "$$$/Presets/Patterns/Patterns_pat/TieDye=Tie Dye"],
-        pLaidhorizontal: ["52a93427-f5d6-1172-a989-8dc82a43aa51",
-            "$$$/Presets/Patterns/Patterns_pat/Laidhorizontal=Laid-horizontal"],
-        pFineGrain: ["c02fddff-f05a-1172-9a0f-f7bad69dd4b0",
-            "$$$/Presets/Patterns/Patterns_pat/FineGrain=Fine Grain"],
-        pGrayGranite: ["f293c3d4-57f7-1177-b70c-a0459fa92660",
-            "$$$/Presets/Patterns/Patterns_pat/GrayGranite=Gray Granite"]
+        };
     };
 
     /**
      * Set shape stroke fill with pattern
      *
+     * @param {ActionDescriptor} sourceRef Reference to layer(s) to edit
      * @param {string} fillTypePatternName The name of the pattern. 
      *      "pBubbles", "pTieDye", "pLaidhorizontal", "pFineGrain", or "pGrayGranite"
      * @param {integer} scaleVal The scale of pattern. 0 to 1000
      *
-     * @return {object} The action descriptor of the shape style.
+     * @return {PlayObject}
      *
      * Preconditions:
      * Select a layer
@@ -351,60 +353,60 @@ define(function (require, exports) {
      * Examples:
      * raw.contentLayer.setStrokeFillTypePattern("pBubbles", 100);
      */
-    var setStrokeFillTypePattern = function (fillTypePatternName, scaleVal) {
-        return adapter.call("set",{
-            "null": {
-                "enum": "ordinal",
-                "ref": "contentLayer",
-                "value": "targetEnum"
-            },
-             "to": {
-                "obj": "shapeStyle",
-                "value": {
-                    "strokeStyle": {
-                        "obj": "strokeStyle",
-                        "value": {
-                            "strokeEnabled": true,
-                            "strokeStyleContent": {
-                                "obj": "patternLayer",
-                                "value": {
-                                    "align": true,
-                                    "pattern": {
-                                        "obj": "pattern",
-                                        "value": {
-                                            "ID": _patternName[fillTypePatternName][0],
-                                            "name": _patternName[fillTypePatternName][1]
+    var setStrokeFillTypePattern = function (sourceRef, fillTypePatternName, scaleVal) {
+        return {
+            command: "set",
+            descriptor: {
+                "null": sourceRef,
+                "to": {
+                    "obj": "shapeStyle",
+                    "value": {
+                        "strokeStyle": {
+                            "obj": "strokeStyle",
+                            "value": {
+                                "strokeEnabled": true,
+                                "strokeStyleContent": {
+                                    "obj": "patternLayer",
+                                    "value": {
+                                        "align": true,
+                                        "pattern": {
+                                            "obj": "pattern",
+                                            "value": {
+                                                "ID": _patternName[fillTypePatternName][0],
+                                                "name": _patternName[fillTypePatternName][1]
+                                            }
+                                        },
+                                        "phase": {
+                                            "obj": "paint",
+                                            "value": {
+                                                "horizontal": 0,
+                                                "vertical": 0
+                                            }
+                                        },
+                                        "scale": {
+                                            "unit": "percentUnit",
+                                            "value": scaleVal
                                         }
-                                    },
-                                    "phase": {
-                                        "obj": "paint",
-                                        "value": {
-                                            "horizontal": 0,
-                                            "vertical": 0
-                                        }
-                                    },
-                                    "scale": {
-                                        "unit": "percentUnit",
-                                        "value": scaleVal
                                     }
-                                }
-                            },
-                            "strokeStyleVersion": 2
+                                },
+                                "strokeStyleVersion": 2
+                            }
                         }
                     }
                 }
             }
-        });
+        };
     };
 
     /**
      * Set shape fill with pattern
      *
+     * @param {ActionDescriptor} sourceRef Reference to layer(s) to edit
      * @param {string} fillTypePatternName The name of the pattern. 
      *      "pBubbles", "pTieDye", "pLaidhorizontal", "pFineGrain", or "pGrayGranite"
      * @param {integer} scaleVal The scale of pattern. 0 to 1000
      *
-     * @return {object} The action descriptor of the shape style.
+     * @return {PlayObject}
      *
      * Preconditions:
      * Select a layer
@@ -412,53 +414,53 @@ define(function (require, exports) {
      * Examples:
      * raw.contentLayer.setShapeFillTypePattern("pBubbles", 100);
      */
-    var setShapeFillTypePattern = function (fillTypePatternName, scaleVal) {
-        return adapter.call("set",{
-            "null": {
-                "enum": "ordinal",
-                "ref": "contentLayer",
-                "value": "targetEnum"
-            },
-            "to": {
-                "obj": "shapeStyle",
-                "value": {
-                    "fillContents": {
-                        "obj": "patternLayer",
-                        "value": {
-                            "align": true,
-                            "pattern": {
-                                "obj": "pattern",
-                                "value": {
-                                    "ID": _patternName[fillTypePatternName][0],
-                                    "name": _patternName[fillTypePatternName][1]
+    var setShapeFillTypePattern = function (sourceRef, fillTypePatternName, scaleVal) {
+        return {
+            command: "set",
+            descriptor: {
+                "null": sourceRef,
+                "to": {
+                    "obj": "shapeStyle",
+                    "value": {
+                        "fillContents": {
+                            "obj": "patternLayer",
+                            "value": {
+                                "align": true,
+                                "pattern": {
+                                    "obj": "pattern",
+                                    "value": {
+                                        "ID": _patternName[fillTypePatternName][0],
+                                        "name": _patternName[fillTypePatternName][1]
+                                    }
+                                },
+                                "phase": {
+                                    "obj": "paint",
+                                    "value": {
+                                        "horizontal": 0,
+                                        "vertical": 0
+                                    }
+                                },
+                                "scale": {
+                                    "unit": "percentUnit",
+                                    "value": scaleVal
                                 }
-                            },
-                            "phase": {
-                                "obj": "paint",
-                                "value": {
-                                    "horizontal": 0,
-                                    "vertical": 0
-                                }
-                            },
-                            "scale": {
-                                "unit": "percentUnit",
-                                "value": scaleVal
                             }
-                        }
-                    },
-                    "strokeStyle": shape.shapeFillStrokeStyle(true)
+                        },
+                        "strokeStyle": shape.shapeFillStrokeStyle(true)
+                    }
                 }
             }
-        });
+        };
     };
 
     /**
      * Move shape
      *
+     * @param {ActionDescriptor} sourceRef Reference to layer(s) to edit
      * @param {number} hVal The number of horizontal.
      * @param {number} vVal The number of vertical.
      *
-     * @return {object} The action descriptor of the offset.
+     * @return {PlayObject}
      *
      * Preconditions:
      * Select a layer
@@ -466,32 +468,32 @@ define(function (require, exports) {
      * Examples:
      * raw.contentLayer.moveShape(20,20);
      */
-    var moveShape = function (hVal,vVal) {
-        return adapter.call("move",{
-            "null": {
-                "enum": "ordinal",
-                "ref": "layer",
-                "value": "targetEnum"
-            },
-            "to": {
-                "obj": "offset",
-                "value": {
-                    "horizontal": {
-                        "unit": "distanceUnit",
-                        "value": hVal
-                    },
-                    "vertical": {
-                        "unit": "distanceUnit",
-                        "value": vVal
+    var moveShape = function (sourceRef, hVal, vVal) {
+        return {
+            command: "set",
+            descriptor: {
+                "null": sourceRef,
+                "to": {
+                    "obj": "offset",
+                    "value": {
+                        "horizontal": {
+                            "unit": "distanceUnit",
+                            "value": hVal
+                        },
+                        "vertical": {
+                            "unit": "distanceUnit",
+                            "value": vVal
+                        }
                     }
                 }
             }
-        });
+        };
     };
 
     /**
      * Create a shape (Rectangle, Rounded Rectangle, Ellipse)
      *
+     * @param {ActionDescriptor} sourceRef Reference to layer(s) to edit
      * @param {boolean} fillEnabledVal Whether the fill shape is enabled. 
      *      true for Solic Color or Pattern, false for No Color
      * @param {string} fillContentShape The type of shape content. 
@@ -516,100 +518,101 @@ define(function (require, exports) {
      *                ellipse for [top,bottom,left,right]
      * y,x
      *
-     * @return {object} The action descriptor of the contentLayer.
+     * @return {PlayObject}
      *
      * Preconditions
      * Open or create a document.
      *
      * Examples:
-     * raw.contentLayer.createShape(true,"patternLayer","pBubbles",true,"solidColorLayer",[0,100,200],"outside","butt","miter",10,"rectangle",[300,500,250,600,-1,-1,-1,-1])
-     * raw.contentLayer.createShape(true,"solidColorLayer",[255,150,200],true,"solidColorLayer",[0,100,200],"outside","butt","miter",10,"rectangle",[300,500,250,600,10,10,10,10])
-     * raw.contentLayer.createShape(false,"solidColorLayer",[255,150,200],true,"patternLayer","pBubbles","outside","butt","miter",10,"ellipse",[250,100,400,100])
+     * raw.contentLayer.createShape(true,"patternLayer","pBubbles",true,"solidColorLayer",[0,100,200],
+     * outside","butt","miter",10,"rectangle",[300,500,250,600,-1,-1,-1,-1]);
+     *
+     * raw.contentLayer.createShape(true,"solidColorLayer",[255,150,200],true,"solidColorLayer",[0,100,200],
+     * outside","butt","miter",10,"rectangle",[300,500,250,600,10,10,10,10]);
+     *
+     * raw.contentLayer.createShape(false,"solidColorLayer",[255,150,200],true,"patternLayer","pBubbles",
+     * outside","butt","miter",10,"ellipse",[250,100,400,100]);
      */
-    var createShape = function (fillEnabledVal,fillContentShape,fillContentShapeVal,
-            strokeEnabledVal,fillContentStroke,fillContentStrokeVal,strokeAlignment,
-            cap,corner,strokeWidth,typeShape,shapeVal) {
+    var createShape = function (sourceRef, fillEnabledVal, fillContentShape, fillContentShapeVal,
+            strokeEnabledVal, fillContentStroke, fillContentStrokeVal, strokeAlignment,
+            cap, corner, strokeWidth, typeShape, shapeVal) {
         
         var patternLayerName;
-        if(fillContentShape === "patternLayer") {
+        if (fillContentShape === "patternLayer") {
             patternLayerName = fillContentShapeVal;
-            fillContentShapeVal = [_patternName[patternLayerName][0],_patternName[patternLayerName][1]];
+            fillContentShapeVal = [_patternName[patternLayerName][0], _patternName[patternLayerName][1]];
         }
-        if(fillContentStroke === "patternLayer") {
+        if (fillContentStroke === "patternLayer") {
             patternLayerName = fillContentStrokeVal;
-            fillContentStrokeVal = [_patternName[patternLayerName][0],_patternName[patternLayerName][1]];
+            fillContentStrokeVal = [_patternName[patternLayerName][0], _patternName[patternLayerName][1]];
         }
 
-        return adapter.call("make",{
-            "null": {
-                "ref": "contentLayer"
-            },
-            "using": {
-                "obj": "contentLayer",
-                "value": {
-                    "shape": shape.shapeObj(typeShape,shapeVal),
-                    "strokeStyle": {
-                        "obj": "strokeStyle",
-                        "value": {
-                            "fillEnabled": fillEnabledVal,
-                            "strokeEnabled": strokeEnabledVal,
-                            "strokeStyleBlendMode": {
-                                "enum": "blendMode",
-                                "value": "normal"
-                            },
-                            "strokeStyleContent": shape.fillContents(fillContentStroke,fillContentStrokeVal),
-                            "strokeStyleLineAlignment": {
-                                "enum": "strokeStyleLineAlignment",
-                                "value": _strokeAlignment[strokeAlignment]
-                            },
-                            "strokeStyleLineCapType": {
-                                "enum": "strokeStyleLineCapType",
-                                "value": _strokeCap[cap]
-                            },
-                            "strokeStyleLineDashOffset": {
-                                "unit": "pointsUnit",
-                                "value": 0
-                            },
-                            "strokeStyleLineDashSet": [],
-                            "strokeStyleLineJoinType": {
-                                "enum": "strokeStyleLineJoinType",
-                                "value": _strokeCorner[corner]
-                            },
-                            "strokeStyleLineWidth": {
-                                "unit": "pointsUnit",
-                                "value": strokeWidth
-                            },
-                            "strokeStyleMiterLimit": 100,
-                            "strokeStyleOpacity": {
-                                "unit": "percentUnit",
-                                "value": 100
-                            },
-                            "strokeStyleResolution": 72,
-                            "strokeStyleScaleLock": false,
-                            "strokeStyleStrokeAdjust": false,
-                            "strokeStyleVersion": 2
-                        }
-                    },
-                    "type": shape.fillContents(fillContentShape,fillContentShapeVal)
+        return {
+            command: "make",
+            descriptor: {
+                "null": sourceRef,
+                "using": {
+                    "obj": "contentLayer",
+                    "value": {
+                        "shape": shape.shapeObj(typeShape, shapeVal),
+                        "strokeStyle": {
+                            "obj": "strokeStyle",
+                            "value": {
+                                "fillEnabled": fillEnabledVal,
+                                "strokeEnabled": strokeEnabledVal,
+                                "strokeStyleBlendMode": {
+                                    "enum": "blendMode",
+                                    "value": "normal"
+                                },
+                                "strokeStyleContent": shape.fillContents(fillContentStroke, fillContentStrokeVal),
+                                "strokeStyleLineAlignment": {
+                                    "enum": "strokeStyleLineAlignment",
+                                    "value": _strokeAlignment[strokeAlignment]
+                                },
+                                "strokeStyleLineCapType": {
+                                    "enum": "strokeStyleLineCapType",
+                                    "value": _strokeCap[cap]
+                                },
+                                "strokeStyleLineDashOffset": {
+                                    "unit": "pointsUnit",
+                                    "value": 0
+                                },
+                                "strokeStyleLineDashSet": [],
+                                "strokeStyleLineJoinType": {
+                                    "enum": "strokeStyleLineJoinType",
+                                    "value": _strokeCorner[corner]
+                                },
+                                "strokeStyleLineWidth": {
+                                    "unit": "pointsUnit",
+                                    "value": strokeWidth
+                                },
+                                "strokeStyleMiterLimit": 100,
+                                "strokeStyleOpacity": {
+                                    "unit": "percentUnit",
+                                    "value": 100
+                                },
+                                "strokeStyleResolution": 72,
+                                "strokeStyleScaleLock": false,
+                                "strokeStyleStrokeAdjust": false,
+                                "strokeStyleVersion": 2
+                            }
+                        },
+                        "type": shape.fillContents(fillContentShape, fillContentShapeVal)
+                    }
                 }
             }
-        });
+        };
     };
 
+    exports.setStrokeAlignment = setStrokeAlignment;
+    exports.setStrokeCap = setStrokeCap;
+    exports.setStrokeCorner = setStrokeCorner;
     exports.setShapeFillTypeSolidColor = setShapeFillTypeSolidColor;
-    exports.setShapeFillTypePattern = setShapeFillTypePattern;
-
     exports.setStrokeFillTypeSolidColor = setStrokeFillTypeSolidColor;
-    exports.setStrokeFillTypePattern = setStrokeFillTypePattern;
-
-    exports.setStrokeStyleAlign = setStrokeStyleAlign;
-    exports.setStrokeStyleCap = setStrokeStyleCap;
-    exports.setStrokeStyleCorner = setStrokeStyleCorner;
-
-    exports.moveShape = moveShape;
-
-    exports.createShape = createShape;
-
     exports.setShapeStrokeWidth = setShapeStrokeWidth;
+    exports.setStrokeFillTypePattern = setStrokeFillTypePattern;
+    exports.setShapeFillTypePattern = setShapeFillTypePattern;
+    exports.moveShape = moveShape;
+    exports.createShape = createShape;
 
 });

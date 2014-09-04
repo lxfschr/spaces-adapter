@@ -122,7 +122,7 @@ define(function (require, exports) {
                 "to": {
                     "obj": "textStyle",
                     "value": {
-                        "size": unitsIn[unit](val),
+                        "size": unitsIn[unit](val)
                     }
                 }
             }
