@@ -59,9 +59,20 @@ define(function (require, exports)
     exports.percent = _unit.bind(null, "percent");
     exports.angle = _unit.bind(null, "angle");
     
+    exports.inches = exports.in = _unit.bind(null, "inches");
+    exports.centimeters = exports.cm = _unit.bind(null, "centimeters");
+    exports.picas = _unit.bind(null, "picas");
+    exports.degrees = _unit.bind(null, "degrees");
+    
+    exports.number = _unit.bind(null, "number");
+    exports.seconds = _unit.bind(null, "seconds");
+    
     //Type uses these
     exports.points = exports.pt = _unit.bind(null, "points");
     exports.millimeters = exports.mm = _unit.bind(null, "millimeters");
+    
+    //Guides use this
+    exports.distance = _unit.bind(null, "distance");
 
     // exports.toPixels = toPixels;
 
