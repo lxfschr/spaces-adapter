@@ -111,7 +111,7 @@ define(function (require, exports) {
      * @param {string} modifier - Whether to select, add to selection, remove, or add upto
      * 
      * @returns {PlayObject}
-     */ 
+     */
     var select = function (ref, makeVisible, modifier) {
         modifier = modifier || "select";
         makeVisible = makeVisible || false;
@@ -139,7 +139,7 @@ define(function (require, exports) {
      * Deselect all layers
      *
      * @returns {PlayObject}
-     */ 
+     */
     var deselectAll = function () {
         return {
             command: "selectNoLayers",
@@ -153,7 +153,7 @@ define(function (require, exports) {
      * @param {ActionDescriptor} ref - Reference of layer(s) to hide
      * 
      * @returns {PlayObject}
-     */ 
+     */
     var hide = function (ref) {
         return {
             command: "hide",
@@ -167,7 +167,7 @@ define(function (require, exports) {
      * @param {ActionDescriptor} ref - Reference of layer(s) to show
      * 
      * @returns {PlayObject}
-     */ 
+     */
     var show = function (ref) {
         return {
             command: "show",
@@ -182,7 +182,7 @@ define(function (require, exports) {
      * @param {string} name - If provided, renames the copy
      * 
      * @returns {PlayObject}
-     */ 
+     */
     var duplicate = function (ref, name) {
         var rval = {
             command: "duplicate",
@@ -201,7 +201,7 @@ define(function (require, exports) {
      * @param {string} orientation - Which way to flip
      * 
      * @returns {PlayObject}
-     */ 
+     */
     var flip = function (ref, orientation) {
         return {
             command: "flip",
@@ -221,7 +221,7 @@ define(function (require, exports) {
      * @param {string} unit - Unit of height
      * 
      * @returns {PlayObject}
-     */ 
+     */
     var setHeight = function (ref, value, unit) {
         return {
             command: "transform",
@@ -238,7 +238,7 @@ define(function (require, exports) {
      * @param {string} unit - Unit of width
      * 
      * @returns {PlayObject}
-     */ 
+     */
     var setWidth = function (ref, value, unit) {
         return {
             command: "transform",
@@ -256,7 +256,7 @@ define(function (require, exports) {
      * @param {number} angle - Angle of rotation
      * 
      * @returns {PlayObject}
-     */ 
+     */
     var rotate = function (ref, angle) {
         return {
             command: "transform",
@@ -272,7 +272,7 @@ define(function (require, exports) {
      * @param {number} opacity - Opacity in percentage
      * 
      * @returns {PlayObject}
-     */ 
+     */
     var setOpacity = function (ref, opacity) {
         return {
             command: "set",
@@ -293,7 +293,7 @@ define(function (require, exports) {
      * @param {number} opacity - Fill opacity in percentage
      * 
      * @returns {PlayObject}
-     */ 
+     */
     var setFillOpacity = function (ref, opacity) {
         return {
             command: "set",
@@ -314,8 +314,8 @@ define(function (require, exports) {
      * @param {string} mode - Blend mode
      * 
      * @returns {PlayObject}
-     */ 
-     var setBlendMode = function (ref, mode) {
+     */
+    var setBlendMode = function (ref, mode) {
         return {
             command: "set",
             descriptor: {
@@ -332,8 +332,8 @@ define(function (require, exports) {
      * @param {ActionDescriptor} ref - Reference of layer(s) to delete
      * 
      * @returns {PlayObject}
-     */ 
-     var deleteLayer =  function (ref) {
+     */
+    var deleteLayer =  function (ref) {
         return {
             command: "delete",
             descriptor: {
