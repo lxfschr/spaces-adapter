@@ -196,6 +196,23 @@ define(function (require, exports, module) {
                 return obj[property];
             });
     };
+    
+    /**
+     * Executes a low-level "play" call on the PlayObject by unwrapping it
+     *
+     * @param {PlayObject} object Contains command, descriptor and options information
+     *
+     * @returns {Promise.<Object>} Resolves to the result of the call
+     */
+    Descriptor.prototype.playObject = function (object) {
+        var command = object.command;
+        var descriptor = object.descriptor || {};
+        var options = object.options || {
+            interactionMode: _playground.ps.descriptor.interactionMode.SILENT
+        };
+        
+        _descriptor.playAsync(command, descriptor, options);
+    };
 
     /**
      * Executes a low-level "play" call on the specified ActionDescriptor.
@@ -213,6 +230,31 @@ define(function (require, exports, module) {
         };
 
         return _descriptor.playAsync(name, descriptor, options);
+    };
+    
+    /**
+     * Executes a low-level "batchPlay" call on the specified PlayObjects.
+     *
+     * @param {Array.<PlayObject>} objects Array of PlayObjects to play
+     * @param {object=} options Options applied to the execution of each PlayObject individually
+     * @param {{continueOnError: boolean}=} batchOptions Options that control how the batch of
+     *      ActionDescriptors is executed.
+     * @return {Promise.<Array.object>} Resolves with the list of ActionDescriptor results. 
+     */
+    Descriptor.prototype.batchPlayObjects = function (objects, options, batchOptions) {
+        batchOptions = batchOptions || {};
+        options = options || {
+            interactionMode: _playground.ps.descriptor.interactionMode.SILENT
+        };
+        
+        var commands = objects.map(function (object) {
+            return {
+                name: object.command,
+                descriptor: object.descriptor
+            };
+        });
+        
+        return _descriptor.batchPlayAsync(commands, options, batchOptions);
     };
 
     /**

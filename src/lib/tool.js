@@ -31,7 +31,7 @@ define(function (require, exports) {
      *
      * @returns {PlayObject}
      */
-    var setTool = function(tool) {
+    var setTool = function (tool) {
         return {
             command: "select",
             descriptor: {
@@ -39,7 +39,7 @@ define(function (require, exports) {
                     "ref": tool
                 }
             }
-        }
+        };
     };
     
     /**
@@ -65,7 +65,7 @@ define(function (require, exports) {
                     value: options
                 }
             }
-        }
+        };
     };
     
     exports.setTool = setTool;
