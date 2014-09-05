@@ -24,7 +24,8 @@
 define(function (require, exports) {
     "use strict";
 
-    var unitsIn = require("src/lib/unit"),
+    var referenceBy = require("src/lib/reference").wrapper("contentLayer"),
+        unitsIn = require("src/lib/unit"),
         shape = require("src/lib/shape");
 
     /**
@@ -580,6 +581,8 @@ define(function (require, exports) {
             }
         };
     };
+    
+    exports.referenceBy = referenceBy;
 
     exports.setStrokeAlignment = setStrokeAlignment;
     exports.setStrokeCap = setStrokeCap;

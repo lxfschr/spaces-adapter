@@ -57,16 +57,6 @@ define(function (require, exports) {
             }
         };
     };
-    
-    // TODO: Commented out for now, cause this affects the current tool
-    // var usePencil = function () {
-    //     adapter.call("select", {
-    //         "null": {
-    //             "enum": "Pencil",
-    //             "ref": "brush"
-    //         }
-    //     });
-    // };
 
     exports.setBrushTip = setBrushTip;
 });

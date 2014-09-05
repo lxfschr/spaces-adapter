@@ -25,6 +25,8 @@
 define(function (require, exports) {
     "use strict";
 
+    var referenceBy = require("src/lib/reference").wrapper("document");
+    
     /**
      * Open a document
      * 
@@ -80,9 +82,11 @@ define(function (require, exports) {
         };
     };
 
-    exports.openDocument = openDocument;
-    exports.closeDocument = closeDocument;
-    exports.saveDocument = saveDocument;
-    exports.selectDocument = selectDocument;
+    exports.referenceBy = referenceBy;
+    
+    exports.open = openDocument;
+    exports.close = closeDocument;
+    exports.save = saveDocument;
+    exports.select = selectDocument;
 
 });
