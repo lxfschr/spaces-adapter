@@ -26,12 +26,12 @@
 define(function (require) {
     "use strict";
 
-    var playground = require("playground");
+    var adapter = require("adapter");
 
     module("version");
 
-    test("playground.version is set to a string", function () {
-        ok(typeof(playground.version) === "string", "type of playground version is a string");
+    test("adapter.version is set to a string", function () {
+        ok(typeof(adapter.version) === "string", "type of adapter version is a string");
     });
 
 });
