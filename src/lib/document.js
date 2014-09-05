@@ -25,34 +25,107 @@
 define(function (require, exports) {
     "use strict";
 
-    var referenceBy = require("src/lib/reference").wrapper("document");
-    
+    var referenceBy = require("src/lib/reference").wrapper("document"),
+        unitsIn = require("src/lib/unit");
+
     /**
-     * Open a document
+     * Open a document (psd, png, jpg, ai, gif)
      * 
      * @param {ActionDescriptor} sourceRef document reference
+     * @param {string} name The name of the Document
+     * @param {number} bitDepth Bit Depth 8 or 16
+     * @param {string} box Box to crop to. See cropTo.vals 
+     * @param {boolean} bAntiAlias true or false
+     * @param {boolean} bConstrainProportions true or false
+     * @param {number} width The width of the image size
+     * @param {number} height The height of the image size
+     * @param {string} colorSpace The color space of the image mode
+     * @param {number} pageNumber The number of the page
+     * @param {number} resolution The resolution value
+     * @param {boolean} suppressWarnings true or false
      *
      * @return {PlayObject}
      *
      */
-    var openDocument = function (sourceRef) {
-        return {
-            command: "open",
-            descriptor: {
-                "null": sourceRef
-            }
-        };
+    var openDocument = function (sourceRef, name, bitDepth, box, bAntiAlias, bConstrainProportions, width, height,
+        colorSpace, pageNumber, resolution, suppressWarnings) {
+        var fileType = sourceRef.path.lastIndexOf(".");
+        if ((fileType === "psd") || (fileType === "jpg") || (fileType === "png")) {
+            return {
+                command: "open",
+                descriptor: {
+                    "null": sourceRef
+                }
+            };
+        } else if (fileType === "ai") {
+            return {
+                command: "open",
+                descriptor: {
+                    "null": sourceRef,
+                    "as": {
+                        "obj": "PDFGenericFormat",
+                        "value": {
+                            "antiAlias": bAntiAlias,
+                            "constrainProportions": bConstrainProportions,
+                            "crop": {
+                                "enum": "cropTo",
+                                "value": openDocument.cropTo[box]
+                            },
+                            "depth": bitDepth,
+                            "width":  unitsIn.pixels(width),
+                            "height": unitsIn.pixels(height),
+                            "mode": {
+                                "enum": "colorSpace",
+                                "value": openDocument.mode[colorSpace]
+                            },
+                            "name": name,
+                            "pageNumber": pageNumber,
+                            "resolution": unitsIn.density(resolution),
+                            "suppressWarnings": suppressWarnings,
+                            "selection": {
+                                "enum": "pdfSelection",
+                                "value": "page"
+                            }
+                        }
+                    }
+                }
+            };
+        }
+    };
+
+    openDocument.cropTo = {
+        bounding: "boundingBox",
+        media: "mediaBox",
+        crop: "cropBox",
+        bleed: "bleedBox",
+        trim: "trimBox",
+        art: "artBox"
+    };
+
+    openDocument.mode = {
+        rgb: "RGBColor",
+        gray: "grayscaleMode",
+        cmyk: "CMYKColorEnum",
+        lab: "labColor"
     };
 
     /**
-     * Close a document
+     * Close a document without saving
      * 
+     * @param {string} save Whether the document should be saved. "yes", "no"
+     *
      * @return {PlayObject}
      *
+     * Preconditions:
+     * The document should be saved previously and have fileReference path value for saving.
      */
-    var closeDocument = function () {
+    var closeDocument = function (save) {
         return {
-            command: "close"
+            command: "close",
+            "saving": {
+                "enum": "yesNo",
+                "value": save
+            }
         };
     };
 
@@ -62,7 +135,7 @@ define(function (require, exports) {
      *
      */
     var saveDocument = function () {
-        //console.log("not implemented");
+        //console.log("not implemented.");
     };
 
     /**
