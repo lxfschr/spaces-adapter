@@ -32,14 +32,14 @@ define(function (require, exports) {
      * Open a document (psd, png, jpg, ai, gif)
      * 
      * @param {ActionDescriptor} sourceRef document reference
-     * @param {string} name The name of the Document
-     * @param {number} bitDepth Bit Depth 8 or 16
-     * @param {string} box Box to crop to. See cropTo.vals 
+     * @param {string} name The name of the Document.
+     * @param {number} bitDepth The bit depth. 8 or 16
+     * @param {string} box Box to crop to. See openDocument.cropTo vals 
      * @param {boolean} bAntiAlias true or false
      * @param {boolean} bConstrainProportions true or false
-     * @param {number} width The width of the image size
+     * @param {number} width The width of the image size.
      * @param {number} height The height of the image size
-     * @param {string} colorSpace The color space of the image mode
+     * @param {string} colorSpace The color space of the image mode.  See openDocument.mode vals
      * @param {number} pageNumber The number of the page
      * @param {number} resolution The resolution value
      * @param {boolean} suppressWarnings true or false
