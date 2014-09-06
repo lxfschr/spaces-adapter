@@ -32,6 +32,9 @@ define(function (require, exports) {
      * Open a document (psd, png, jpg, ai, gif)
      * 
      * @param {ActionDescriptor} sourceRef document reference
+     * @param {string} pdfSelection "page" or "image"
+     * @param {number} pageNumber The number of the page
+     * @param {boolean} suppressWarnings true or false
      * @param {string} name The name of the Document.
      * @param {number} bitDepth The bit depth. 8 or 16
      * @param {string} box Box to crop to. See openDocument.cropTo vals 
@@ -40,15 +43,13 @@ define(function (require, exports) {
      * @param {number} width The width of the image size.
      * @param {number} height The height of the image size
      * @param {string} colorSpace The color space of the image mode.  See openDocument.mode vals
-     * @param {number} pageNumber The number of the page
      * @param {number} resolution The resolution value
-     * @param {boolean} suppressWarnings true or false
      *
      * @return {PlayObject}
      *
      */
-    var openDocument = function (sourceRef, name, bitDepth, box, bAntiAlias, bConstrainProportions, width, height,
-        colorSpace, pageNumber, resolution, suppressWarnings) {
+    var openDocument = function (sourceRef, pdfSelection, pageNumber, suppressWarnings, name, bitDepth, box, bAntiAlias,
+        bConstrainProportions, width, height, colorSpace, resolution) {
         var fileType = sourceRef.path.lastIndexOf(".");
         if ((fileType === "psd") || (fileType === "jpg") || (fileType === "png")) {
             return {
@@ -58,38 +59,58 @@ define(function (require, exports) {
                 }
             };
         } else if (fileType === "ai") {
-            return {
-                command: "open",
-                descriptor: {
-                    "null": sourceRef,
-                    "as": {
-                        "obj": "PDFGenericFormat",
-                        "value": {
-                            "antiAlias": bAntiAlias,
-                            "constrainProportions": bConstrainProportions,
-                            "crop": {
-                                "enum": "cropTo",
-                                "value": openDocument.cropTo[box]
-                            },
-                            "depth": bitDepth,
-                            "width":  unitsIn.pixels(width),
-                            "height": unitsIn.pixels(height),
-                            "mode": {
-                                "enum": "colorSpace",
-                                "value": openDocument.mode[colorSpace]
-                            },
-                            "name": name,
-                            "pageNumber": pageNumber,
-                            "resolution": unitsIn.density(resolution),
-                            "suppressWarnings": suppressWarnings,
-                            "selection": {
-                                "enum": "pdfSelection",
-                                "value": "page"
+            if (pdfSelection === "page") {
+                return {
+                    command: "open",
+                    descriptor: {
+                        "null": sourceRef,
+                        "as": {
+                            "obj": "PDFGenericFormat",
+                            "value": {
+                                "antiAlias": bAntiAlias,
+                                "constrainProportions": bConstrainProportions,
+                                "crop": {
+                                    "enum": "cropTo",
+                                    "value": openDocument.cropTo[box]
+                                },
+                                "depth": bitDepth,
+                                "width":  unitsIn.pixels(width),
+                                "height": unitsIn.pixels(height),
+                                "mode": {
+                                    "enum": "colorSpace",
+                                    "value": openDocument.mode[colorSpace]
+                                },
+                                "name": name,
+                                "pageNumber": pageNumber,
+                                "resolution": unitsIn.density(resolution),
+                                "suppressWarnings": suppressWarnings,
+                                "selection": {
+                                    "enum": "pdfSelection",
+                                    "value": pdfSelection
+                                }
                             }
                         }
                     }
-                }
-            };
+                };
+            } else if (pdfSelection === "image") {
+                return {
+                    command: "open",
+                    descriptor: {
+                        "null": sourceRef,
+                        "as": {
+                            "obj": "PDFGenericFormat",
+                            "value": {
+                                "pageNumber": pageNumber,
+                                "selection": {
+                                    "enum": "pdfSelection",
+                                    "value": pdfSelection
+                                },
+                                "suppressWarnings": suppressWarnings
+                            }
+                        }
+                    }
+                };
+            }
         }
     };
 
