@@ -30,7 +30,7 @@ require.config({
         "lodash": "../bower_components/lodash/dist/lodash"
     },
     packages : [
-        { name: "playground", location: "../lib" }
+        { name: "adapter", location: "../src" }
     ]
 });
 

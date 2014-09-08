@@ -34,8 +34,6 @@ define(function (require, exports) {
             "spec/low-level-test"
         ],
         integration : [
-            "spec/generator/generator-test",
-            "spec/generator/generator-bridge-test"
         ]
     };
 
