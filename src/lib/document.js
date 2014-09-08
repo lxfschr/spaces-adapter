@@ -176,6 +176,22 @@ define(function (require, exports) {
         };
     };
 
+    /**
+     * Return a document path to be used for opening or saving a document.
+     * 
+     * @param {string} path document path
+     *
+     * @return {PlayObject}
+     *
+     */
+    referenceBy.path = function (path) {
+        return {
+            descriptor: {
+                "null": path
+            }
+        };
+    };
+
     exports.referenceBy = referenceBy;
     
     exports.open = openDocument;
