@@ -50,7 +50,12 @@ define(function (require, exports) {
      */
     var openDocument = function (sourceRef, pdfSelection, pageNumber, suppressWarnings, name, bitDepth, box, bAntiAlias,
         bConstrainProportions, width, height, colorSpace, resolution) {
-        var fileType = sourceRef.path.lastIndexOf(".");
+        var fileType,
+            strIndex = sourceRef.path.lastIndexOf(".");
+        if (strIndex !== -1) {
+            strIndex++;
+            fileType = sourceRef.path.substring(strIndex);
+        }
         if ((fileType === "psd") || (fileType === "jpg") || (fileType === "png")) {
             return {
                 command: "open",
@@ -155,8 +160,580 @@ define(function (require, exports) {
      * 
      *
      */
-    var saveDocument = function () {
-        //console.log("not implemented.");
+    var saveDocument = function (path, jpgQuality) {
+        var strIndex = path.lastIndexOf("."),
+            pathIndex = path.lastIndexOf("/"),
+            fileType,
+            fileName,
+            filePath,
+            saveAs = {};
+        if (strIndex !== -1) {
+            strIndex++;
+            fileType = path.substring(strIndex);
+        }
+        if (pathIndex !== -1) {
+            pathIndex++;
+            fileName = path.substring(pathIndex);
+        }
+        filePath = path.replace(fileName, "");
+
+        if (fileType === "psd") {
+            saveAs = {
+                "obj": "photoshop35Format",
+                "value": {}
+            };
+            return {
+                command: "save",
+                descriptor: {
+                    "as": saveAs,
+                    "in": {
+                        "path": path
+                    }
+                }
+            };
+        } else if (fileType === "jpg") {
+            saveAs = {
+                "obj": "JPEG",
+                "value": {
+                    "extendedQuality": jpgQuality,
+                    "matteColor": {
+                        "enum": "matteColor",
+                        "value": "none"
+                    }
+                }
+            };
+            return {
+                command: "save",
+                descriptor: {
+                    "as": saveAs,
+                    "in": {
+                        "path": path
+                    }
+                }
+            };
+        } else if (fileType === "gif") {
+            return {
+                command: "export",
+                descriptor: {
+                    "using": {
+                        "obj": "SaveForWeb",
+                        "value": {
+                            "$AuRd": false,
+                            "$DCUI": 0,
+                            "$DChS": 0,
+                            "$DChT": false,
+                            "$DChV": false,
+                            "$DIDr": true,
+                            "$LCUI": 100,
+                            "$LChS": 0,
+                            "$LChT": false,
+                            "$LChV": false,
+                            "$Loss": 0,
+                            "$Mtt": true,
+                            "$MttB": 255,
+                            "$MttG": 255,
+                            "$MttR": 255,
+                            "$NCol": 128,
+                            "$Op": {
+                                "enum": "$SWOp",
+                                "value": "$OpSa"
+                            },
+                            "$RChT": false,
+                            "$RChV": false,
+                            "$RedA": {
+                                "enum": "$IRRd",
+                                "value": "$Sltv"
+                            },
+                            "$SHTM": false,
+                            "$SImg": true,
+                            "$SWch": {
+                                "enum": "$STch",
+                                "value": "$CHsR"
+                            },
+                            "$SWmd": {
+                                "enum": "$STmd",
+                                "value": "$MDCC"
+                            },
+                            "$SWsl": {
+                                "enum": "$STsl",
+                                "value": "$SLAl"
+                            },
+                            "$TDtA": 100,
+                            "$TDth": {
+                                "enum": "$IRDt",
+                                "value": "none"
+                            },
+                            "$WebS": 0,
+                            "$obCS": {
+                                "enum": "$STcs",
+                                "value": "$CS01"
+                            },
+                            "$obIA": false,
+                            "$obIP": "",
+                            "$ohAA": true,
+                            "$ohAC": {
+                                "enum": "$SToc",
+                                "value": "$OC03"
+                            },
+                            "$ohCA": false,
+                            "$ohEn": {
+                                "enum": "$STen",
+                                "value": "$EN00"
+                            },
+                            "$ohIC": true,
+                            "$ohIZ": true,
+                            "$ohIn": -1,
+                            "$ohLE": {
+                                "enum": "$STle",
+                                "value": "$LE03"
+                            },
+                            "$ohQA": true,
+                            "$ohTC": {
+                                "enum": "$SToc",
+                                "value": "$OC03"
+                            },
+                            "$ohXH": false,
+                            "$olCS": false,
+                            "$olEC": {
+                                "enum": "$STst",
+                                "value": "$ST00"
+                            },
+                            "$olNC": [
+                                {
+                                    "obj": "$SCnc",
+                                    "value": {
+                                        "$ncTp": {
+                                            "enum": "$STnc",
+                                            "value": "$NC00"
+                                        }
+                                    }
+                                },
+                                {
+                                    "obj": "$SCnc",
+                                    "value": {
+                                        "$ncTp": {
+                                            "enum": "$STnc",
+                                            "value": "$NC19"
+                                        }
+                                    }
+                                },
+                                {
+                                    "obj": "$SCnc",
+                                    "value": {
+                                        "$ncTp": {
+                                            "enum": "$STnc",
+                                            "value": "$NC28"
+                                        }
+                                    }
+                                },
+                                {
+                                    "obj": "$SCnc",
+                                    "value": {
+                                        "$ncTp": {
+                                            "enum": "$STnc",
+                                            "value": "$NC24"
+                                        }
+                                    }
+                                },
+                                {
+                                    "obj": "$SCnc",
+                                    "value": {
+                                        "$ncTp": {
+                                            "enum": "$STnc",
+                                            "value": "$NC24"
+                                        }
+                                    }
+                                },
+                                {
+                                    "obj": "$SCnc",
+                                    "value": {
+                                        "$ncTp": {
+                                            "enum": "$STnc",
+                                            "value": "$NC24"
+                                        }
+                                    }
+                                }
+                            ],
+                            "$olSH": {
+                                "enum": "$STsp",
+                                "value": "$SP04"
+                            },
+                            "$olSV": {
+                                "enum": "$STsp",
+                                "value": "$SP04"
+                            },
+                            "$olWH": {
+                                "enum": "$STwh",
+                                "value": "$WH01"
+                            },
+                            "$ovCB": true,
+                            "$ovCM": false,
+                            "$ovCU": true,
+                            "$ovCW": false,
+                            "$ovFN": fileName,
+                            "$ovNC": [
+                                {
+                                    "obj": "$SCnc",
+                                    "value": {
+                                        "$ncTp": {
+                                            "enum": "$STnc",
+                                            "value": "$NC01"
+                                        }
+                                    }
+                                },
+                                {
+                                    "obj": "$SCnc",
+                                    "value": {
+                                        "$ncTp": {
+                                            "enum": "$STnc",
+                                            "value": "$NC20"
+                                        }
+                                    }
+                                },
+                                {
+                                    "obj": "$SCnc",
+                                    "value": {
+                                        "$ncTp": {
+                                            "enum": "$STnc",
+                                            "value": "$NC02"
+                                        }
+                                    }
+                                },
+                                {
+                                    "obj": "$SCnc",
+                                    "value": {
+                                        "$ncTp": {
+                                            "enum": "$STnc",
+                                            "value": "$NC19"
+                                        }
+                                    }
+                                },
+                                {
+                                    "obj": "$SCnc",
+                                    "value": {
+                                        "$ncTp": {
+                                            "enum": "$STnc",
+                                            "value": "$NC06"
+                                        }
+                                    }
+                                },
+                                {
+                                    "obj": "$SCnc",
+                                    "value": {
+                                        "$ncTp": {
+                                            "enum": "$STnc",
+                                            "value": "$NC24"
+                                        }
+                                    }
+                                },
+                                {
+                                    "obj": "$SCnc",
+                                    "value": {
+                                        "$ncTp": {
+                                            "enum": "$STnc",
+                                            "value": "$NC24"
+                                        }
+                                    }
+                                },
+                                {
+                                    "obj": "$SCnc",
+                                    "value": {
+                                        "$ncTp": {
+                                            "enum": "$STnc",
+                                            "value": "$NC24"
+                                        }
+                                    }
+                                },
+                                {
+                                    "obj": "$SCnc",
+                                    "value": {
+                                        "$ncTp": {
+                                            "enum": "$STnc",
+                                            "value": "$NC22"
+                                        }
+                                    }
+                                }
+                            ],
+                            "$ovSF": true,
+                            "$ovSN": "images",
+                            "dither": {
+                                "enum": "$IRDt",
+                                "value": "diffusion"
+                            },
+                            "ditherAmount": 88,
+                            "format": {
+                                "enum": "$IRFm",
+                                "value": "$GIFf"
+                            },
+                            "in": {
+                                "path": filePath
+                            },
+                            "interfaceIconFrameDimmed": false,
+                            "transparency": true
+                        }
+                    }
+                }
+            };
+        } else if (fileType === "png") {
+            return {
+                command: "export",
+                descriptor: {
+                    "using": {
+                        "obj": "SaveForWeb",
+                        "value": {
+                            "$AuRd": false,
+                            "$DCUI": 0,
+                            "$DChS": 0,
+                            "$DChT": false,
+                            "$DChV": false,
+                            "$DIDr": true,
+                            "$EICC": false,
+                            "$Mtt": true,
+                            "$MttB": 255,
+                            "$MttG": 255,
+                            "$MttR": 255,
+                            "$NCol": 128,
+                            "$Op": {
+                                "enum": "$SWOp",
+                                "value": "$OpSa"
+                            },
+                            "$RChT": false,
+                            "$RChV": false,
+                            "$RedA": {
+                                "enum": "$IRRd",
+                                "value": "$Sltv"
+                            },
+                            "$SHTM": false,
+                            "$SImg": true,
+                            "$SWch": {
+                                "enum": "$STch",
+                                "value": "$CHsR"
+                            },
+                            "$SWmd": {
+                                "enum": "$STmd",
+                                "value": "$MDCC"
+                            },
+                            "$SWsl": {
+                                "enum": "$STsl",
+                                "value": "$SLAl"
+                            },
+                            "$TDtA": 100,
+                            "$TDth": {
+                                "enum": "$IRDt",
+                                "value": "none"
+                            },
+                            "$WebS": 0,
+                            "$obCS": {
+                                "enum": "$STcs",
+                                "value": "$CS01"
+                            },
+                            "$obIA": false,
+                            "$obIP": "",
+                            "$ohAA": true,
+                            "$ohAC": {
+                                "enum": "$SToc",
+                                "value": "$OC03"
+                            },
+                            "$ohCA": false,
+                            "$ohEn": {
+                                "enum": "$STen",
+                                "value": "$EN00"
+                            },
+                            "$ohIC": true,
+                            "$ohIZ": true,
+                            "$ohIn": -1,
+                            "$ohLE": {
+                                "enum": "$STle",
+                                "value": "$LE03"
+                            },
+                            "$ohQA": true,
+                            "$ohTC": {
+                                "enum": "$SToc",
+                                "value": "$OC03"
+                            },
+                            "$ohXH": false,
+                            "$olCS": false,
+                            "$olEC": {
+                                "enum": "$STst",
+                                "value": "$ST00"
+                            },
+                            "$olNC": [
+                                {
+                                    "obj": "$SCnc",
+                                    "value": {
+                                        "$ncTp": {
+                                            "enum": "$STnc",
+                                            "value": "$NC00"
+                                        }
+                                    }
+                                },
+                                {
+                                    "obj": "$SCnc",
+                                    "value": {
+                                        "$ncTp": {
+                                            "enum": "$STnc",
+                                            "value": "$NC19"
+                                        }
+                                    }
+                                },
+                                {
+                                    "obj": "$SCnc",
+                                    "value": {
+                                        "$ncTp": {
+                                            "enum": "$STnc",
+                                            "value": "$NC28"
+                                        }
+                                    }
+                                },
+                                {
+                                    "obj": "$SCnc",
+                                    "value": {
+                                        "$ncTp": {
+                                            "enum": "$STnc",
+                                            "value": "$NC24"
+                                        }
+                                    }
+                                },
+                                {
+                                    "obj": "$SCnc",
+                                    "value": {
+                                        "$ncTp": {
+                                            "enum": "$STnc",
+                                            "value": "$NC24"
+                                        }
+                                    }
+                                },
+                                {
+                                    "obj": "$SCnc",
+                                    "value": {
+                                        "$ncTp": {
+                                            "enum": "$STnc",
+                                            "value": "$NC24"
+                                        }
+                                    }
+                                }
+                            ],
+                            "$olSH": {
+                                "enum": "$STsp",
+                                "value": "$SP04"
+                            },
+                            "$olSV": {
+                                "enum": "$STsp",
+                                "value": "$SP04"
+                            },
+                            "$olWH": {
+                                "enum": "$STwh",
+                                "value": "$WH01"
+                            },
+                            "$ovCB": true,
+                            "$ovCM": false,
+                            "$ovCU": true,
+                            "$ovCW": false,
+                            "$ovFN": fileName,
+                            "$ovNC": [
+                                {
+                                    "obj": "$SCnc",
+                                    "value": {
+                                        "$ncTp": {
+                                            "enum": "$STnc",
+                                            "value": "$NC01"
+                                        }
+                                    }
+                                },
+                                {
+                                    "obj": "$SCnc",
+                                    "value": {
+                                        "$ncTp": {
+                                            "enum": "$STnc",
+                                            "value": "$NC20"
+                                        }
+                                    }
+                                },
+                                {
+                                    "obj": "$SCnc",
+                                    "value": {
+                                        "$ncTp": {
+                                            "enum": "$STnc",
+                                            "value": "$NC02"
+                                        }
+                                    }
+                                },
+                                {
+                                    "obj": "$SCnc",
+                                    "value": {
+                                        "$ncTp": {
+                                            "enum": "$STnc",
+                                            "value": "$NC19"
+                                        }
+                                    }
+                                },
+                                {
+                                    "obj": "$SCnc",
+                                    "value": {
+                                        "$ncTp": {
+                                            "enum": "$STnc",
+                                            "value": "$NC06"
+                                        }
+                                    }
+                                },
+                                {
+                                    "obj": "$SCnc",
+                                    "value": {
+                                        "$ncTp": {
+                                            "enum": "$STnc",
+                                            "value": "$NC24"
+                                        }
+                                    }
+                                },
+                                {
+                                    "obj": "$SCnc",
+                                    "value": {
+                                        "$ncTp": {
+                                            "enum": "$STnc",
+                                            "value": "$NC24"
+                                        }
+                                    }
+                                },
+                                {
+                                    "obj": "$SCnc",
+                                    "value": {
+                                        "$ncTp": {
+                                            "enum": "$STnc",
+                                            "value": "$NC24"
+                                        }
+                                    }
+                                },
+                                {
+                                    "obj": "$SCnc",
+                                    "value": {
+                                        "$ncTp": {
+                                            "enum": "$STnc",
+                                            "value": "$NC22"
+                                        }
+                                    }
+                                }
+                            ],
+                            "$ovSF": true,
+                            "$ovSN": "images",
+                            "dither": {
+                                "enum": "$IRDt",
+                                "value": "diffusion"
+                            },
+                            "ditherAmount": 88,
+                            "format": {
+                                "enum": "$IRFm",
+                                "value": "$PNG8"
+                            },
+                            "in": {
+                                "path": filePath
+                            },
+                            "interfaceIconFrameDimmed": false,
+                            "transparency": true
+                        }
+                    }
+                }
+            };
+        }
     };
 
     /**
