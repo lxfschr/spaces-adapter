@@ -25,7 +25,7 @@
 define(function (require, exports) {
     "use strict";
 
-    var unitsIn = require("src/lib/unit");
+    var unitsIn = require("./unit");
     
     /**
      * @param {ActionDescriptor} sourceRef Guide reference

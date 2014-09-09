@@ -25,8 +25,8 @@
 define(function (require, exports) {
     "use strict";
 
-    var unitsIn = require("src/lib/unit"),
-        colorObject = require("src/lib/color").colorObject;
+    var unitsIn = require("./unit"),
+        colorObject = require("./color").colorObject;
     
     /**
      * Create a text layer

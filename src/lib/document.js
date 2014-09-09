@@ -25,8 +25,8 @@
 define(function (require, exports) {
     "use strict";
 
-    var referenceBy = require("src/lib/reference").wrapper("document"),
-        unitsIn = require("src/lib/unit");
+    var referenceBy = require("./reference").wrapper("document"),
+        unitsIn = require("./unit");
 
     /**
      * Open a document (psd, png, jpg, ai, gif)

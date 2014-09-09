@@ -24,8 +24,8 @@
 define(function (require, exports) {
     "use strict";
     
-    var referenceBy = require("src/lib/reference").wrapper("brushes"),
-        inUnits = require("src/lib/unit");
+    var referenceBy = require("./reference").wrapper("brushes"),
+        inUnits = require("./unit");
     
     /**
      * Sets the current brush tip to given parameters

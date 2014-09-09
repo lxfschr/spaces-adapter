@@ -24,9 +24,9 @@
 define(function (require, exports) {
     "use strict";
 
-    var referenceBy = require("src/lib/reference").wrapper("contentLayer"),
-        unitsIn = require("src/lib/unit"),
-        shape = require("src/lib/shape");
+    var referenceBy = require("./reference").wrapper("contentLayer"),
+        unitsIn = require("./unit"),
+        shape = require("./shape");
 
     /**
      * Stroke alignment possible values
