@@ -25,13 +25,13 @@
 define(function (require, exports) {
     "use strict";
 
-    var referenceBy = require("src/lib/reference").wrapper("document"),
-        unitsIn = require("src/lib/unit");
+    var referenceBy = require("./reference").wrapper("document"),
+        unitsIn = require("./unit");
 
     /**
      * Open a document (psd, png, jpg, ai, gif)
      * 
-     * @param {ActionDescriptor} sourceRef document reference
+     * @param {ActionDescriptor} sourceRef document reference, needs to include a "path" value
      * @param {string} name The name of the Document.
      * @param {number} bitDepth The bit depth. 8 or 16
      * @param {string} box Box to crop to. See openDocument.cropTo vals 

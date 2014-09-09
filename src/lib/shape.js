@@ -24,8 +24,8 @@
 define(function (require, exports) {
     "use strict";
     
-    var colorObject = require("src/lib/color").colorObject,
-        unitsIn = require("src/lib/unit");
+    var colorObject = require("./color").colorObject,
+        unitsIn = require("./unit");
 
     /**
      * Creates a fill contents object

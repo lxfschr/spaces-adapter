@@ -24,8 +24,8 @@
 define(function (require, exports) {
     "use strict";
     
-    var referenceBy = require("src/lib/reference").wrapper("layer"),
-        inUnits = require("src/lib/unit");
+    var referenceBy = require("./reference").wrapper("layer"),
+        inUnits = require("./unit");
 
     /**
      * Moves the source layer to right before target reference 
