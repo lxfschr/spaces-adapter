@@ -211,7 +211,7 @@ define(function (require, exports, module) {
             interactionMode: _playground.ps.descriptor.interactionMode.SILENT
         };
         
-        _descriptor.playAsync(command, descriptor, options);
+        return _descriptor.playAsync(command, descriptor, options);
     };
 
     /**

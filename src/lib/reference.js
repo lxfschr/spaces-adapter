@@ -73,6 +73,13 @@ define(function (require, exports, module) {
              */
             id: referenceBy.bind(null, "id"),
             
+            
+            /**
+             * @param {int} Offset amount
+             * @returns {ActionDescriptor} Reference to the given IDs
+             */
+            offset: referenceBy.bind(null, "offset"),
+            
             /**
              * @param {string|Array.<string>} Name(s)
              * @returns {ActionDescriptor} Reference to the given names
