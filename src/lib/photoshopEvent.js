@@ -33,7 +33,7 @@ define(function (require, exports) {
      * @return {string} Target of the event
      *
      */
-     var targetOf = function (event) {
+    var targetOf = function (event) {
         if (event.hasOwnProperty("new")) {
             // Case for "document"
             return event.new.obj;
