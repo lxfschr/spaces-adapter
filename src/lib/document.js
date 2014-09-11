@@ -352,18 +352,9 @@ define(function (require, exports) {
         var newObj = {
             "obj": "document",
             "value": {
-                "width": {
-                    "unit": "distanceUnit",
-                    "value": params.width
-                },
-                "height": {
-                    "unit": "distanceUnit",
-                    "value": params.height
-                },
-                "resolution": {
-                    "unit": "densityUnit",
-                    "value": params.resolution
-                },
+                "width": unitsIn.distance(params.width),
+                "height": unitsIn.distance(params.height),
+                "resolution": unitsIn.density(params.resolution),
                 "fill": {
                     "enum": "fill",
                     "value": params.fill
