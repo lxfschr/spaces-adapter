@@ -110,8 +110,5 @@ define(function (require, exports, module) {
     /** @type {UI} The UI singleton */
     var theUI = new UI();
 
-    // bind native phtooshop event handler to our handler function
-    _playground.ps.descriptor.registerEventListener(theUI._psEventHandler.bind(theUI));
-    
     module.exports = theUI;
 });

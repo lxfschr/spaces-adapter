@@ -145,7 +145,7 @@ define(function (require, exports, module) {
     var theOS = new OS();
 
     // bind native phtooshop event handler to our handler function
-    _playground.os.registerEventListener(theOS._eventHandler.bind(theOS));
+    _playground.setNotifier(_playground.notifierGroup.OS, {}, theOS._eventHandler.bind(theOS));
     
     module.exports = theOS;
 });
