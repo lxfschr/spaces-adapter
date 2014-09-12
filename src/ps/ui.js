@@ -111,7 +111,7 @@ define(function (require, exports, module) {
     var theUI = new UI();
 
     // bind native phtooshop event handler to our handler function
-    _playground.ps.descriptor.registerEventListener(theUI._psEventHandler.bind(theUI));
+    _playground.setNotifier(_playground.notifierGroup.PHOTOSHOP, {}, theUI._psEventHandler.bind(theUI));
     
     module.exports = theUI;
 });

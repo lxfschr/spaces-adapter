@@ -108,50 +108,6 @@ define(function (require, exports, module) {
     };
 
     /**
-     * Add an event listener.
-     * 
-     * @override EventEmitter.prototype.addListener
-     * @param {string|RegExp} event
-     * @param {object} listener
-     * @return {object} Current instance of EventEmitter for chaining.
-     */
-    Descriptor.prototype.addListener = function (event, listener) {
-        var currentListeners = this.getListeners(event);
-
-        if (currentListeners.length === 0) {
-            _playground.ps.descriptor.addEvent(event, function (err) {
-                if (err) {
-                    this.emit("error", "Failed to add listener for event: " + event, err);
-                }
-            }.bind(this));
-        }
-
-        return Descriptor.super_.prototype.addListener.call(this, event, listener);
-    };
-
-    /**
-     * Remove an event listener.
-     * 
-     * @override EventEmitter.prototype.removeListener
-     * @param {string|RegExp} event
-     * @param {object} listener
-     */
-    Descriptor.prototype.removeListener = function (event, listener) {
-        var result = Descriptor.super_.prototype.removeListener.call(this, event, listener),
-            currentListeners = this.getListeners(event);
-
-        if (currentListeners.length === 0) {
-            _playground.ps.descriptor.removeEvent(event, function (err) {
-                if (err) {
-                    this.emit("Failed to remove listener for event: " + event, err);
-                }
-            }.bind(this));
-        }
-
-        return result;
-    };
-
-    /**
      * Executes a low-level "get" call using an ActionReference.
      *
      * @param {(string|Array.<(string|Object)>|Object)} reference The reference to retrieve. Can be:
@@ -279,7 +235,7 @@ define(function (require, exports, module) {
     var theDescriptor = new Descriptor();
 
     // bind native phtooshop event handler to our handler function
-    _playground.ps.descriptor.registerEventListener(theDescriptor._psEventHandler.bind(theDescriptor));
+    _playground.setNotifier(_playground.notifierGroup.PHOTOSHOP, {}, theDescriptor._psEventHandler.bind(theDescriptor));
     
     module.exports = theDescriptor;
 });
