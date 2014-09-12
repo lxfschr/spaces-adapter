@@ -118,13 +118,23 @@ define(function (require, exports, module) {
      */
     Descriptor.prototype.get = function (reference) {
         var wrap = function (toWrap) {
+            var reference;
+
             if (Array.isArray(toWrap)) {
-                return {ref: toWrap.map(wrap).reverse()};
+                reference = {
+                    ref: toWrap.map(wrap).reverse()
+                };
             } else if (typeof toWrap === "string") {
-                return {ref: toWrap, enum: "$Ordn", value: "$Trgt"};
+                reference = {
+                    ref: toWrap,
+                    enum: "$Ordn",
+                    value: "$Trgt"
+                };
             } else {
-                return toWrap;
+                reference = toWrap;
             }
+
+            return reference;
         };
 
         return _descriptor.getAsync(wrap(reference));
