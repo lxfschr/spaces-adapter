@@ -46,6 +46,12 @@ define(function (require, exports) {
         
         return _ps.endModalTextStateAsync(commit);
     };
+    
+    var endModalToolState = function (commit) {
+        commit = commit || false;
+        
+        return _ps.endModalToolStateAsync(commit);
+    };
 
     /**
      * Execute a Photoshop menu command.
@@ -58,6 +64,7 @@ define(function (require, exports) {
         return _ps.performMenuCommandAsync(commandID);
     };
 
+    exports.endModalToolState = endModalToolState;
     exports.endModalTextState = endModalTextState;
     exports.performMenuCommand = performMenuCommand;
 });
