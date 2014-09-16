@@ -21,39 +21,37 @@
  * 
  */
 
-define(function (require, exports) {
+/*jslint devel: true*/
+/* global require, module, test, ok, expect */
+
+define(function () {
     "use strict";
 
-    var _ = require("lodash");
+    var reference = require("adapter/lib/reference");
 
-    var TEST_SECTION_MAP = {
-        unit : [
-            "spec/version-test",
-            "spec/library-test"
-        ],
-        lowlevel : [
-            "spec/low-level-test"
-        ],
-        integration : [
-        ]
-    };
+    module("library");
 
-    var getSpecsByClass = function (specClass) {
-        var section = specClass || "unit",
-            tests = [];
+    // This file tests the src/lib files
 
-        if (section !== "all" && !TEST_SECTION_MAP.hasOwnProperty(section)) {
-            section = "unit";
-        }
+    // TESTS  
+    // -----
 
-        if (section === "all") {
-            tests = Array.prototype.concat.apply([], _.values(TEST_SECTION_MAP));
-        } else if (TEST_SECTION_MAP.hasOwnProperty(section)) {
-            tests = TEST_SECTION_MAP[section];
-        }
+    test("reference.js binders build correct reference", function () {
+        expect(10);
+        var testRef = reference.wrapper("test");
+        var referenceOf = reference.refersTo;
 
-        return tests;
-    };
+        ok(referenceOf(testRef.index(3)) === "test");
+        ok(referenceOf(testRef.id(3)) === "test");
+        ok(referenceOf(testRef.offset(3)) === "test");
+        ok(referenceOf(testRef.name(3)) === "test");
+        ok(referenceOf(testRef.target) === "test");
+        ok(referenceOf(testRef.current) === "test");
+        ok(referenceOf(testRef.front) === "test");
+        ok(referenceOf(testRef.back) === "test");
+        ok(referenceOf(testRef.all) === "test");
+        ok(referenceOf(testRef.none) === "test");
+    });
 
-    exports.getSpecsByClass = getSpecsByClass;
+
 });
