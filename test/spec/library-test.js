@@ -21,20 +21,15 @@
  * 
  */
 
-/*jslint devel: true*/
-/* global require, module, test, ok, expect */
+/* global module, test, ok, expect */
 
-define(function () {
+define(function (require) {
     "use strict";
 
     var reference = require("adapter/lib/reference");
 
+    // This module contains tests for files in src/lib
     module("library");
-
-    // This file tests the src/lib files
-
-    // TESTS  
-    // -----
 
     test("reference.js binders build correct reference", function () {
         expect(10);
@@ -52,6 +47,4 @@ define(function () {
         ok(referenceOf(testRef.all) === "test");
         ok(referenceOf(testRef.none) === "test");
     });
-
-
 });
