@@ -27,9 +27,11 @@ define(function (require, exports) {
 
     /**
      * Will return layer IDs under the given point of the active document
+     * The point is (x,y) where (0,0) is the top left of the document and 
+     * x is horizontal vs y is vertical
      * 
-     * @param {number} px X coordination
-     * @param {number} py Y coordination
+     * @param {number} px X coordination - horizontal
+     * @param {number} py Y coordination - vertical
      * @return {PlayObject}
      *
      */
