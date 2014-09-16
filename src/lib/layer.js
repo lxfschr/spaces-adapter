@@ -27,6 +27,9 @@ define(function (require, exports) {
     var referenceBy = require("./reference").wrapper("layer"),
         inUnits = require("./unit");
 
+    var assert = require("../util").assert,
+        referenceOf = require("./reference").refersTo;
+        
     /**
      * Moves the source layer to right before target reference 
      * (usually done by id)
@@ -37,6 +40,7 @@ define(function (require, exports) {
      * @returns {PlayObject}
      */
     var reorder = function (sourceRef, targetRef) {
+        assert(referenceOf(sourceRef) === "layer", "reorder is passed a non-layer reference");
         return {
             command: "move",
             descriptor: {
@@ -56,6 +60,7 @@ define(function (require, exports) {
      * @returns {PlayObject}
      */
     var align = function (sourceRef, alignment) {
+        assert(referenceOf(sourceRef) === "layer", "align is passed a non-layer reference");
         return {
             command: "align",
             descriptor: {
@@ -93,6 +98,7 @@ define(function (require, exports) {
      * @returns {PlayObject}
      */
     var distribute = function (sourceRef, alignment) {
+        assert(referenceOf(sourceRef) === "layer", "distribute is passed a non-layer reference");
         return {
             command: "distort",
             descriptor: {
@@ -116,6 +122,7 @@ define(function (require, exports) {
         modifier = modifier || "select";
         makeVisible = makeVisible || false;
         
+        assert(referenceOf(ref) === "layer", "select is passed a non-layer reference");
         return {
             command: "select",
             descriptor: {
@@ -155,6 +162,7 @@ define(function (require, exports) {
      * @returns {PlayObject}
      */
     var hide = function (ref) {
+        assert(referenceOf(ref) === "layer", "hide is passed a non-layer reference");
         return {
             command: "hide",
             descriptor: {
@@ -169,6 +177,7 @@ define(function (require, exports) {
      * @returns {PlayObject}
      */
     var show = function (ref) {
+        assert(referenceOf(ref) === "layer", "show is passed a non-layer reference");
         return {
             command: "show",
             descriptor: {
@@ -184,6 +193,7 @@ define(function (require, exports) {
      * @returns {PlayObject}
      */
     var duplicate = function (ref, name) {
+        assert(referenceOf(ref) === "layer", "duplicate is passed a non-layer reference");
         var rval = {
             command: "duplicate",
             descriptor: {
@@ -203,6 +213,7 @@ define(function (require, exports) {
      * @returns {PlayObject}
      */
     var flip = function (ref, orientation) {
+        assert(referenceOf(ref) === "layer", "flip is passed a non-layer reference");
         return {
             command: "flip",
             descriptor: {
@@ -223,6 +234,7 @@ define(function (require, exports) {
      * @returns {PlayObject}
      */
     var setHeight = function (ref, value, unit) {
+        assert(referenceOf(ref) === "layer", "setHeight is passed a non-layer reference");
         return {
             command: "transform",
             descriptor: {
@@ -240,6 +252,7 @@ define(function (require, exports) {
      * @returns {PlayObject}
      */
     var setWidth = function (ref, value, unit) {
+        assert(referenceOf(ref) === "layer", "setWidth is passed a non-layer reference");
         return {
             command: "transform",
             descriptor: {
@@ -258,6 +271,7 @@ define(function (require, exports) {
      * @returns {PlayObject}
      */
     var rotate = function (ref, angle) {
+        assert(referenceOf(ref) === "layer", "rotate is passed a non-layer reference");
         return {
             command: "transform",
             descriptor: {
@@ -274,6 +288,7 @@ define(function (require, exports) {
      * @returns {PlayObject}
      */
     var setOpacity = function (ref, opacity) {
+        assert(referenceOf(ref) === "layer", "setOpacity is passed a non-layer reference");
         return {
             command: "set",
             descriptor: {
@@ -295,6 +310,7 @@ define(function (require, exports) {
      * @returns {PlayObject}
      */
     var setFillOpacity = function (ref, opacity) {
+        assert(referenceOf(ref) === "layer", "setFillOpacity is passed a non-layer reference");
         return {
             command: "set",
             descriptor: {
@@ -316,6 +332,7 @@ define(function (require, exports) {
      * @returns {PlayObject}
      */
     var setBlendMode = function (ref, mode) {
+        assert(referenceOf(ref) === "layer", "setBlendMode is passed a non-layer reference");
         return {
             command: "set",
             descriptor: {
@@ -334,6 +351,7 @@ define(function (require, exports) {
      * @returns {PlayObject}
      */
     var deleteLayer =  function (ref) {
+        assert(referenceOf(ref) === "layer", "deleteLayer is passed a non-layer reference");
         return {
             command: "delete",
             descriptor: {

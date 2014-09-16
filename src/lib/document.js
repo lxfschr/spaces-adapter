@@ -28,6 +28,9 @@ define(function (require, exports) {
     var referenceBy = require("./reference").wrapper("document"),
         unitsIn = require("./unit");
 
+    var assert = require("../util").assert,
+        referenceOf = require("./reference").refersTo;
+
     /**
      * Open a document (psd, png, jpg, ai, gif)
      * 
@@ -297,6 +300,8 @@ define(function (require, exports) {
      *
      */
     var selectDocument = function (sourceRef) {
+        assert(referenceOf(sourceRef) === "document", "selectDocument is passed a non-document reference");
+        
         var desc = {
             "null": sourceRef
         };

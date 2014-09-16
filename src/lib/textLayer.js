@@ -28,6 +28,9 @@ define(function (require, exports) {
     var unitsIn = require("./unit"),
         colorObject = require("./color").colorObject;
     
+    var assert = require("../util").assert,
+        referenceOf = require("./reference").refersTo;
+    
     /**
      * Create a text layer
      *
@@ -45,6 +48,7 @@ define(function (require, exports) {
      * createText("Photoshop Playground",20,20);
      */
     var createText = function (sourceRef, strTextKey, numClickPointH, numClickPointV) {
+        assert(referenceOf(sourceRef) === "textLayer", "createText expects a textLayer reference");
         return {
             command: "make",
             descriptor: {
@@ -84,6 +88,7 @@ define(function (require, exports) {
      * setFace("Helvetica","Light");
      */
     var setFace = function (sourceRef, face, weight) {
+        assert(referenceOf(sourceRef) === "textLayer", "setFace expects a textLayer reference");
         return {
             command: "set",
             descriptor: {
@@ -115,6 +120,7 @@ define(function (require, exports) {
      * setSize(14, "pt");
      */
     var setSize = function (sourceRef, val, unit) {
+        assert(referenceOf(sourceRef) === "textLayer", "setSize expects a textLayer reference");
         return {
             command: "set",
             descriptor: {
@@ -144,6 +150,7 @@ define(function (require, exports) {
      * setAlignment("center");
      */
     var setAlignment = function (sourceRef, orient) {
+        assert(referenceOf(sourceRef) === "textLayer", "setAlignment expects a textLayer reference");
         return {
             command: "set",
             desciptor: {
@@ -182,6 +189,7 @@ define(function (require, exports) {
      * setLeading(false,14);
      */
     var setLeading = function (sourceRef, auto, val, unit) {
+        assert(referenceOf(sourceRef) === "textLayer", "setLeading expects a textLayer reference");
         if (auto === false) {
             return {
                 command: "set",
@@ -227,6 +235,7 @@ define(function (require, exports) {
      * setLeading(10);
      */
     var setTracking = function (sourceRef, val) {
+        assert(referenceOf(sourceRef) === "textLayer", "setTracking expects a textLayer reference");
         return {
             command: "set",
             desciptor: {
@@ -256,6 +265,7 @@ define(function (require, exports) {
      * setColor([100,200,100]);
      */
     var setColor = function (sourceRef, arrayTextColor) {
+        assert(referenceOf(sourceRef) === "textLayer", "setColor expects a textLayer reference");
         return {
             command: "set",
             desciptor: {
@@ -285,6 +295,7 @@ define(function (require, exports) {
      * setOrientation("vertical");
      */
     var setOrientation = function (sourceRef, strTextOrientation) {
+        assert(referenceOf(sourceRef) === "textLayer", "setOrientation expects a textLayer reference");
         return {
             command: "set",
             descriptor: {
@@ -312,6 +323,7 @@ define(function (require, exports) {
      * setAntiAlias("smooth");
      */
     var setAntiAlias = function (sourceRef, strAntiAliasType) {
+        assert(referenceOf(sourceRef) === "textLayer", "setAntiAlias expects a textLayer reference");
         return {
             command: "set",
             desciptor: {
@@ -359,6 +371,7 @@ define(function (require, exports) {
      * setRangeAndChangeTextStyle(0,3,"","","pt",20,[200,100,150]);
      */
     var setRangeAndChangeTextStyle = function (sourceRef, from, to, face, weight, unit, size, arrayTextColor) {
+        assert(referenceOf(sourceRef) === "textLayer", "setRangeAndChangeTextStyle expects a textLayer reference");
         return {
             command: "set",
             desciptor: {

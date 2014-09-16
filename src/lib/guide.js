@@ -27,6 +27,9 @@ define(function (require, exports) {
 
     var unitsIn = require("./unit");
     
+    var assert = require("../util").assert,
+        referenceOf = require("./reference").refersTo;
+
     /**
      * @param {ActionDescriptor} sourceRef Guide reference
      *
@@ -36,6 +39,7 @@ define(function (require, exports) {
      * Have guide(s) in the active document.
      */
     var getGuide = function (sourceRef) {
+        assert(referenceOf(sourceRef) === "guide", "getGuide is passed a non-guide reference");
         return {
             command: "get",
             descriptor: {

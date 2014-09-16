@@ -21,6 +21,8 @@
  * 
  */
 
+/* global console */
+
 define(function (require, exports) {
     "use strict";
 
@@ -46,6 +48,10 @@ define(function (require, exports) {
         });
     };
 
-    exports.inherits = inherits;
+    var assert = function (expression, message) {
+        console.assert(expression, message);
+    };
 
+    exports.inherits = inherits;
+    exports.assert = assert;
 });

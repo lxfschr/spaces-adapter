@@ -28,6 +28,22 @@
 define(function (require, exports, module) {
     "use strict";
 
+    /**
+     * Given a reference object created by one of the wrapper functions
+     * this function will return the object name out
+     *
+     * @param {ActionDescriptor} reference Reference to an object
+     * @returns {string} Object type
+     */
+    var refersTo = function (reference) {
+        var refValue = reference.ref;
+        if (Array.isArray(refValue)) {
+            return refValue[0].ref;
+        } else {
+            return reference.ref;
+        }
+    };
+
     var wrapper = function (className) {
         
         /**
@@ -119,4 +135,5 @@ define(function (require, exports, module) {
     };
 
     module.exports.wrapper = wrapper;
+    module.exports.refersTo = refersTo;
 });

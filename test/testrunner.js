@@ -39,6 +39,17 @@ define(function (require) {
 
     var specs = require("./specs");
 
+    // Tests are loaded dynamically so we need to require these files here.
+    require("adapter/lib/reference");
+
+    // PhantomJS doesn't support bind yet
+    Function.prototype.bind = Function.prototype.bind || function (thisp) {
+        var self = this;
+        return function () {
+            return self.apply(thisp, arguments);
+        };
+    };
+
     var _parseQueryString = function () {
         var queryString = window.location.search.substr(1), // trims off initial "?"
             parts = queryString.split("&"),
