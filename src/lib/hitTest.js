@@ -26,11 +26,11 @@ define(function (require, exports) {
     "use strict";
 
     /**
-     * Returns the target of the event by parsing the action descriptor
+     * Will return layer IDs under the given point of the active document
      * 
-     * @param {ActionDescriptor} event
-     *
-     * @return {string} Target of the event
+     * @param {number} px X coordination
+     * @param {number} py Y coordination
+     * @return {PlayObject}
      *
      */
     var hitTest = function (px, py) {
