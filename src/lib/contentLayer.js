@@ -28,6 +28,9 @@ define(function (require, exports) {
         unitsIn = require("./unit"),
         shape = require("./shape");
 
+    var assert = require("../util").assert,
+        referenceOf = require("./reference").refersTo;
+
     /**
      * Stroke alignment possible values
      */
@@ -78,6 +81,7 @@ define(function (require, exports) {
      * @return {PlayObject}
      */
     var setStrokeAlignment = function (sourceRef, alignment) {
+        assert(referenceOf(sourceRef) === "layer", "setStrokeAlignment is passed a non-layer reference");
         return {
             command: "set",
             descriptor: {
@@ -111,6 +115,7 @@ define(function (require, exports) {
      * @return {PlayObject}
      */
     var setStrokeCap = function (sourceRef, cap) {
+        assert(referenceOf(sourceRef) === "layer", "setStrokeCap is passed a non-layer reference");
         return {
             command: "set",
             descriptor: {
@@ -142,6 +147,7 @@ define(function (require, exports) {
      * @return {PlayObject}
      */
     var setStrokeCorner = function (sourceRef, corner) {
+        assert(referenceOf(sourceRef) === "layer", "setStrokeCorner is passed a non-layer reference");
         return {
             command: "set",
             descriptor: {
@@ -184,6 +190,7 @@ define(function (require, exports) {
      * raw.contentLayer.setShapeFillTypeSolidColor([100,200,150]);
      */
     var setShapeFillTypeSolidColor = function (sourceRef, rgb) {
+        assert(referenceOf(sourceRef) === "layer", "setShapeFillTypeSolidColor is passed a non-layer reference");
         if (rgb === null) {
             return _setShapeFillTypeNoColor();
         }
@@ -220,6 +227,7 @@ define(function (require, exports) {
      * raw.contentLayer.setStrokeFillTypeSolidColor([100,200,150]);
      */
     var setStrokeFillTypeSolidColor = function (sourceRef, rgb) {
+        assert(referenceOf(sourceRef) === "layer", "setStrokeAlignment is passed a non-layer reference");
         if (rgb === null) {
             return _setStrokeFillTypeNoColor();
         }
@@ -315,6 +323,7 @@ define(function (require, exports) {
      * raw.contentLayer.setShapeStrokeWidth(10);
      */
     var setShapeStrokeWidth = function (sourceRef, strokeWidth) {
+        assert(referenceOf(sourceRef) === "layer", "setShapeStrokeWidth is passed a non-layer reference");
         return {
             command: "set",
             descriptor: {
@@ -353,6 +362,7 @@ define(function (require, exports) {
      * raw.contentLayer.setStrokeFillTypePattern("pBubbles", 100);
      */
     var setStrokeFillTypePattern = function (sourceRef, fillTypePatternName, scaleVal) {
+        assert(referenceOf(sourceRef) === "layer", "setStrokeFillTypePattern is passed a non-layer reference");
         return {
             command: "set",
             descriptor: {
@@ -411,6 +421,7 @@ define(function (require, exports) {
      * raw.contentLayer.setShapeFillTypePattern("pBubbles", 100);
      */
     var setShapeFillTypePattern = function (sourceRef, fillTypePatternName, scaleVal) {
+        assert(referenceOf(sourceRef) === "layer", "setShapeFillTypePattern is passed a non-layer reference");
         return {
             command: "set",
             descriptor: {
@@ -462,6 +473,7 @@ define(function (require, exports) {
      * raw.contentLayer.moveShape(20,20);
      */
     var moveShape = function (sourceRef, hVal, vVal) {
+        assert(referenceOf(sourceRef) === "layer", "moveShape is passed a non-layer reference");
         return {
             command: "set",
             descriptor: {
@@ -523,6 +535,8 @@ define(function (require, exports) {
     var createShape = function (sourceRef, fillEnabledVal, fillContentShape, fillContentShapeVal,
             strokeEnabledVal, fillContentStroke, fillContentStrokeVal, strokeAlignment,
             cap, corner, strokeWidth, typeShape, shapeVal) {
+        
+        assert(referenceOf(sourceRef) === "layer", "createShape is passed a non-layer reference");
         
         var patternLayerName;
         if (fillContentShape === "patternLayer") {

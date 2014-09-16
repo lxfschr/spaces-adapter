@@ -39,6 +39,7 @@ define(function (require, exports) {
             return event.new.obj;
         } else if (event.hasOwnProperty("null")) {
             // Case for layer
+            // Case for tool
             return event.null.ref;
         } else {
             return null;
