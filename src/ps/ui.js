@@ -35,6 +35,17 @@ define(function (require, exports, module) {
      */
     var _ui = Promise.promisifyAll(_playground.ps.ui);
 
+    /* jshint bitwise: false */
+    /**
+     *
+     */
+    var ALL_NONWINDOW_WIDGETS_BITMASK =
+        _ui.widgetTypes.CONTROLBAR |
+        _ui.widgetTypes.DOCUMENT_TABS |
+        _ui.widgetTypes.PALETTE |
+        _ui.widgetTypes.TOOLBAR;
+    /* jshint bitwise: true */
+
     /**
      * The UI object provides helper methods for dealing with the
      * low-level native binding to Photoshop. This object will typically
@@ -105,6 +116,15 @@ define(function (require, exports, module) {
      */
     UI.prototype.setSuppressScrollbars = function (suppress) {
         return _ui.setSuppressScrollbarsAsync(suppress);
+    };
+
+    /**
+     * Sets whether or not the Photoshop classic chrome is visible
+     *
+     * @param {boolean} visible Whether or not the chrome should be visible
+     */
+    UI.prototype.setClassicChromeVisibility = function (visible) {
+        return _ui.setWidgetTypeVisibilityAsync(ALL_NONWINDOW_WIDGETS_BITMASK, visible);
     };
 
     /** @type {UI} The UI singleton */
