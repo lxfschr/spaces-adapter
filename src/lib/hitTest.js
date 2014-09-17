@@ -30,12 +30,12 @@ define(function (require, exports) {
      * The point is (x,y) where (0,0) is the top left of the document and 
      * x is horizontal vs y is vertical
      * 
-     * @param {number} px X coordination - horizontal
-     * @param {number} py Y coordination - vertical
+     * @param {number} px X coordinate - horizontal
+     * @param {number} py Y coordinate - vertical
      * @return {PlayObject}
      *
      */
-    var hitTest = function (px, py) {
+    var layerIDsAtPoint = function (px, py) {
          return {
             command: "hitTest",
             descriptor: {
@@ -45,6 +45,6 @@ define(function (require, exports) {
         };
     };
     
-    exports.layerIDsUnder = hitTest;
+    exports.layerIDsAtPoint = layerIDsAtPoint;
 
 });
