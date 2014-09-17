@@ -124,7 +124,10 @@ define(function (require, exports, module) {
      * @param {boolean} visible Whether or not the chrome should be visible
      */
     UI.prototype.setClassicChromeVisibility = function (visible) {
-        return _ui.setWidgetTypeVisibilityAsync(ALL_NONWINDOW_WIDGETS_BITMASK, visible);
+        return this.setSuppressScrollbars(!visible).then(function () {
+            _ui.setWidgetTypeVisibilityAsync(ALL_NONWINDOW_WIDGETS_BITMASK, visible);
+        });
+
     };
 
     /** @type {UI} The UI singleton */
