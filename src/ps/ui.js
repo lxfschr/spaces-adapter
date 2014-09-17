@@ -37,7 +37,10 @@ define(function (require, exports, module) {
 
     /* jshint bitwise: false */
     /**
+     * Bitmask of all of the classic UI widgets we want to hide in DesignShop mode
      *
+     * @const
+     * @type{number}
      */
     var ALL_NONWINDOW_WIDGETS_BITMASK =
         _ui.widgetTypes.CONTROLBAR |
@@ -122,6 +125,7 @@ define(function (require, exports, module) {
      * Sets whether or not the Photoshop classic chrome is visible
      *
      * @param {boolean} visible Whether or not the chrome should be visible
+     * @return {Promise}
      */
     UI.prototype.setClassicChromeVisibility = function (visible) {
         return this.setSuppressScrollbars(!visible).then(function () {
