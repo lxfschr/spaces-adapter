@@ -36,7 +36,7 @@ define(function (require, exports) {
      *
      */
     var layerIDsAtPoint = function (px, py) {
-         return {
+        return {
             command: "hitTest",
             descriptor: {
                 "x": px,
