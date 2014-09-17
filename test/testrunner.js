@@ -39,9 +39,6 @@ define(function (require) {
 
     var specs = require("./specs");
 
-    // Tests are loaded dynamically so we need to require these files here.
-    require("adapter/lib/reference");
-
     // PhantomJS doesn't support bind yet
     Function.prototype.bind = Function.prototype.bind || function (thisp) {
         var self = this;
