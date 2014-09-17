@@ -40,7 +40,7 @@ define(function (require, exports, module) {
      * Bitmask of all of the classic UI widgets we want to hide in DesignShop mode
      *
      * @const
-     * @type{number}
+     * @type {number}
      */
     var ALL_NONWINDOW_WIDGETS_BITMASK =
         _ui.widgetTypes.CONTROLBAR |
