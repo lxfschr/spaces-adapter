@@ -36,17 +36,11 @@ define(function (require, exports) {
 
     
     /**
-     * Commit or cancel the current modal text edit state.
+     * Commit or cancel the current modal tool edit state.
      *
      * @param {boolean=} commit Commits if true; cancels otherwise
-     * @return {Promise} Resolves once the text state has ended
+     * @return {Promise} Resolves once the modal state has ended
      */
-    var endModalTextState = function (commit) {
-        commit = commit || false;
-        
-        return _ps.endModalTextStateAsync(commit);
-    };
-    
     var endModalToolState = function (commit) {
         commit = commit || false;
         
@@ -65,6 +59,5 @@ define(function (require, exports) {
     };
 
     exports.endModalToolState = endModalToolState;
-    exports.endModalTextState = endModalTextState;
     exports.performMenuCommand = performMenuCommand;
 });
