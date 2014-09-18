@@ -30,6 +30,8 @@ define(function (require, exports, module) {
         util = require("../util"),
         Promise = require("bluebird");
 
+    var policy = require("./eventPolicies");
+
     /**
      * Promisified version of low-level keyboard focus functions
      */
@@ -107,6 +109,47 @@ define(function (require, exports, module) {
         return _ui.setSuppressScrollbarsAsync(suppress);
     };
 
+    /**
+     * Pointer propagation modes
+     */
+    UI.prototype.pointerPropagationMode = {
+        "alpha": _playground.ps.ui.pointerPropagationMode.ALPHA_PROPAGATE,
+        "always": _playground.ps.ui.pointerPropagationMode.ALWAYS_PROPAGATE,
+        "never": _playground.ps.ui.pointerPropagationMode.NEVER_PROPAGATE
+    };
+
+    /**
+     * Gets the mode of pointer propagation determining the rules of
+     * what mouse events will be trickled down to Playground layer.
+     * 
+     * @return {Promise.<_ui.policyAction>}
+     */
+    UI.prototype.getPointerPropagationMode = function () {
+        return _ui.getPointerPropagationModeAsync();
+    };
+
+    /**
+     * Set the pointer propagation mode
+     * 
+     * @param {string} mode What level of mouse events to pass to Playground
+     *  possible values defined in UI.prototype.pointerPropagationMode
+     * @return {Promise}
+     */
+    UI.prototype.setPointerPropagationMode = function (mode) {
+        return _ui.setPointerPropagationMode(this.pointerPropagationMode[mode]);
+    };
+
+
+
+    /**
+     * Policy functions reexposed in the singleton
+     */
+    UI.prototype.addPointerPolicy = policy.addPointerPolicy;
+    UI.prototype.addKeyboardPolicy = policy.addKeyboardPolicy;
+    UI.prototype.removePointerPolicy = policy.removePointerPolicy;
+    UI.prototype.removeKeyboardPolicy = policy.removeKeyboardPolicy;
+    UI.prototype.pointerPolicyAction = policy.pointerPolicyAction;
+    UI.prototype.keyboardPolicyAction = policy.keyboardPolicyAction;
     /** @type {UI} The UI singleton */
     var theUI = new UI();
 
