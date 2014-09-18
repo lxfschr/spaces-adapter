@@ -35,6 +35,20 @@ define(function (require, exports, module) {
      */
     var _ui = Promise.promisifyAll(_playground.ps.ui);
 
+    /* jshint bitwise: false */
+    /**
+     * Bitmask of all of the classic UI widgets we want to hide in DesignShop mode
+     *
+     * @const
+     * @type {number}
+     */
+    var ALL_NONWINDOW_WIDGETS_BITMASK =
+        _ui.widgetTypes.CONTROLBAR |
+        _ui.widgetTypes.DOCUMENT_TABS |
+        _ui.widgetTypes.PALETTE |
+        _ui.widgetTypes.TOOLBAR;
+    /* jshint bitwise: true */
+
     /**
      * The UI object provides helper methods for dealing with the
      * low-level native binding to Photoshop. This object will typically
@@ -108,6 +122,19 @@ define(function (require, exports, module) {
     };
 
     /**
+     * Sets whether or not the Photoshop classic chrome is visible
+     *
+     * @param {boolean} visible Whether or not the chrome should be visible
+     * @return {Promise}
+     */
+    UI.prototype.setClassicChromeVisibility = function (visible) {
+        return this.setSuppressScrollbars(!visible).then(function () {
+            _ui.setWidgetTypeVisibilityAsync(ALL_NONWINDOW_WIDGETS_BITMASK, visible);
+        });
+
+    };
+
+    /*
      * Pointer propagation modes
      * ALPHA_PROPAGATE: Default behavior, events will be sent to Playground
      * if they're clicking on a Playground view
@@ -167,7 +194,6 @@ define(function (require, exports, module) {
      * @params {Object.{policyList: Array.<Object>}} An Object containing a list of policies
      */
     UI.prototype.setKeyboardEventPropagationPolicy = _playground.ps.ui.setKeyboardEventPropagationPolicy;
-
 
 
     /** @type {UI} The UI singleton */

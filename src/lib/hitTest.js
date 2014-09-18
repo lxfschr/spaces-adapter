@@ -21,43 +21,30 @@
  * 
  */
 
-/* global _playground */
 
 define(function (require, exports) {
     "use strict";
 
-    var Promise = require("bluebird");
-
     /**
-     * @private
-     * Promisified version of _playground.ps functions.
+     * Will return layer IDs under the given point of the active document
+     * The point is (x,y) where (0,0) is the top left of the document and 
+     * x is horizontal vs y is vertical
+     * 
+     * @param {number} px X coordinate - horizontal
+     * @param {number} py Y coordinate - vertical
+     * @return {PlayObject}
+     *
      */
-    var _ps = Promise.promisifyAll(_playground.ps);
-
+    var layerIDsAtPoint = function (px, py) {
+        return {
+            command: "hitTest",
+            descriptor: {
+                "x": px,
+                "y": py
+            }
+        };
+    };
     
-    /**
-     * Commit or cancel the current modal tool edit state.
-     *
-     * @param {boolean=} commit Commits if true; cancels otherwise
-     * @return {Promise} Resolves once the modal state has ended
-     */
-    var endModalToolState = function (commit) {
-        commit = commit || false;
-        
-        return _ps.endModalToolStateAsync(commit);
-    };
+    exports.layerIDsAtPoint = layerIDsAtPoint;
 
-    /**
-     * Execute a Photoshop menu command.
-     * Should only be used for items that are not yet implemented via ActionDescriptors
-     *
-     * @param {number} commandID Photoshop menu command ID
-     * @return {Promise.<*>} Promise representing execution state of the menu command
-     */
-    var performMenuCommand = function (commandID) {
-        return _ps.performMenuCommandAsync(commandID);
-    };
-
-    exports.endModalToolState = endModalToolState;
-    exports.performMenuCommand = performMenuCommand;
 });
