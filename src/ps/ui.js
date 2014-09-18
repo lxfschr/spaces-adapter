@@ -30,8 +30,6 @@ define(function (require, exports, module) {
         util = require("../util"),
         Promise = require("bluebird");
 
-    var policy = require("./eventPolicies");
-
     /**
      * Promisified version of low-level keyboard focus functions
      */
@@ -111,12 +109,29 @@ define(function (require, exports, module) {
 
     /**
      * Pointer propagation modes
+     * ALPHA_PROPAGATE: Default behavior, events will be sent to Playground
+     * if they're clicking on a Playground view
+     * ALWAYS_PROPAGATE: Playground will never get a pointer event
+     * NEVER_PROPAGATE: Playground consumes all pointer events
      */
-    UI.prototype.pointerPropagationMode = {
-        "alpha": _playground.ps.ui.pointerPropagationMode.ALPHA_PROPAGATE,
-        "always": _playground.ps.ui.pointerPropagationMode.ALWAYS_PROPAGATE,
-        "never": _playground.ps.ui.pointerPropagationMode.NEVER_PROPAGATE
-    };
+    UI.prototype.pointerPropagationMode = _playground.ps.ui.pointerPropagationMode;
+
+    /**
+     * Keyboard propagation modes
+     * FOCUS_PROPAGATE: Default behavior, events will be sent to in focus element
+     * ALWAYS_PROPAGATE: Playground will never get a keyboard event
+     * NEVER_PROPAGATE: Playground consumes all keyboard events
+     */
+    UI.prototype.keyboardPropagationMode = _playground.ps.ui.keyboardPropagationMode;
+
+    /**
+     * Policy action modes
+     * Numerically, they're identical for keyboard and pointer
+     * ALPHA_PROPAGATE (applies as FOCUS_PROPAGATE on Keyboard events)
+     * ALWAYS_PROPAGATE
+     * NEVER_PROPAGATE
+     */
+    UI.prototype.policyAction = _playground.ps.ui.policyAction;
 
     /**
      * Gets the mode of pointer propagation determining the rules of
@@ -139,17 +154,22 @@ define(function (require, exports, module) {
         return _ui.setPointerPropagationMode(this.pointerPropagationMode[mode]);
     };
 
-
+    /**
+     * Installs the given list of pointer event policies into Photoshop
+     *
+     * @params {Object.{policyList: Array.<Object>}} An Object containing a list of policies
+     */
+    UI.prototype.setPointerEventPropagationPolicy = _playground.ps.ui.setPointerEventPropagationPolicy;
 
     /**
-     * Policy functions reexposed in the singleton
+     * Installs the given list of keyboard event policies into Photoshop
+     *
+     * @params {Object.{policyList: Array.<Object>}} An Object containing a list of policies
      */
-    UI.prototype.addPointerPolicy = policy.addPointerPolicy;
-    UI.prototype.addKeyboardPolicy = policy.addKeyboardPolicy;
-    UI.prototype.removePointerPolicy = policy.removePointerPolicy;
-    UI.prototype.removeKeyboardPolicy = policy.removeKeyboardPolicy;
-    UI.prototype.pointerPolicyAction = policy.pointerPolicyAction;
-    UI.prototype.keyboardPolicyAction = policy.keyboardPolicyAction;
+    UI.prototype.setKeyboardEventPropagationPolicy = _playground.ps.ui.setKeyboardEventPropagationPolicy;
+
+
+
     /** @type {UI} The UI singleton */
     var theUI = new UI();
 
