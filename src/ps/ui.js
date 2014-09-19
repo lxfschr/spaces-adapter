@@ -134,6 +134,105 @@ define(function (require, exports, module) {
 
     };
 
+    /**
+     * Pointer propagation modes - Used for the default mouse policy
+     * ALPHA_PROPAGATE: Default behavior, events will be sent to Playground
+     * if they're clicking on a Playground view
+     * ALWAYS_PROPAGATE: Playground will never get a pointer event
+     * NEVER_PROPAGATE: Playground consumes all pointer events
+     */
+    UI.prototype.pointerPropagationMode = _playground.ps.ui.pointerPropagationMode;
+
+    /**
+     * Keyboard propagation modes - Used for the default keyboard policy
+     * FOCUS_PROPAGATE: Default behavior, events will be sent to in focus element
+     * ALWAYS_PROPAGATE: Playground will never get a keyboard event
+     * NEVER_PROPAGATE: Playground consumes all keyboard events
+     */
+    UI.prototype.keyboardPropagationMode = _playground.ps.ui.keyboardPropagationMode;
+
+    /**
+     * Policy action modes - Used for custom policies
+     * Numerically, they're identical for keyboard and pointer
+     * ALPHA_PROPAGATE (applies as FOCUS_PROPAGATE on Keyboard events)
+     * ALWAYS_PROPAGATE
+     * NEVER_PROPAGATE
+     */
+    UI.prototype.policyAction = _playground.ps.ui.policyAction;
+
+    /**
+     * Gets the mode of pointer propagation determining the rules of
+     * what mouse events will be trickled down to Playground layer.
+     * 
+     * @return {Promise.<number>} Resolves to a value in pointerPropagationMode
+     */
+    UI.prototype.getPointerPropagationMode = function () {
+        return _ui.getPointerPropagationModeAsync();
+    };
+
+    /**
+     * Set the pointer propagation mode
+     * 
+     * @param {number} mode What level of mouse events to pass to Playground
+     *  possible values defined in UI.prototype.pointerPropagationMode
+     * @return {Promise}
+     */
+    UI.prototype.setPointerPropagationMode = function (mode) {
+        return _ui.setPointerPropagationMode(mode);
+    };
+
+    /**
+     * Gets the mode of keyboard propagation determining the rules of
+     * what keyboard events will be trickled down to Playground layer.
+     * 
+     * @return {Promise.<number>} Resolves to a value in keyboardPropagationMode
+     */
+    UI.prototype.getKeyboardPropagationMode = function () {
+        return _ui.getKeyboardPropagationModeAsync();
+    };
+
+    /**
+     * Set the keyboard propagation mode
+     * 
+     * @param {number} mode What level of keyboard events to pass to Playground
+     *  possible values defined in UI.prototype.keyboardPropagationMode
+     * @return {Promise}
+     */
+    UI.prototype.setKeyboardPropagationMode = function (mode) {
+        return _ui.setKeyboardPropagationMode(mode);
+    };
+
+    /**
+     * Installs the given list of pointer event policies into Photoshop
+     * Each policy is an object with this structure:
+     * {    eventKind: _playground.os.eventKind,
+     *      modifiers: _playground.os.eventModifiers,
+     *      keyCode: _playground.os.keyCode,
+     *      action: _playground.ps.ui.policyAction
+     * }
+     *
+     * @param {Array.<{eventKind: number, modifiers: number, keyCode: number, action: number}>} policyList
+     */
+    UI.prototype.setPointerEventPropagationPolicy = function (policyList) {
+        return _playground.ps.ui.setPointerEventPropagationPolicy({policyList: policyList});
+    };
+
+    /**
+     * Installs the given list of keyboard event policies into Photoshop
+     * Each policy is an object with this structure:
+     * {    eventKind: _playground.os.eventKind,
+     *      modifiers: _playground.os.eventModifiers,
+     *      keyCode: _playground.os.keyCode,
+     *      action: _playground.ps.ui.policyAction
+     * }
+     *
+     * @param {Array.<{eventKind: number, modifiers: number, keyCode: number, action: number}>} policyList
+     */
+    UI.prototype.setKeyboardEventPropagationPolicy = function (policyList) {
+        return _playground.ps.ui.setKeyboardEventPropagationPolicy({policyList: policyList});
+    };
+
+
     /** @type {UI} The UI singleton */
     var theUI = new UI();
 
