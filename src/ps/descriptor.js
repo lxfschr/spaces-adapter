@@ -31,13 +31,6 @@ define(function (require, exports, module) {
         Promise = require("bluebird");
 
     /**
-     * Promisified versions of low-level _playground.ps.descriptor functions
-     *
-     * @private
-     */
-    var _descriptor = Promise.promisifyAll(_playground.ps.descriptor);
-
-    /**
      * The Descriptor object provides helper methods for dealing with the
      * low-level native binding to Photoshop. This object will typically
      * not be used by user-level code.
@@ -107,6 +100,26 @@ define(function (require, exports, module) {
         Descriptor.super_.prototype.emitEvent.call(this, event, args);
     };
 
+    var _wrap = function (toWrap) {
+        var reference;
+
+        if (Array.isArray(toWrap)) {
+            reference = {
+                ref: toWrap.map(_wrap).reverse()
+            };
+        } else if (typeof toWrap === "string") {
+            reference = {
+                ref: toWrap,
+                enum: "$Ordn",
+                value: "$Trgt"
+            };
+        } else {
+            reference = toWrap;
+        }
+
+        return reference;
+    };
+
     /**
      * Executes a low-level "get" call using an ActionReference.
      *
@@ -117,27 +130,11 @@ define(function (require, exports, module) {
      * @return {Promise.<?>} The value of the reference, dependent on reference type
      */
     Descriptor.prototype.get = function (reference) {
-        var wrap = function (toWrap) {
-            var reference;
+        var wrappedReference = _wrap(reference),
+            getAsync = Promise.promisify(_playground.ps.descriptor.get,
+                _playground.ps.descriptor);
 
-            if (Array.isArray(toWrap)) {
-                reference = {
-                    ref: toWrap.map(wrap).reverse()
-                };
-            } else if (typeof toWrap === "string") {
-                reference = {
-                    ref: toWrap,
-                    enum: "$Ordn",
-                    value: "$Trgt"
-                };
-            } else {
-                reference = toWrap;
-            }
-
-            return reference;
-        };
-
-        return _descriptor.getAsync(wrap(reference));
+        return getAsync(wrappedReference);
     };
 
     /**
@@ -162,23 +159,6 @@ define(function (require, exports, module) {
                 return obj[property];
             });
     };
-    
-    /**
-     * Executes a low-level "play" call on the PlayObject by unwrapping it
-     *
-     * @param {PlayObject} object Contains command, descriptor and options information
-     *
-     * @returns {Promise.<Object>} Resolves to the result of the call
-     */
-    Descriptor.prototype.playObject = function (object) {
-        var command = object.command;
-        var descriptor = object.descriptor || {};
-        var options = object.options || {
-            interactionMode: _playground.ps.descriptor.interactionMode.SILENT
-        };
-        
-        return _descriptor.playAsync(command, descriptor, options);
-    };
 
     /**
      * Executes a low-level "play" call on the specified ActionDescriptor.
@@ -195,9 +175,48 @@ define(function (require, exports, module) {
             interactionMode: _playground.ps.descriptor.interactionMode.SILENT
         };
 
-        return _descriptor.playAsync(name, descriptor, options);
+        var playAsync = Promise.promisify(_playground.ps.descriptor.play,
+            _playground.ps.descriptor);
+
+        return playAsync(name, descriptor, options);
+    };
+
+    /**
+     * Executes a low-level "play" call on the PlayObject by unwrapping it
+     *
+     * @param {PlayObject} playObject Contains command, descriptor and options information
+     *
+     * @returns {Promise} Resolves to the result of the call
+     */
+    Descriptor.prototype.playObject = function (playObject) {
+        var command = playObject.command,
+            descriptor = playObject.descriptor,
+            options = playObject.options;
+
+        return this.play(command, descriptor, options);
     };
     
+    /**
+     * Executes a low-level "batchPlay" call on the specified ActionDescriptors.
+     *
+     * @param {Array.<{name: string, descriptor: object}>} commands Array of ActionDescriptors to play
+     * @param {object=} options Options applied to the execution of each ActionDescriptor individually
+     * @param {{continueOnError: boolean=}}=} batchOptions Options that control how the batch of
+     *      ActionDescriptors is executed.
+     * @return {Promise.<Array.object>} Resolves with the list of ActionDescriptor results. 
+     */
+    Descriptor.prototype.batchPlay = function (commands, options, batchOptions) {
+        batchOptions = batchOptions || {};
+        options = options || {
+            interactionMode: _playground.ps.descriptor.interactionMode.SILENT
+        };
+
+        var batchPlayAsync = Promise.promisify(_playground.ps.descriptor.batchPlay,
+            _playground.ps.descriptor);
+
+        return batchPlayAsync(commands, options, batchOptions);
+    };
+
     /**
      * Executes a low-level "batchPlay" call on the specified PlayObjects.
      *
@@ -219,26 +238,8 @@ define(function (require, exports, module) {
                 descriptor: object.descriptor
             };
         });
-        
-        return _descriptor.batchPlayAsync(commands, options, batchOptions);
-    };
 
-    /**
-     * Executes a low-level "batchPlay" call on the specified ActionDescriptors.
-     *
-     * @param {Array.<{name: string, descriptor: object}>} commands Array of ActionDescriptors to play
-     * @param {object=} options Options applied to the execution of each ActionDescriptor individually
-     * @param {{continueOnError: boolean=}}=} batchOptions Options that control how the batch of
-     *      ActionDescriptors is executed.
-     * @return {Promise.<Array.object>} Resolves with the list of ActionDescriptor results. 
-     */
-    Descriptor.prototype.batchPlay = function (commands, options, batchOptions) {
-        batchOptions = batchOptions || {};
-        options = options || {
-            interactionMode: _playground.ps.descriptor.interactionMode.SILENT
-        };
-
-        return _descriptor.batchPlayAsync(commands, options, batchOptions);
+        return this.batchPlay(commands, options, batchOptions);
     };
 
     /** @type {Descriptor} The Descriptor singleton */
