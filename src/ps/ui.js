@@ -178,7 +178,7 @@ define(function (require, exports, module) {
      * @return {Promise}
      */
     UI.prototype.setPointerPropagationMode = function (mode) {
-        return _ui.setPointerPropagationMode(mode);
+        return _ui.setPointerPropagationModeAsync(mode);
     };
 
     /**
@@ -199,7 +199,7 @@ define(function (require, exports, module) {
      * @return {Promise}
      */
     UI.prototype.setKeyboardPropagationMode = function (mode) {
-        return _ui.setKeyboardPropagationMode(mode);
+        return _ui.setKeyboardPropagationModeAsync(mode);
     };
 
     /**
@@ -214,7 +214,7 @@ define(function (require, exports, module) {
      * @param {Array.<{eventKind: number, modifiers: number, keyCode: number, action: number}>} policyList
      */
     UI.prototype.setPointerEventPropagationPolicy = function (policyList) {
-        return _playground.ps.ui.setPointerEventPropagationPolicy({policyList: policyList});
+        return _ui.setPointerEventPropagationPolicyAsync({policyList: policyList});
     };
 
     /**
@@ -229,7 +229,7 @@ define(function (require, exports, module) {
      * @param {Array.<{eventKind: number, modifiers: number, keyCode: number, action: number}>} policyList
      */
     UI.prototype.setKeyboardEventPropagationPolicy = function (policyList) {
-        return _playground.ps.ui.setKeyboardEventPropagationPolicy({policyList: policyList});
+        return _ui.setKeyboardEventPropagationPolicyAsync({policyList: policyList});
     };
 
 
