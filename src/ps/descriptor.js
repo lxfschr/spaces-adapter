@@ -107,8 +107,8 @@ define(function (require, exports, module) {
      * For objects, leaves them as is.
      * 
      * @private
-     * @param {(string|Array.Object|Object)} toWrap object to reference to
-     * @return {Object} Reference to the toWrap object in a form .get will accept
+     * @param {(string|Array.<object>|object)} toWrap object to reference to
+     * @return {object} Reference to the toWrap object in a form .get will accept
      */
     var _wrap = function (toWrap) {
         var reference;
