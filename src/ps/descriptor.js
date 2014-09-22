@@ -100,6 +100,16 @@ define(function (require, exports, module) {
         Descriptor.super_.prototype.emitEvent.call(this, event, args);
     };
 
+    /** 
+     * Wraps certain type of parameters making it easier to call Descriptor.prototype.get
+     * For arrays, returns the reference to array recursively mapping everything inside
+     * For string values, references to the currently active one
+     * For objects, leaves them as is.
+     * 
+     * @private
+     * @param {(string|Array.Object|Object)} toWrap object to reference to
+     * @return {Object} Reference to the toWrap object in a form .get will accept
+     */
     var _wrap = function (toWrap) {
         var reference;
 
