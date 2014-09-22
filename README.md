@@ -11,18 +11,15 @@ Development Setup
 6. Optional: If you want to run tests and jshint from the command line:
    a. Install grunt-cli with `npm install -g grunt-cli`
    b. Run `npm install` from the root of this repo
-7. Install and run the [generator-domains](https://github.com/iwehrman/generator-domains) Generator plug-in.
 
 Directories
 -----------
 
-Put middleware code in `lib/`.
+Put middleware code in `src/`.
 
 Put examples of how to use the middleware in `examples/`
 
-Put unit test specs in `test/unit/spec/` and then add them to `test/unit/testrunner.js`.
-
-Put integration test specs in `test/integration/spec/` and then add them to `test/integration/testrunner.js`.
+Put unit test specs in `test/spec/` and then add them to `test/specs.js`.
 
 Running Tests
 -------------
