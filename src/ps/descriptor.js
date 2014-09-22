@@ -171,6 +171,15 @@ define(function (require, exports, module) {
     };
 
     /**
+     * Defines an enumeration of three constants that control dialog display
+     * while executing action descriptors: DONT_DISPLAY, DISPLAY and SILENT.
+     * 
+     * @const
+     * @type {Object.<string: number>}
+     */
+    Descriptor.prototype.interactionMode = _playground.ps.descriptor.interactionMode;
+
+    /**
      * Executes a low-level "play" call on the specified ActionDescriptor.
      *
      * @param {string} name Name of the ActionDescriptor command
@@ -182,7 +191,7 @@ define(function (require, exports, module) {
     Descriptor.prototype.play = function (name, descriptor, options) {
         descriptor = descriptor || {};
         options = options || {
-            interactionMode: _playground.ps.descriptor.interactionMode.SILENT
+            interactionMode: this.interactionMode.SILENT
         };
 
         var playAsync = Promise.promisify(_playground.ps.descriptor.play,
@@ -218,7 +227,7 @@ define(function (require, exports, module) {
     Descriptor.prototype.batchPlay = function (commands, options, batchOptions) {
         batchOptions = batchOptions || {};
         options = options || {
-            interactionMode: _playground.ps.descriptor.interactionMode.SILENT
+            interactionMode: this.interactionMode.SILENT
         };
 
         var batchPlayAsync = Promise.promisify(_playground.ps.descriptor.batchPlay,
@@ -239,7 +248,7 @@ define(function (require, exports, module) {
     Descriptor.prototype.batchPlayObjects = function (objects, options, batchOptions) {
         batchOptions = batchOptions || {};
         options = options || {
-            interactionMode: _playground.ps.descriptor.interactionMode.SILENT
+            interactionMode: this.interactionMode.SILENT
         };
         
         var commands = objects.map(function (object) {
