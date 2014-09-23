@@ -359,6 +359,29 @@ define(function (require, exports) {
             }
         };
     };
+
+    /**
+     * @param {ActionDescriptor} ref - Reference of layer to rename
+     * @param {string} name - What to rename the layer to
+     *
+     * @returns {PlayObject}
+     */
+    var renameLayer = function (ref, name) {
+        assert(referenceOf(ref) === "layer", "renameLayer is passed a non-layer reference");
+        return {
+            command: "set",
+            descriptor: {
+                "null": ref,
+                "to": {
+                    "obj": "layer",
+                    "value": {
+                        "name": name
+                    }
+                }
+            }
+        };
+    };
+
     
     // Left overs:
     // _offsetCommand
@@ -383,4 +406,5 @@ define(function (require, exports) {
     exports.setFillOpacity = setFillOpacity;
     exports.setBlendMode = setBlendMode;
     exports.delete = deleteLayer;
+    exports.rename = renameLayer;
 });
