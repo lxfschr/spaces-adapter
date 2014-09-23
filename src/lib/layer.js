@@ -382,7 +382,21 @@ define(function (require, exports) {
         };
     };
 
-    
+    /**
+     *
+     * @returns {PlayObject}
+     */
+    var groupSelectedLayers = function () {
+        return {
+            command: "make",
+            descriptor: {
+                "from": referenceBy.target,
+                "null": {
+                    "ref": "layerSection"
+                }
+            }
+        };
+    };
     // Left overs:
     // _offsetCommand
     // rename
@@ -407,4 +421,5 @@ define(function (require, exports) {
     exports.setBlendMode = setBlendMode;
     exports.delete = deleteLayer;
     exports.rename = renameLayer;
+    exports.groupSelected = groupSelectedLayers;
 });
