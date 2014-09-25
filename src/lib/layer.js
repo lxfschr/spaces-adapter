@@ -382,6 +382,30 @@ define(function (require, exports) {
         };
     };
 
+    /** 
+     * @param {ActionDescriptor} ref - Reference of layer(s) to change lock
+     * @param {boolean} lock - Flag for locking
+     *
+     * @returns {PlayObject}
+     */
+    var setLocking = function (ref, lock) {
+        assert(referenceOf(ref) === "layer", "setLocking is passed a non-layer reference");
+        var lockObject = lock ? {"protectAll": true} : {"protectNone": true};
+        return {
+            command: "set",
+            descriptor: {
+                "null": ref,
+                "to": {
+                    "obj": "layer",
+                    "value": {
+                        "obj": "layerLocking",
+                        "value": lockObject
+                    }
+                }
+            }
+        };
+    };
+
     
     // Left overs:
     // _offsetCommand
@@ -407,4 +431,5 @@ define(function (require, exports) {
     exports.setBlendMode = setBlendMode;
     exports.delete = deleteLayer;
     exports.rename = renameLayer;
+    exports.setLocking = setLocking;
 });
