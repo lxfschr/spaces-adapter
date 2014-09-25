@@ -411,7 +411,7 @@ define(function (require, exports) {
             command: "applyLocking",
             descriptor: {
                 "null": ref,
-                "to": {
+                "layerLocking": {
                     "obj": "layerLocking",
                     "value": lockObject
                 }
