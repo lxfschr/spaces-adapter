@@ -382,6 +382,22 @@ define(function (require, exports) {
         };
     };
 
+    /**
+     *
+     * @returns {PlayObject}
+     */
+    var groupSelectedLayers = function () {
+        return {
+            command: "make",
+            descriptor: {
+                "from": referenceBy.target,
+                "null": {
+                    "ref": "layerSection"
+                }
+            }
+        };
+    };
+
     /** 
      * @param {ActionDescriptor} ref - Reference of layer(s) to change lock
      * @param {boolean} lock - Flag for locking
@@ -405,12 +421,9 @@ define(function (require, exports) {
             }
         };
     };
-
     
     // Left overs:
     // _offsetCommand
-    // rename
-    // setLock
     
     exports.referenceBy = referenceBy;
     
@@ -431,5 +444,6 @@ define(function (require, exports) {
     exports.setBlendMode = setBlendMode;
     exports.delete = deleteLayer;
     exports.rename = renameLayer;
+    exports.groupSelected = groupSelectedLayers;
     exports.setLocking = setLocking;
 });
