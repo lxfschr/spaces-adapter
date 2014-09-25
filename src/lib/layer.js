@@ -408,15 +408,12 @@ define(function (require, exports) {
         assert(referenceOf(ref) === "layer", "setLocking is passed a non-layer reference");
         var lockObject = lock ? {"protectAll": true} : {"protectNone": true};
         return {
-            command: "set",
+            command: "applyLocking",
             descriptor: {
                 "null": ref,
                 "to": {
-                    "obj": "layer",
-                    "value": {
-                        "obj": "layerLocking",
-                        "value": lockObject
-                    }
+                    "obj": "layerLocking",
+                    "value": lockObject
                 }
             }
         };
