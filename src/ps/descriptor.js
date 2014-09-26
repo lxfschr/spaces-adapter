@@ -125,6 +125,12 @@ define(function (require, exports, module) {
             };
         } else {
             reference = toWrap;
+            
+            // Special case for play objects
+            if (reference.hasOwnProperty("null")) {
+                reference["null"] = _wrap(reference["null"]);
+            }
+            
         }
 
         return reference;
@@ -209,7 +215,7 @@ define(function (require, exports, module) {
      */
     Descriptor.prototype.playObject = function (playObject) {
         var command = playObject.command,
-            descriptor = playObject.descriptor,
+            descriptor = _wrap(playObject.descriptor),
             options = playObject.options;
 
         return this.play(command, descriptor, options);

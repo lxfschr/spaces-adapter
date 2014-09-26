@@ -32,15 +32,20 @@ define(function (require, exports, module) {
      * Given a reference object created by one of the wrapper functions
      * this function will return the object name out
      *
-     * @param {ActionDescriptor} reference Reference to an object
+     * @param {Array.<ActionDescriptor>|ActionDescriptor} reference Reference to an object
+     * or an array of references, where last one is the object
      * @returns {string} Object type
      */
     var refersTo = function (reference) {
-        var refValue = reference.ref;
-        if (Array.isArray(refValue)) {
-            return refValue[0].ref;
+        if (Array.isArray(reference)) {
+            return refersTo(reference[reference.length - 1]);
         } else {
-            return reference.ref;
+            var refValue = reference.ref;
+            if (Array.isArray(refValue)) {
+                return refValue[0].ref;
+            } else {
+                return reference.ref;
+            }
         }
     };
 
