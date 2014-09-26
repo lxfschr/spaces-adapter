@@ -162,7 +162,7 @@ define(function (require, exports, module) {
      */
     Descriptor.prototype.getProperty = function (reference, property) {
         var propertyDescriptor = {
-            ref: "$Prpr",
+            ref: "property",
             property: property
         };
 
