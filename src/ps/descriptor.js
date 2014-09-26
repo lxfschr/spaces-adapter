@@ -120,8 +120,8 @@ define(function (require, exports, module) {
         } else if (typeof toWrap === "string") {
             reference = {
                 ref: toWrap,
-                enum: "$Ordn",
-                value: "$Trgt"
+                enum: "ordinal",
+                value: "targetEnum"
             };
         } else {
             reference = toWrap;
