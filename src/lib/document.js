@@ -25,7 +25,7 @@
 define(function (require, exports) {
     "use strict";
 
-    var PlayObject = require("../playObject"),
+    var PlayObject = require("../playobject"),
         referenceBy = require("./reference").wrapper("document"),
         unitsIn = require("./unit");
 

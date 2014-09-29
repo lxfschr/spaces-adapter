@@ -25,7 +25,7 @@
 define(function (require, exports) {
     "use strict";
 
-    var PlayObject = require("../playObject");
+    var PlayObject = require("../playobject");
         
     /**
      * Will return layer IDs under the given point of the active document

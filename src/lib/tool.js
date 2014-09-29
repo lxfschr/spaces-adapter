@@ -24,7 +24,7 @@
 define(function (require, exports) {
     "use strict";
     
-    var PlayObject = require("../playObject");
+    var PlayObject = require("../playobject");
 
     /**
      * Sets the current tool to given tool

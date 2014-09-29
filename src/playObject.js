@@ -24,6 +24,8 @@
 define(function (require, exports, module) {
     "use strict";
 
+    var Descriptor = require("ps/descriptor");
+
     /**
      * In Playground-adapter, all library functions return PlayObjects. 
      * These PlayObjects can be called in Photoshop by passing them into 
@@ -40,7 +42,7 @@ define(function (require, exports, module) {
 
         if (options !== undefined) {
             options = {
-                interactionMode: this.interactionMode.SILENT
+                interactionMode: Descriptor.interactionMode.SILENT
             };
         }
     };
@@ -59,22 +61,6 @@ define(function (require, exports, module) {
      * @type {Object}
      */
     PlayObject.prototype.options = null;
-
-    /**
-     * Returns a JSONifiable object representation of this play object that omits
-     * null properties.
-     * 
-     * @return {object}
-     */
-    PlayObject.prototype.toJSONObject = function () {
-        return Object.keys(this).reduce(function (obj, key) {
-            var value = this[key];
-            if (value !== null) {
-                obj[key] = value;
-            }
-            return obj;
-        }.bind(this), {});
-    };
 
     
     module.exports = PlayObject;

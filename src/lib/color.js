@@ -26,7 +26,7 @@
 define(function (require, exports) {
     "use strict";
     
-    var PlayObject = require("../playObject");
+    var PlayObject = require("../playobject");
         
     /**
      * Converts the given color to Photoshop acceptable color object
