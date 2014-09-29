@@ -67,7 +67,45 @@ define(function (require, exports) {
             }
         };
     };
+
+    /**
+     * Sets the global preference of whether vector tools modify layer selection or not
+     * This translates to the Select: [Active Layers vs All Layers] option in the toolbar.
+     * 
+     * @param {boolean} allLayers If true, will set the Select mode to All Layers, false for Active Layers
+     * 
+     * @returns {PlayObject}
+     */
+    var setDirectSelectOptionForAllLayers = function (allLayers) {
+        return {
+            command: "set",
+            descriptor: {
+                "null": {
+                    ref: [
+                        {
+                            "property": "generalPreferences",
+                            "ref": "property"
+                        },
+                        {
+                            "enum": "ordinal",
+                            "ref": "application",
+                            "value": "targetEnum"
+                        }
+                    ]
+                },
+                "to": {
+                    obj: "generalPreferences",
+                    value: {
+                        "legacyPathDrag": true,
+                        "vectorSelectionModifiesLayerSelection": allLayers
+                    }
+                }
+            }
+        };
+    };
+
     
     exports.setTool = setTool;
     exports.setToolOptions = setToolOptions;
+    exports.setDirectSelectOptionForAllLayers = setDirectSelectOptionForAllLayers;
 });
