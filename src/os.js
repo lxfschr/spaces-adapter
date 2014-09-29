@@ -121,7 +121,7 @@ define(function (require, exports, module) {
      * OS notifier kinds
      * 
      * @const
-     * @type{object.<string>}
+     * @type{Object.<string, number>}
      */
     OS.prototype.notifierKind = _os.notifierKind;
 
@@ -129,7 +129,7 @@ define(function (require, exports, module) {
      * OS event kinds
      * 
      * @const
-     * @type{object.<number>}
+     * @type{Object.<string, number>}
      */
     OS.prototype.eventKind = _os.eventKind;
 
@@ -137,9 +137,18 @@ define(function (require, exports, module) {
      * OS event modifiers
      * 
      * @const
-     * @type{object.<number>}
+     * @type{Object.<string, number>}
      */
     OS.prototype.eventModifiers = _os.eventModifiers;
+
+    /**
+     * OS event keyCodes
+     * 
+     * @const
+     * @type{Object.<string, number>}
+     */
+    OS.prototype.eventKeyCode = _os.eventKeyCode;
+
 
     /** @type {OS} The OS singleton */
     var theOS = new OS();
