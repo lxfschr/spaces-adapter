@@ -258,7 +258,7 @@ define(function (require, exports) {
         } else {
             desc.embedProfiles = params.embedProfiles;
         }
-         new PlayObject(
+        return new PlayObject(
             "make",
             desc
         );

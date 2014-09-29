@@ -21,7 +21,7 @@
  * 
  */
 
-define(function (require, exports) {
+define(function (require, exports, module) {
     "use strict";
 
     /**
@@ -77,5 +77,5 @@ define(function (require, exports) {
     };
 
     
-    exports.PlayObject = PlayObject;
+    module.exports = PlayObject;
 });
