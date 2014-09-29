@@ -24,7 +24,8 @@
 define(function (require, exports) {
     "use strict";
     
-    var referenceBy = require("./reference").wrapper("layer"),
+    var PlayObject = require("../playObject"),
+        referenceBy = require("./reference").wrapper("layer"),
         inUnits = require("./unit");
 
     var assert = require("../util").assert,
@@ -41,14 +42,14 @@ define(function (require, exports) {
      */
     var reorder = function (sourceRef, targetRef) {
         assert(referenceOf(sourceRef) === "layer", "reorder is passed a non-layer reference");
-        return {
-            command: "move",
-            descriptor: {
+        return new PlayObject(
+            "move",
+            {
                 "null": sourceRef,
                 "to": targetRef,
                 "version": 5
             }
-        };
+        );
     };
     
     /**
@@ -61,16 +62,16 @@ define(function (require, exports) {
      */
     var align = function (sourceRef, alignment) {
         assert(referenceOf(sourceRef) === "layer", "align is passed a non-layer reference");
-        return {
-            command: "align",
-            descriptor: {
+        return new PlayObject(
+            "align",
+            {
                 "null": sourceRef,
                 "using": {
                     "enum": "alignDistributeSelector",
                     "value": align.vals[alignment]
                 }
             }
-        };
+        );
     };
     
     align.vals = {
@@ -99,16 +100,16 @@ define(function (require, exports) {
      */
     var distribute = function (sourceRef, alignment) {
         assert(referenceOf(sourceRef) === "layer", "distribute is passed a non-layer reference");
-        return {
-            command: "distort",
-            descriptor: {
+        return new PlayObject(
+            "distort",
+            {
                 "null": sourceRef,
                 "using": {
                     "enum": "alignDistributeSelector",
                     "value": align.vals[alignment]
                 }
             }
-        };
+        );
     };
     
     /**
@@ -123,9 +124,9 @@ define(function (require, exports) {
         makeVisible = makeVisible || false;
         
         assert(referenceOf(ref) === "layer", "select is passed a non-layer reference");
-        return {
-            command: "select",
-            descriptor: {
+        return new PlayObject(
+            "select",
+            {
                 "null": ref,
                 "makeVisible": makeVisible,
                 "selectionModifier": {
@@ -133,7 +134,7 @@ define(function (require, exports) {
                     value: select.vals[modifier]
                 }
             }
-        };
+        );
     };
     select.vals = {
         select: "0",
@@ -148,12 +149,12 @@ define(function (require, exports) {
      * @returns {PlayObject}
      */
     var deselectAll = function () {
-        return {
-            command: "selectNoLayers",
-            descriptor: {
+        return new PlayObject(
+            "selectNoLayers",
+            {
                 "null": referenceBy.target
             }
-        };
+        );
     };
     
     /**
@@ -163,12 +164,12 @@ define(function (require, exports) {
      */
     var hide = function (ref) {
         assert(referenceOf(ref) === "layer", "hide is passed a non-layer reference");
-        return {
-            command: "hide",
-            descriptor: {
+        return new PlayObject(
+            "hide",
+            {
                 "null": ref
             }
-        };
+        );
     };
     
     /**
@@ -178,12 +179,12 @@ define(function (require, exports) {
      */
     var show = function (ref) {
         assert(referenceOf(ref) === "layer", "show is passed a non-layer reference");
-        return {
-            command: "show",
-            descriptor: {
+        return new PlayObject(
+            "show",
+            {
                 "null": ref
             }
-        };
+        );
     };
     
     /**
@@ -194,16 +195,16 @@ define(function (require, exports) {
      */
     var duplicate = function (ref, name) {
         assert(referenceOf(ref) === "layer", "duplicate is passed a non-layer reference");
-        var rval = {
-            command: "duplicate",
-            descriptor: {
-                "null": ref
-            }
+        var descriptor = {
+            "null": ref
         };
         if (name) {
-            rval.descriptor[name] = name;
+            descriptor[name] = name;
         }
-        return rval;
+        return new PlayObject(
+            "duplicate",
+            descriptor
+        );
     };
     
     /**
@@ -214,16 +215,16 @@ define(function (require, exports) {
      */
     var flip = function (ref, orientation) {
         assert(referenceOf(ref) === "layer", "flip is passed a non-layer reference");
-        return {
-            command: "flip",
-            descriptor: {
+        return new PlayObject(
+            "flip",
+            {
                 "null": ref,
                 "axis": {
                     enum: "orientation",
                     value: orientation
                 }
             }
-        };
+        );
     };
     
     /**
@@ -235,13 +236,13 @@ define(function (require, exports) {
      */
     var setHeight = function (ref, value, unit) {
         assert(referenceOf(ref) === "layer", "setHeight is passed a non-layer reference");
-        return {
-            command: "transform",
-            descriptor: {
+        return new PlayObject(
+            "transform",
+            {
                 "null": ref,
                 "height": inUnits[unit](value)
             }
-        };
+        );
     };
     
     /**
@@ -253,13 +254,13 @@ define(function (require, exports) {
      */
     var setWidth = function (ref, value, unit) {
         assert(referenceOf(ref) === "layer", "setWidth is passed a non-layer reference");
-        return {
-            command: "transform",
-            descriptor: {
+        return new PlayObject(
+            "transform",
+            {
                 "null": ref,
                 "width": inUnits[unit](value)
             }
-        };
+        );
     };
     
     /**
@@ -272,13 +273,13 @@ define(function (require, exports) {
      */
     var rotate = function (ref, angle) {
         assert(referenceOf(ref) === "layer", "rotate is passed a non-layer reference");
-        return {
-            command: "transform",
-            descriptor: {
+        return new PlayObject(
+            "transform",
+            {
                 "null": ref,
                 "angle": inUnits.angle(angle)
             }
-        };
+        );
     };
     
     /**
@@ -289,9 +290,9 @@ define(function (require, exports) {
      */
     var setOpacity = function (ref, opacity) {
         assert(referenceOf(ref) === "layer", "setOpacity is passed a non-layer reference");
-        return {
-            command: "set",
-            descriptor: {
+        return new PlayObject(
+            "set",
+            {
                 "null": ref,
                 "to": {
                     "obj": "to",
@@ -300,7 +301,7 @@ define(function (require, exports) {
                     }
                 }
             }
-        };
+        );
     };
     
     /**
@@ -311,9 +312,9 @@ define(function (require, exports) {
      */
     var setFillOpacity = function (ref, opacity) {
         assert(referenceOf(ref) === "layer", "setFillOpacity is passed a non-layer reference");
-        return {
-            command: "set",
-            descriptor: {
+        return new PlayObject(
+            "set",
+            {
                 "null": ref,
                 "to": {
                     "obj": "to",
@@ -322,7 +323,7 @@ define(function (require, exports) {
                     }
                 }
             }
-        };
+        );
     };
     
     /**
@@ -333,16 +334,16 @@ define(function (require, exports) {
      */
     var setBlendMode = function (ref, mode) {
         assert(referenceOf(ref) === "layer", "setBlendMode is passed a non-layer reference");
-        return {
-            command: "set",
-            descriptor: {
+        return new PlayObject(
+            "set",
+            {
                 "null": ref,
                 "to": {
                     "obj": "layer",
                     "value": mode
                 }
             }
-        };
+        );
     };
     
     /**
@@ -352,12 +353,12 @@ define(function (require, exports) {
      */
     var deleteLayer =  function (ref) {
         assert(referenceOf(ref) === "layer", "deleteLayer is passed a non-layer reference");
-        return {
-            command: "delete",
-            descriptor: {
+        return new PlayObject(
+            "delete",
+            {
                 "null": ref
             }
-        };
+        );
     };
 
     /**
@@ -368,9 +369,9 @@ define(function (require, exports) {
      */
     var renameLayer = function (ref, name) {
         assert(referenceOf(ref) === "layer", "renameLayer is passed a non-layer reference");
-        return {
-            command: "set",
-            descriptor: {
+        return new PlayObject(
+            "set",
+            {
                 "null": ref,
                 "to": {
                     "obj": "layer",
@@ -379,7 +380,7 @@ define(function (require, exports) {
                     }
                 }
             }
-        };
+        );
     };
 
     /**
@@ -387,15 +388,15 @@ define(function (require, exports) {
      * @returns {PlayObject}
      */
     var groupSelectedLayers = function () {
-        return {
-            command: "make",
-            descriptor: {
+        return new PlayObject(
+            "make",
+            {
                 "from": referenceBy.target,
                 "null": {
                     "ref": "layerSection"
                 }
             }
-        };
+        );
     };
 
     /** 
@@ -407,16 +408,16 @@ define(function (require, exports) {
     var setLocking = function (ref, lock) {
         assert(referenceOf(ref) === "layer", "setLocking is passed a non-layer reference");
         var lockObject = lock ? {"protectAll": true} : {"protectNone": true};
-        return {
-            command: "applyLocking",
-            descriptor: {
+        return new PlayObject(
+            "applyLocking",
+            {
                 "null": ref,
                 "layerLocking": {
                     "obj": "layerLocking",
                     "value": lockObject
                 }
             }
-        };
+        );
     };
     
     // Left overs:

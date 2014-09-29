@@ -25,6 +25,8 @@
 define(function (require, exports) {
     "use strict";
 
+    var PlayObject = require("../playObject");
+        
     /**
      * Will return layer IDs under the given point of the active document
      * The point is (x,y) where (0,0) is the top left of the document and 
@@ -36,13 +38,13 @@ define(function (require, exports) {
      *
      */
     var layerIDsAtPoint = function (px, py) {
-        return {
-            command: "hitTest",
-            descriptor: {
+        return new PlayObject(
+            "hitTest",
+            {
                 "x": px,
                 "y": py
             }
-        };
+        );
     };
     
     exports.layerIDsAtPoint = layerIDsAtPoint;

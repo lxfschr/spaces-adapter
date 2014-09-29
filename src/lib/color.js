@@ -26,6 +26,8 @@
 define(function (require, exports) {
     "use strict";
     
+    var PlayObject = require("../playObject");
+        
     /**
      * Converts the given color to Photoshop acceptable color object
      *
@@ -82,16 +84,16 @@ define(function (require, exports) {
      * @returns {PlayObject}
      */
     var setForegroundColor = function (rgb) {
-        return {
-            command: "set",
-            descriptor: {
+        return new PlayObject(
+            "set",
+            {
                 "null": {
                     "ref": "color",
                     "property": "foregroundColor"
                 },
                 "to": colorObject(rgb)
             }
-        };
+        );
     };
 
     /**
@@ -102,16 +104,16 @@ define(function (require, exports) {
      * @returns {PlayObject}
      */
     var setBackgroundColor = function (rgb) {
-        return {
-            command: "set",
-            descriptor: {
+        return new PlayObject(
+            "set",
+            {
                 "null": {
                     "ref": "color",
                     "property": "backgroundColor"
                 },
                 "to": colorObject(rgb)
             }
-        };
+        );
     };
 
     exports.colorObject = colorObject;

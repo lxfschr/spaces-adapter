@@ -24,7 +24,8 @@
 define(function (require, exports) {
     "use strict";
     
-    var referenceBy = require("./reference").wrapper("brushes"),
+    var PlayObject = require("../playObject"),
+        referenceBy = require("./reference").wrapper("brushes"),
         inUnits = require("./unit");
     
     /**
@@ -40,9 +41,9 @@ define(function (require, exports) {
      */
     var setBrushTip = function (diameter, hardness, angle, roundness, spacing)
     {
-        return {
-            command: "set",
-            descriptor: {
+        return new PlayObject(
+            "set",
+            {
                 "null": referenceBy.current,
                 "to": {
                     "obj": "computedBrush",
@@ -55,7 +56,7 @@ define(function (require, exports) {
                     }
                 }
             }
-        };
+        );
     };
 
     exports.setBrushTip = setBrushTip;

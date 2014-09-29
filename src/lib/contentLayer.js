@@ -24,7 +24,8 @@
 define(function (require, exports) {
     "use strict";
 
-    var referenceBy = require("./reference").wrapper("contentLayer"),
+    var PlayObject = require("../playObject"),
+        referenceBy = require("./reference").wrapper("contentLayer"),
         unitsIn = require("./unit"),
         shape = require("./shape");
 
@@ -82,9 +83,9 @@ define(function (require, exports) {
      */
     var setStrokeAlignment = function (sourceRef, alignment) {
         assert(referenceOf(sourceRef) === "layer", "setStrokeAlignment is passed a non-layer reference");
-        return {
-            command: "set",
-            descriptor: {
+        return new PlayObject(
+            "set",
+            {
                 "null": sourceRef,
                 "to": {
                     "obj": "shapeStyle",
@@ -103,7 +104,7 @@ define(function (require, exports) {
                     }
                 }
             }
-        };
+        );
     };
 
 
@@ -116,9 +117,9 @@ define(function (require, exports) {
      */
     var setStrokeCap = function (sourceRef, cap) {
         assert(referenceOf(sourceRef) === "layer", "setStrokeCap is passed a non-layer reference");
-        return {
-            command: "set",
-            descriptor: {
+        return new PlayObject(
+            "set",
+            {
                 "null": sourceRef,
                 "to": {
                     "obj": "shapeStyle",
@@ -137,7 +138,7 @@ define(function (require, exports) {
                     }
                 }
             }
-        };
+        );
     };
     
     /**
@@ -148,9 +149,9 @@ define(function (require, exports) {
      */
     var setStrokeCorner = function (sourceRef, corner) {
         assert(referenceOf(sourceRef) === "layer", "setStrokeCorner is passed a non-layer reference");
-        return {
-            command: "set",
-            descriptor: {
+        return new PlayObject (
+            "set",
+            {
                 "null": sourceRef,
                 "to": {
                     "obj": "shapeStyle",
@@ -169,7 +170,7 @@ define(function (require, exports) {
                     }
                 }
             }
-        };
+        );
     };
 
     /**
@@ -194,9 +195,9 @@ define(function (require, exports) {
         if (rgb === null) {
             return _setShapeFillTypeNoColor();
         }
-        return {
-            command: "set",
-            descriptor: {
+        return new PlayObject(
+            "set",
+            {
                 "null": sourceRef,
                 "to": {
                     "obj": "shapeStyle",
@@ -206,7 +207,7 @@ define(function (require, exports) {
                     }
                 }
             }
-        };
+        );
     };
 
     /**
@@ -231,9 +232,9 @@ define(function (require, exports) {
         if (rgb === null) {
             return _setStrokeFillTypeNoColor();
         }
-        return {
-            command: "set",
-            descriptor: {
+        return new PlayObject(
+            "set",
+            {
                 "null": sourceRef,
                 "to": {
                     "obj": "shapeStyle",
@@ -249,7 +250,7 @@ define(function (require, exports) {
                     }
                 }
             }
-        };
+        );
     };
 
     /**
@@ -266,9 +267,9 @@ define(function (require, exports) {
      * raw.contentLayer.setShapeFillTypeNoColor();
      */
     var _setShapeFillTypeNoColor = function (sourceRef) {
-        return {
-            command: "set",
-            descriptor: {
+        return new PlayObject(
+            "set",
+            {
                 "null": sourceRef,
                 "to": {
                     "obj": "shapeStyle",
@@ -277,7 +278,7 @@ define(function (require, exports) {
                     }
                 }
             }
-        };
+        );
     };
 
     /**
@@ -294,9 +295,9 @@ define(function (require, exports) {
      * raw.contentLayer.setStrokeFillTypeNoColor();
      */
     var _setStrokeFillTypeNoColor = function (sourceRef) {
-        return {
-            command: "set",
-            descriptor: {
+        return new PlayObject(
+            "set",
+            {
                 "null": sourceRef,
                 "to": {
                     "obj": "shapeStyle",
@@ -305,7 +306,7 @@ define(function (require, exports) {
                     }
                 }
             }
-        };
+        );
     };
 
     /**
@@ -324,9 +325,9 @@ define(function (require, exports) {
      */
     var setShapeStrokeWidth = function (sourceRef, strokeWidth) {
         assert(referenceOf(sourceRef) === "layer", "setShapeStrokeWidth is passed a non-layer reference");
-        return {
-            command: "set",
-            descriptor: {
+        return new PlayObject(
+            "set",
+            {
                 "null": sourceRef,
                 "to": {
                     "obj": "shapeStyle",
@@ -342,7 +343,7 @@ define(function (require, exports) {
                     }
                 }
             }
-        };
+        );
     };
 
     /**
@@ -363,9 +364,9 @@ define(function (require, exports) {
      */
     var setStrokeFillTypePattern = function (sourceRef, fillTypePatternName, scaleVal) {
         assert(referenceOf(sourceRef) === "layer", "setStrokeFillTypePattern is passed a non-layer reference");
-        return {
-            command: "set",
-            descriptor: {
+        return new PlayObject(
+            "set",
+            {
                 "null": sourceRef,
                 "to": {
                     "obj": "shapeStyle",
@@ -401,7 +402,7 @@ define(function (require, exports) {
                     }
                 }
             }
-        };
+        );
     };
 
     /**
@@ -422,9 +423,9 @@ define(function (require, exports) {
      */
     var setShapeFillTypePattern = function (sourceRef, fillTypePatternName, scaleVal) {
         assert(referenceOf(sourceRef) === "layer", "setShapeFillTypePattern is passed a non-layer reference");
-        return {
-            command: "set",
-            descriptor: {
+        return new PlayObject(
+            "set",
+            {
                 "null": sourceRef,
                 "to": {
                     "obj": "shapeStyle",
@@ -454,7 +455,7 @@ define(function (require, exports) {
                     }
                 }
             }
-        };
+        );
     };
 
     /**
@@ -474,9 +475,9 @@ define(function (require, exports) {
      */
     var moveShape = function (sourceRef, hVal, vVal) {
         assert(referenceOf(sourceRef) === "layer", "moveShape is passed a non-layer reference");
-        return {
-            command: "set",
-            descriptor: {
+        return new PlayObject(
+            "set",
+            {
                 "null": sourceRef,
                 "to": {
                     "obj": "offset",
@@ -486,7 +487,7 @@ define(function (require, exports) {
                     }
                 }
             }
-        };
+        );
     };
 
     /**
@@ -548,9 +549,9 @@ define(function (require, exports) {
             fillContentStrokeVal = [_patternName[patternLayerName][0], _patternName[patternLayerName][1]];
         }
 
-        return {
-            command: "make",
-            descriptor: {
+        return new PlayObject(
+            "make",
+            {
                 "null": sourceRef,
                 "using": {
                     "obj": "contentLayer",
@@ -593,7 +594,7 @@ define(function (require, exports) {
                     }
                 }
             }
-        };
+        );
     };
     
     exports.referenceBy = referenceBy;
