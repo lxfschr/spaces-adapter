@@ -21,32 +21,47 @@
  * 
  */
 
-
-define(function (require, exports) {
+define(function (require, exports, module) {
     "use strict";
 
-    var PlayObject = require("../playobject");
-        
-    /**
-     * Will return layer IDs under the given point of the active document
-     * The point is (x,y) where (0,0) is the top left of the document and 
-     * x is horizontal vs y is vertical
-     * 
-     * @param {number} px X coordinate - horizontal
-     * @param {number} py Y coordinate - vertical
-     * @return {PlayObject}
-     *
-     */
-    var layerIDsAtPoint = function (px, py) {
-        return new PlayObject(
-            "hitTest",
-            {
-                "x": px,
-                "y": py
-            }
-        );
-    };
-    
-    exports.layerIDsAtPoint = layerIDsAtPoint;
+    var Descriptor = require("ps/descriptor");
 
+    /**
+     * In Playground-adapter, all library functions return PlayObjects. 
+     * These PlayObjects can be called in Photoshop by passing them into 
+     * ps/descriptor's playObject function.
+     * 
+     * @constructor
+     * @param {!string} command Command name to be played
+     * @param {!Object} descriptor Arguments for the command
+     * @param {Object} options Options for Photoshop while playing this command
+     */
+    var PlayObject = function (command, descriptor, options) {
+        this.command = command;
+        this.descriptor = descriptor;
+
+        if (options !== undefined) {
+            options = {
+                interactionMode: Descriptor.interactionMode.SILENT
+            };
+        }
+    };
+
+    /**
+     * @type {string}
+     */
+    PlayObject.prototype.command = null;
+
+    /**
+     * @type {Object}
+     */
+    PlayObject.prototype.descriptor = null;
+
+    /**
+     * @type {Object}
+     */
+    PlayObject.prototype.options = null;
+
+    
+    module.exports = PlayObject;
 });

@@ -25,7 +25,8 @@
 define(function (require, exports) {
     "use strict";
 
-    var unitsIn = require("./unit"),
+    var PlayObject = require("../playobject"),
+        unitsIn = require("./unit"),
         colorObject = require("./color").colorObject;
     
     var assert = require("../util").assert,
@@ -49,9 +50,9 @@ define(function (require, exports) {
      */
     var createText = function (sourceRef, strTextKey, numClickPointH, numClickPointV) {
         assert(referenceOf(sourceRef) === "textLayer", "createText expects a textLayer reference");
-        return {
-            command: "make",
-            descriptor: {
+        return new PlayObject(
+            "make",
+            {
                 "null": sourceRef,
                 "using": {
                     "obj": "textLayer",
@@ -69,7 +70,7 @@ define(function (require, exports) {
                     }
                 }
             }
-        };
+        );
     };
 
     /**
@@ -89,16 +90,16 @@ define(function (require, exports) {
      */
     var setFace = function (sourceRef, face, weight) {
         assert(referenceOf(sourceRef) === "textLayer", "setFace expects a textLayer reference");
-        return {
-            command: "set",
-            descriptor: {
+        return new PlayObject(
+            "set",
+            {
                 "null": sourceRef,
                 "to": {
                     fontName: face,
                     fontStyleName: weight
                 }
             }
-        };
+        );
     };
 
     /**
@@ -121,9 +122,9 @@ define(function (require, exports) {
      */
     var setSize = function (sourceRef, val, unit) {
         assert(referenceOf(sourceRef) === "textLayer", "setSize expects a textLayer reference");
-        return {
-            command: "set",
-            descriptor: {
+        return new PlayObject(
+            "set",
+            {
                 "null": sourceRef,
                 "to": {
                     "obj": "textStyle",
@@ -132,7 +133,7 @@ define(function (require, exports) {
                     }
                 }
             }
-        };
+        );
     };
 
     /**
@@ -151,9 +152,9 @@ define(function (require, exports) {
      */
     var setAlignment = function (sourceRef, orient) {
         assert(referenceOf(sourceRef) === "textLayer", "setAlignment expects a textLayer reference");
-        return {
-            command: "set",
-            desciptor: {
+        return new PlayObject(
+            "set",
+            {
                 "null": sourceRef,
                 "to": {
                     "value": {
@@ -164,7 +165,7 @@ define(function (require, exports) {
                     }
                 }
             }
-        };
+        );
     };
 
     /**
@@ -191,9 +192,9 @@ define(function (require, exports) {
     var setLeading = function (sourceRef, auto, val, unit) {
         assert(referenceOf(sourceRef) === "textLayer", "setLeading expects a textLayer reference");
         if (auto === false) {
-            return {
-                command: "set",
-                desciptor: {
+            return new PlayObject(
+                "set",
+                {
                     "null": sourceRef,
                     "to": {
                         "obj": "textStyle",
@@ -203,11 +204,11 @@ define(function (require, exports) {
                         }
                     }
                 }
-            };
+            );
         } else {
-            return {
-                command: "set",
-                desciptor: {
+            return new PlayObject(
+                "set",
+                {
                     "null": sourceRef,
                     "to": {
                         "obj": "textStyle",
@@ -216,7 +217,7 @@ define(function (require, exports) {
                         }
                     }
                 }
-            };
+            );
         }
     };
 
@@ -236,9 +237,9 @@ define(function (require, exports) {
      */
     var setTracking = function (sourceRef, val) {
         assert(referenceOf(sourceRef) === "textLayer", "setTracking expects a textLayer reference");
-        return {
-            command: "set",
-            desciptor: {
+        return new PlayObject(
+            "set",
+            {
                 "null": sourceRef,
                 "to": {
                     "obj": "textStyle",
@@ -247,7 +248,7 @@ define(function (require, exports) {
                     }
                 }
             }
-        };
+        );
     };
 
     /**
@@ -266,9 +267,9 @@ define(function (require, exports) {
      */
     var setColor = function (sourceRef, arrayTextColor) {
         assert(referenceOf(sourceRef) === "textLayer", "setColor expects a textLayer reference");
-        return {
-            command: "set",
-            desciptor: {
+        return new PlayObject(
+            "set",
+            {
                 "null": sourceRef,
                 "to": {
                     "obj": "textStyle",
@@ -277,7 +278,7 @@ define(function (require, exports) {
                     }
                 }
             }
-        };
+        );
     };
 
     /**
@@ -296,16 +297,16 @@ define(function (require, exports) {
      */
     var setOrientation = function (sourceRef, strTextOrientation) {
         assert(referenceOf(sourceRef) === "textLayer", "setOrientation expects a textLayer reference");
-        return {
-            command: "set",
-            descriptor: {
+        return new PlayObject(
+            "set",
+            {
                 "null": sourceRef,
                 "to": {
                     "enum": "orientation",
                     "value": strTextOrientation
                 }
             }
-        };
+        );
     };
 
     /**
@@ -324,16 +325,16 @@ define(function (require, exports) {
      */
     var setAntiAlias = function (sourceRef, strAntiAliasType) {
         assert(referenceOf(sourceRef) === "textLayer", "setAntiAlias expects a textLayer reference");
-        return {
-            command: "set",
-            desciptor: {
+        return new PlayObject(
+            "set",
+            {
                 "null": sourceRef,
                 "to": {
                     "enum": "antiAliasType",
                     "value": _antiAlias[strAntiAliasType]
                 }
             }
-        };
+        );
     };
 
     var _antiAlias = {
@@ -372,9 +373,9 @@ define(function (require, exports) {
      */
     var setRangeAndChangeTextStyle = function (sourceRef, from, to, face, weight, unit, size, arrayTextColor) {
         assert(referenceOf(sourceRef) === "textLayer", "setRangeAndChangeTextStyle expects a textLayer reference");
-        return {
-            command: "set",
-            desciptor: {
+        return new PlayObject(
+            "set",
+            {
                 "null": sourceRef,
                 "to": {
                     "obj": "textLayer",
@@ -400,7 +401,7 @@ define(function (require, exports) {
                     }
                 }
             }
-        };
+        );
     };
 
     exports.createText = createText;

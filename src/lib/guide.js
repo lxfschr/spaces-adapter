@@ -25,7 +25,8 @@
 define(function (require, exports) {
     "use strict";
 
-    var unitsIn = require("./unit");
+    var PlayObject = require("../playobject"),
+        unitsIn = require("./unit");
     
     var assert = require("../util").assert,
         referenceOf = require("./reference").refersTo;
@@ -40,12 +41,12 @@ define(function (require, exports) {
      */
     var getGuide = function (sourceRef) {
         assert(referenceOf(sourceRef) === "guide", "getGuide is passed a non-guide reference");
-        return {
-            command: "get",
-            descriptor: {
+        return new PlayObject(
+            "get",
+            {
                 "null": sourceRef
             }
-        };
+        );
     };
     
     /**
@@ -68,9 +69,9 @@ define(function (require, exports) {
      * Create or open a document.
      */
     var createGuide = function (orientation, unit, position) {
-        return {
-            command: "make",
-            desciptor: {
+        return new PlayObject(
+            "make",
+            {
                 "new": {
                     "obj": "guide",
                     "value": {
@@ -82,7 +83,7 @@ define(function (require, exports) {
                     }
                 }
             }
-        };
+        );
     };
 
     /**
@@ -97,12 +98,12 @@ define(function (require, exports) {
      * Have guide(s) in the active document to delete by guide index.
      */
     var deleteGuide = function (sourceRef) {
-        return {
-            command: "delete",
-            descriptor: {
+        return new PlayObject(
+            "delete",
+            {
                 "null": sourceRef
             }
-        };
+        );
     };
 
     /**
@@ -116,13 +117,13 @@ define(function (require, exports) {
      * Create or open a document.
      */
     var getGuideCount = function (sourceRef) {
-        return {
-            command: "getProperty",
-            descriptor: {
+        return new PlayObject(
+            "getProperty",
+            {
                 "null": sourceRef,
                 "property": "count"
             }
-        };
+        );
     };
 
 

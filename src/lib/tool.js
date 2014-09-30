@@ -24,6 +24,8 @@
 define(function (require, exports) {
     "use strict";
     
+    var PlayObject = require("../playobject");
+
     /**
      * Sets the current tool to given tool
      *
@@ -32,14 +34,14 @@ define(function (require, exports) {
      * @returns {PlayObject}
      */
     var setTool = function (tool) {
-        return {
-            command: "select",
-            descriptor: {
+        return new PlayObject(
+            "select",
+            {
                 "null": {
                     "ref": tool
                 }
             }
-        };
+        );
     };
     
     /**
@@ -54,9 +56,9 @@ define(function (require, exports) {
      * tool is currently selected
      */
     var setToolOptions = function (tool, options) {
-        return {
-            command: "set",
-            descriptor: {
+        return new PlayObject(
+            "set",
+            {
                 "null": {
                     ref: tool
                 },
@@ -65,7 +67,7 @@ define(function (require, exports) {
                     value: options
                 }
             }
-        };
+        );
     };
 
     /**
@@ -77,9 +79,9 @@ define(function (require, exports) {
      * @returns {PlayObject}
      */
     var setDirectSelectOptionForAllLayers = function (allLayers) {
-        return {
-            command: "set",
-            descriptor: {
+        return new PlayObject(
+            "set",
+            {
                 "null": {
                     ref: [
                         {
@@ -101,7 +103,7 @@ define(function (require, exports) {
                     }
                 }
             }
-        };
+        );
     };
 
     

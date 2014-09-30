@@ -25,7 +25,8 @@
 define(function (require, exports) {
     "use strict";
 
-    var referenceBy = require("./reference").wrapper("document"),
+    var PlayObject = require("../playobject"),
+        referenceBy = require("./reference").wrapper("document"),
         unitsIn = require("./unit");
 
     var assert = require("../util").assert,
@@ -103,10 +104,10 @@ define(function (require, exports) {
                 };
             }
         }
-        return {
-            command: "open",
-            descriptor: desc
-        };
+        return new PlayObject(
+            "open",
+            desc
+        );
     };
     openDocument.cropTo = {
         bounding: "boundingBox",
@@ -140,10 +141,10 @@ define(function (require, exports) {
                 "value": save
             }
         };
-        return {
-            command: "close",
-            descriptor: desc
-        };
+        return new PlayObject(
+            "close",
+            desc
+        );
     };
 
     /**
@@ -257,10 +258,10 @@ define(function (require, exports) {
         } else {
             desc.embedProfiles = params.embedProfiles;
         }
-        return {
-            command: "make",
-            descriptor: desc
-        };
+        return new PlayObject(
+            "make",
+            desc
+        );
     };
     saveDocument.pngCompression = {
         none: 0,
@@ -305,10 +306,10 @@ define(function (require, exports) {
         var desc = {
             "null": sourceRef
         };
-        return {
-            command: "select",
-            descriptor: desc
-        };
+        return new PlayObject(
+            "select",
+            desc
+        );
     };
 
     /**
@@ -375,10 +376,10 @@ define(function (require, exports) {
         var desc = {
             "new": newObj
         };
-        return {
-            command: "make",
-            descriptor: desc
-        };
+        return new PlayObject(
+            "make",
+            desc
+        );
     };
 
     exports.referenceBy = referenceBy;
