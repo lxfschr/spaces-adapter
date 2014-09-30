@@ -79,9 +79,9 @@ define(function (require, exports) {
      * @returns {PlayObject}
      */
     var setDirectSelectOptionForAllLayers = function (allLayers) {
-        return {
-            command: "set",
-            descriptor: {
+        return new PlayObject(
+            "set",
+            {
                 "null": {
                     ref: [
                         {
@@ -103,7 +103,7 @@ define(function (require, exports) {
                     }
                 }
             }
-        };
+        );
     };
 
     
