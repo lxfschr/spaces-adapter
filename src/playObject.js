@@ -24,7 +24,7 @@
 define(function (require, exports, module) {
     "use strict";
 
-    var Descriptor = require("ps/descriptor");
+    var Descriptor = require("./ps/descriptor");
 
     /**
      * In Playground-adapter, all library functions return PlayObjects. 
