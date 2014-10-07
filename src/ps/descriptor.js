@@ -162,11 +162,15 @@ define(function (require, exports, module) {
      */
     Descriptor.prototype.getProperty = function (reference, property) {
         var propertyDescriptor = {
-            ref: "property",
-            property: property
-        };
+                ref: "property",
+                property: property
+            },
+            propertyReference = Array.isArray(reference) ?
+                reference.concat(propertyDescriptor) :
+                [reference, propertyDescriptor];
 
-        return this.get([reference, propertyDescriptor])
+
+        return this.get(propertyReference)
             .then(function (obj) {
                 if (!obj.hasOwnProperty(property)) {
                     throw new Error("No such property: " + property);
