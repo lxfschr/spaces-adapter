@@ -45,6 +45,7 @@ define(function (require, exports) {
         return new PlayObject(
             "move",
             {
+                "adjustment": false,
                 "null": sourceRef,
                 "to": targetRef,
                 "version": 5
