@@ -420,6 +420,28 @@ define(function (require, exports) {
             }
         );
     };
+
+    var translate = function (ref, _x, _xUnit, _y, _yUnit) {
+        assert(referenceOf(ref) === "layer", "translate is passed a non-layer reference");
+        var xUnit = _xUnit || "pixels",
+            yUnit = _yUnit || "pixels",
+            x = _x || 0,
+            y = _y || 0;
+
+        return new PlayObject(
+            "transform",
+            {
+                "null": ref,
+                "position": {
+                    "obj": "position",
+                    "value": {
+                        "horizontal": inUnits[xUnit](x),
+                        "vertical": inUnits[yUnit](y)
+                    }
+                }
+            }
+        );
+    };
     
     // Left overs:
     // _offsetCommand
@@ -445,4 +467,5 @@ define(function (require, exports) {
     exports.rename = renameLayer;
     exports.groupSelected = groupSelectedLayers;
     exports.setLocking = setLocking;
+    exports.translate = translate;
 });
