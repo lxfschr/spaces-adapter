@@ -227,39 +227,29 @@ define(function (require, exports) {
             }
         );
     };
-    
+
     /**
-     * @param {ActionDescriptor} ref - Reference of layer(s) to set height
-     * @param {number} value - Height to set to
-     * @param {string} unit - Unit of height
+     * @param {ActionDescriptor} ref - Reference of layer(s) to set size
+     * @param {number} _w - Width to set
+     * @param {string} _wUnit - Unit of width
+     * @param {number} _h - Height to set
+     * @param {string} _hUnit - Unit of height
      * 
      * @returns {PlayObject}
      */
-    var setHeight = function (ref, value, unit) {
+    var setSize = function (ref, _w, _wUnit, _h, _hUnit) {
         assert(referenceOf(ref) === "layer", "setHeight is passed a non-layer reference");
+        var wUnit = _wUnit || "pixels",
+            hUnit = _hUnit || "pixels",
+            w = _w || 0,
+            h = _h || 0;
+
         return new PlayObject(
             "transform",
             {
                 "null": ref,
-                "height": inUnits[unit](value)
-            }
-        );
-    };
-    
-    /**
-     * @param {ActionDescriptor} ref - Reference of layer(s) to set width
-     * @param {number} value - Width to set to
-     * @param {string} unit - Unit of width
-     * 
-     * @returns {PlayObject}
-     */
-    var setWidth = function (ref, value, unit) {
-        assert(referenceOf(ref) === "layer", "setWidth is passed a non-layer reference");
-        return new PlayObject(
-            "transform",
-            {
-                "null": ref,
-                "width": inUnits[unit](value)
+                "height": inUnits[hUnit](h),
+                "width": inUnits[wUnit](w)
             }
         );
     };
@@ -457,8 +447,7 @@ define(function (require, exports) {
     exports.show = show;
     exports.duplicate = duplicate;
     exports.flip = flip;
-    exports.setHeight = setHeight;
-    exports.setWidth = setWidth;
+    exports.setSize = setSize;
     exports.rotate = rotate;
     exports.setOpacity = setOpacity;
     exports.setFillOpacity = setFillOpacity;
