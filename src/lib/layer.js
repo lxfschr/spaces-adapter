@@ -241,16 +241,22 @@ define(function (require, exports) {
         assert(referenceOf(ref) === "layer", "setHeight is passed a non-layer reference");
         var wUnit = _wUnit || "pixels",
             hUnit = _hUnit || "pixels",
-            w = _w || 0,
-            h = _h || 0;
+            sizeDescriptor = {
+                "null": ref
+            };
+
+        if (_w) {
+            sizeDescriptor["width"] = inUnits[wUnit](_w);
+        }
+
+        if (_h) {
+            sizeDescriptor["height"] = inUnits[hUnit](_h);
+        }
+
 
         return new PlayObject(
             "transform",
-            {
-                "null": ref,
-                "height": inUnits[hUnit](h),
-                "width": inUnits[wUnit](w)
-            }
+            sizeDescriptor
         );
     };
     

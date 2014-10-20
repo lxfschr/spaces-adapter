@@ -382,6 +382,36 @@ define(function (require, exports) {
         );
     };
 
+    var resizeDocument = function (width, height, extension) {
+        var extension = extension || "center";
+
+        return new PlayObject(
+            "canvasSize",
+            {
+                "canvasExtensionColorType": {
+                    "enum": "canvasExtensionColorType",
+                    "value": "backgroundColor"
+                },
+                "height": {
+                    "unit": "pixelsUnit",
+                    "value": height
+                },
+                "horizontal": {
+                    "enum": "horizontalLocation",
+                    "value": extension
+                },
+                "vertical": {
+                    "enum": "verticalLocation",
+                    "value": extension
+                },
+                "width": {
+                    "unit": "pixelsUnit",
+                    "value": width
+                }
+            }
+        );
+    }
+
     exports.referenceBy = referenceBy;
     
     exports.open = openDocument;
@@ -389,5 +419,6 @@ define(function (require, exports) {
     exports.save = saveDocument;
     exports.select = selectDocument;
     exports.create = createDocument;
+    exports.resize = resizeDocument;
 
 });
