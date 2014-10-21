@@ -382,8 +382,17 @@ define(function (require, exports) {
         );
     };
 
+    /**
+     * Resizes the canvas of current document
+     * 
+     * @param {Unit} width Width in units
+     * @param {Unit} height Height in units
+     * @extension {string} option to stretch the canvas from, default center
+     *
+     * @returns {PlayObject}
+     */
     var resizeDocument = function (width, height, extension) {
-        var extension = extension || "center";
+        extension = extension || "center";
 
         return new PlayObject(
             "canvasSize",
@@ -392,10 +401,8 @@ define(function (require, exports) {
                     "enum": "canvasExtensionColorType",
                     "value": "backgroundColor"
                 },
-                "height": {
-                    "unit": "pixelsUnit",
-                    "value": height
-                },
+                "height": height,
+                "width": width,
                 "horizontal": {
                     "enum": "horizontalLocation",
                     "value": extension
@@ -403,14 +410,10 @@ define(function (require, exports) {
                 "vertical": {
                     "enum": "verticalLocation",
                     "value": extension
-                },
-                "width": {
-                    "unit": "pixelsUnit",
-                    "value": width
                 }
             }
         );
-    }
+    };
 
     exports.referenceBy = referenceBy;
     

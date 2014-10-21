@@ -230,27 +230,23 @@ define(function (require, exports) {
 
     /**
      * @param {ActionDescriptor} ref - Reference of layer(s) to set size
-     * @param {number} _w - Width to set
-     * @param {string} _wUnit - Unit of width
-     * @param {number} _h - Height to set
-     * @param {string} _hUnit - Unit of height
+     * @param {Unit} _w - Width to set in Units
+     * @param {Unit} _h - Height to set in Units
      * 
      * @returns {PlayObject}
      */
-    var setSize = function (ref, _w, _wUnit, _h, _hUnit) {
+    var setSize = function (ref, _w, _h) {
         assert(referenceOf(ref) === "layer", "setHeight is passed a non-layer reference");
-        var wUnit = _wUnit || "pixels",
-            hUnit = _hUnit || "pixels",
-            sizeDescriptor = {
+        var sizeDescriptor = {
                 "null": ref
             };
 
         if (_w) {
-            sizeDescriptor["width"] = inUnits[wUnit](_w);
+            sizeDescriptor.width = _w;
         }
 
         if (_h) {
-            sizeDescriptor["height"] = inUnits[hUnit](_h);
+            sizeDescriptor.height = _h;
         }
 
 
@@ -417,11 +413,16 @@ define(function (require, exports) {
         );
     };
 
-    var translate = function (ref, _x, _xUnit, _y, _yUnit) {
+    /**
+     * @param {ActionDescriptor} ref - Reference of layer(s) to translate
+     * @param {Unit} _x Horizontal offset in Units
+     * @param {Unit} _y Vertical offset in Units
+     *
+     * @returns {PlayObject}
+     */
+    var translate = function (ref, _x, _y) {
         assert(referenceOf(ref) === "layer", "translate is passed a non-layer reference");
-        var xUnit = _xUnit || "pixels",
-            yUnit = _yUnit || "pixels",
-            x = _x || 0,
+        var x = _x || 0,
             y = _y || 0;
 
         return new PlayObject(
@@ -431,8 +432,8 @@ define(function (require, exports) {
                 "position": {
                     "obj": "position",
                     "value": {
-                        "horizontal": inUnits[xUnit](x),
-                        "vertical": inUnits[yUnit](y)
+                        "horizontal": x,
+                        "vertical": y
                     }
                 }
             }
