@@ -66,8 +66,30 @@ define(function (require, exports, module) {
      */
     var UI = function () {
         EventEmitter.call(this);
+
+        this._menuEventHandler = this._menuEventHandler.bind(this);
     };
     util.inherits(UI, EventEmitter);
+
+    /**
+     * Event handler for menu events from the native bridge.
+     *
+     * @private
+     * @param {*=} err Error information
+     * @param {string} menuCommand
+     * @param {object} info
+     */
+    UI.prototype._menuEventHandler = function (err, menuCommand, info) {
+        if (err) {
+            this.emit("error", "Failed to handle menu event: " + err);
+            return;
+        }
+
+        this.emit("menu", {
+            command: menuCommand,
+            info: info
+        });
+    };
 
     /**
      * Overscroll modes
@@ -232,9 +254,51 @@ define(function (require, exports, module) {
         return _ui.setKeyboardEventPropagationPolicyAsync({policyList: policyList});
     };
 
+    /**
+     * Install a menu bar, which consists of an array of MenuEntry objects, an
+     * example of which follows:
+     *
+     * {
+     *      "id": "example-menu",
+     *      "menu": [
+     *           {
+     *               "label": "Functions",
+     *               "submenu": [
+     *                   { "label": "Tool", "shortcut": {"key": "t", "modifiers": 2 }, "command": "application:tool" },
+     *                   { "type": "separator" },
+     *                   { "label": "More Tool", "command": "application:more-tool" }
+     *               ]
+     *           },
+     *           {
+     *               "label": "Frunctions",
+     *               "submenu": [
+     *                   { "label": "Tool", "shortcut": {"key": "t", "modifiers": 3 }, "command": "application:tool" },
+     *                   { "type": "separator" },
+     *                   { "label": "More Tool", "command": "application:more-tool" }
+     *               ]
+     *           }
+     *      ]
+     * }
+     *
+     * @param {object=} options Currently unused
+     * @param {{id: string, menu: Array.<MenuEntry>}} description Menu description
+     */
+    UI.prototype.installMenu = function (options, description) {
+        if (description === undefined) {
+            description = options;
+            options = {};
+        }
 
-    /** @type {UI} The UI singleton */
-    var theUI = new UI();
+        return _ui.installMenuAsync(options, description);
+    };
 
-    module.exports = theUI;
+    /**
+     * @type {UI} The UI singleton
+     */
+    var ui = new UI();
+
+    // Install the menu notifier group handler
+    _playground.setNotifier(_playground.notifierGroup.MENU, {}, ui._menuEventHandler);
+
+    module.exports = ui;
 });

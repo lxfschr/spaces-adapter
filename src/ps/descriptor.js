@@ -47,6 +47,8 @@ define(function (require, exports, module) {
      */
     var Descriptor = function () {
         EventEmitter.call(this);
+
+        this._psEventHandler = this._psEventHandler.bind(this);
     };
     util.inherits(Descriptor, EventEmitter);
 
@@ -271,11 +273,13 @@ define(function (require, exports, module) {
         return this.batchPlay(commands, options, batchOptions);
     };
 
-    /** @type {Descriptor} The Descriptor singleton */
-    var theDescriptor = new Descriptor();
+    /**
+     * @type {Descriptor} The Descriptor singleton
+     */
+    var descriptor = new Descriptor();
 
-    // bind native phtooshop event handler to our handler function
-    _playground.setNotifier(_playground.notifierGroup.PHOTOSHOP, {}, theDescriptor._psEventHandler.bind(theDescriptor));
+    // bind native Photoshop event handler to our handler function
+    _playground.setNotifier(_playground.notifierGroup.PHOTOSHOP, {}, descriptor._psEventHandler);
     
-    module.exports = theDescriptor;
+    module.exports = descriptor;
 });
