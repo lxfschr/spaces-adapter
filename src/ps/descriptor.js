@@ -174,7 +174,7 @@ define(function (require, exports, module) {
 
         return this.get(propertyReference)
             .then(function (obj) {
-                if (!obj.hasOwnProperty(property)) {
+                if (!obj || !obj.hasOwnProperty(property)) {
                     throw new Error("No such property: " + property);
                 }
 
