@@ -31,10 +31,8 @@ define(function (require, exports) {
             "spec/version-test",
             "spec/library-test"
         ],
-        lowlevel : [
-            "spec/low-level-test"
-        ],
         integration : [
+            "spec/low-level-test"
         ]
     };
 

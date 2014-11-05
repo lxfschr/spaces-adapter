@@ -43,8 +43,7 @@ module.exports = function (grunt) {
                 ".bowerrc",
                 "src/**/*.js",
                 "test/**/*.js",
-                "examples/**/*.js",
-                "!examples/xdlib/**/*.js"  // temporary reprieve
+                "examples/**/*.js"
             ]
         },
         jscs: {
