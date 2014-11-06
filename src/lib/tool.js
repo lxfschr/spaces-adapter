@@ -30,8 +30,7 @@ define(function (require, exports) {
      * Sets the current tool to given tool
      *
      * @param {string} tool
-     *
-     * @returns {PlayObject}
+     * @return {PlayObject}
      */
     var setTool = function (tool) {
         return new PlayObject(
@@ -45,15 +44,12 @@ define(function (require, exports) {
     };
     
     /**
-     * Sets the tool options
+     * Sets the tool options. Preconditions: tool is currently selected.
      * 
      * @param {string} tool
      * @param {Object} options
      *
-     * @returns {PlayObject}
-     *
-     * Preconditions:
-     * tool is currently selected
+     * @return {PlayObject}
      */
     var setToolOptions = function (tool, options) {
         return new PlayObject(
@@ -76,7 +72,7 @@ define(function (require, exports) {
      * 
      * @param {boolean} allLayers If true, will set the Select mode to All Layers, false for Active Layers
      * 
-     * @returns {PlayObject}
+     * @return {PlayObject}
      */
     var setDirectSelectOptionForAllLayers = function (allLayers) {
         return new PlayObject(
@@ -106,8 +102,35 @@ define(function (require, exports) {
         );
     };
 
+
+    /**
+     * Resets the mode of shape tools back to "shape" from "path" or "pixel".
+     * 
+     * @return {PlayObject}
+     */
+    var resetShapeTool = function () {
+        return new PlayObject(
+            "reset",
+            {
+                null: {
+                    ref: [
+                        {
+                            ref: null,
+                            property: "vectorToolMode"
+                        },
+                        {
+                            ref: "application",
+                            enum: "ordinal",
+                            value: "targetEnum"
+                        }
+                    ]
+                }
+            }
+        );
+    };
     
     exports.setTool = setTool;
     exports.setToolOptions = setToolOptions;
     exports.setDirectSelectOptionForAllLayers = setDirectSelectOptionForAllLayers;
+    exports.resetShapeTool = resetShapeTool;
 });
