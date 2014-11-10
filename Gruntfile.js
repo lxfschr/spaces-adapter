@@ -43,7 +43,8 @@ module.exports = function (grunt) {
                 ".bowerrc",
                 "src/**/*.js",
                 "test/**/*.js",
-                "examples/**/*.js"
+                "examples/**/*.js",
+                "!test/spec/low-level-test.js"
             ]
         },
         jscs: {

@@ -290,8 +290,8 @@ define(function () {
             "_playground.notifierGroup.OS");
         ok(typeof _playground.notifierGroup.MENU === "string",
             "_playground.notifierGroup.MENU");
-        ok(typeof _playground.notifierGroup.DIALOG === "string",
-            "_playground.notifierGroup.DIALOG");
+        ok(typeof _playground.notifierGroup.INTERACTION === "string",
+            "_playground.notifierGroup.INTERACTION");
         ok(typeof _playground.notifierGroup.TOUCH === "string",
             "_playground.notifierGroup.TOUCH");
     });
@@ -304,6 +304,21 @@ define(function () {
             "_playground.setNotifier function defined");
     });
 
+    /* _playground.notifierOptions.interaction constants object
+     * Validates: defined, type, number of elements, their type, ref by name
+     */
+    test("_playground.notifierOptions.interaction constants object", function () {
+        ok(typeof _playground.notifierOptions.interaction === "object", "_playground.notifierOptions.interaction defined");
+        // CHANGE THIS VALUE WHEN ADDING OR REMOVING interaction PROPERTIES!
+        var expectedSize = 2;
+        var actualSize = Object.getOwnPropertyNames(_playground.notifierOptions.interaction).length;
+        equal(actualSize, expectedSize, "_playground.notifierOptions.interaction size");
+        // constants
+        ok(typeof _playground.notifierOptions.interaction.PROGRESS === "number",
+            "_playground.notifierOptions.interaction.PROGRESS");
+        ok(typeof _playground.notifierOptions.interaction.ERROR === "number",
+            "_playground.notifierOptions.interaction.ERROR");
+    });
 
     // ---------------------- _playground._debug ------------------------------
 
@@ -353,31 +368,65 @@ define(function () {
         });
     });
 
-    /* _playground._debug_descriptorIdentity() function
-     * TODO: tburbage (2014/08/22): Need functional test case(s)
+    /* _playground._debug.descriptorIdentity() function
+     * tests for defined and a single round-trip C++<=>JS with empty
+     * descriptor objects 
      */
-    test("_playground._debug_descriptorIdentity() defined", function () {
+    test("_playground._debug.descriptorIdentity() defined", function () {
         ok(typeof _playground._debug.descriptorIdentity === "function",
             "_playground._debug.descriptorIdentity() defined");
     });
 
-    /* _playground._debug_testRoundtrip() function
-     * TODO: NOT YET IMPLEMENTED
-     */
-    // asyncTest("_playground._debug.testRoundtrip function", function () {
-    //  expect(1);
+    asyncTest("_playground._debug.descriptorIdentity(): timing test (single)", function () {
+        expect(2);
+        var warn_max_rt_time = 5; // ms
+        var error_max_rt_time = 10; // ms
+        var start_time = performance.now();
+        _playground._debug.descriptorIdentity({}, {}, function (err, descriptor, reference) {
+            var elapsed = performance.now() - start_time;
+            _validateNotifierResult(err);
+            if (elapsed > warn_max_rt_time && elapsed <= error_max_rt_time) {
+                console.warn("Single round trip time (", elapsed.toFixed(2),
+                             "ms) exceeds WARN threshold (", warn_max_rt_time, "ms)");
+            }
+            ok(elapsed <= error_max_rt_time,
+               "Single round trip time (" + elapsed.toFixed(2)
+               + "ms): should not exceed ERROR threshold (" + error_max_rt_time + "ms)");
+            start();
+        });
+    });
 
-    //     ok(typeof _playground._debug.testRoundtrip === "function",
-    //     "_playground._debug.testRoundtrip function defined");
-    //  // var retval = _playground._debug.testRoundtrip(function () {
-    //  //  console.log("testRoundtrip retval: ", retval);
-    //  //  start();
-    //  // });
-    // });
+    /* _playground._debug.descriptorIdentity(): timing test, multiple iterations averaged
+     */
+    asyncTest("_playground._debug.descriptorIdentity(): timing test, multiple iterations averaged", function () {
+        expect(1);
+        var callback = function (err, descriptor, reference) {
+            callbacks_received++;
+            if (callbacks_received < iterations) {
+                _playground._debug.descriptorIdentity({}, {}, callback);
+            }
+            else
+            {
+                var elapsed = performance.now() - start_time;
+                var avg_rt_time = elapsed / iterations;
+                if (avg_rt_time > warn_max_avg_rt_time) {
+                    console.warn("Average round trip time (ms) exceeds expected. EXP:", warn_max_avg_rt_time,
+                                 "; ACTUAL:", avg_rt_time.toFixed(2));
+                }
+                ok(avg_rt_time <= error_max_avg_rt_time, "Average round trip time (" + avg_rt_time.toFixed(2)
+                   + "ms) should not exceed " + error_max_avg_rt_time + "ms");
+                start();
+            }
+        };
+        var iterations = 100;
+        var warn_max_avg_rt_time = 5; // ms
+        var error_max_avg_rt_time = 10; // ms
+        var callbacks_received = 0;
+        var start_time = performance.now();
+        _playground._debug.descriptorIdentity({}, {}, callback);
+    });
 
     /* _playground._debug_testNativeDispatcherException() function
-     * tburbage (2014/08/22): Should we assert anything else about the Javascript
-     * thrown Error object i.e. it's properties/values?
      */
     test("_playground._debug_testNativeDispatcherException()", function () {
         ok(typeof _playground._debug.testNativeDispatcherException === "function",
@@ -388,6 +437,8 @@ define(function () {
         } catch (err) {
             exceptionThrown = true;
             ok(err instanceof Error, "Caught exception expected to be an instanceof Error");
+            ok(err.hasOwnProperty("message"), "Error object should have a 'message' property");
+            strictEqual("string", typeof err.message, "Error object 'message' prop type should be 'string'");
         }
         ok(exceptionThrown, "Expect native Javascript exception to be thrown");
     });
@@ -439,6 +490,40 @@ define(function () {
             "_playground.ps.performMenuCommand function defined");
     });
 
+    /* _playground.ps.getActiveTool()
+     * Validates: defined, type
+     * functional: makes valid requiest for the active tool and checks that the returned value has expected keys
+     */
+    asyncTest("_playground.ps.getActiveTool() functional (valid request)", function () {
+        expect(6);
+
+        ok(typeof _playground.ps.getActiveTool === "function",
+            "_playground.ps.getActiveTool() function defined");
+
+        _playground.ps.getActiveTool(function (err, info) {
+            _validateNotifierResult(err);
+            ok(!err, "Call succeeded");
+
+            ok(typeof info.title === "string",
+                "_playground.ps.getActiveTool. info result.title");
+
+            ok(typeof info.isModal === "boolean",
+                "_playground.ps.getActiveTool. info result.isModal");
+
+            ok(typeof info.key === "string",
+                "_playground.ps.getActiveTool. info result.key");
+
+            start();
+        });
+    });
+
+    /* _playground.ps.requestImage() function
+     * Validates: defined, type
+     */
+    test("_playground.ps.requestImage() defined", function () {
+        ok(typeof _playground.ps.requestImage === "function",
+            "_playground.ps.requestImage() function defined");
+    });
 
     // ------------------- _playground.ps.descriptor --------------------------
 
@@ -1182,92 +1267,7 @@ define(function () {
         });
     });
 
-    // // --------------------- Dialog tests ---------------------
-
-    // /* _playground.ps.ui.getSuppressDialogs()
-    //  * Get the dialog mode. While it is initialized to false, at this point we cannot
-    //  * make assumptions about its value.
-    //  * Value validation is also an issue as we are invoking setter tests asynchronously.
-    //  */
-    // asyncTest("_playground.ps.ui.getSuppressDialogs() functional", function () {
-    //     expect(3);
-
-    //     ok(typeof _playground.ps.ui.getSuppressDialogs === "function",
-    //          "_playground.ps.ui.getSuppressDialogs() function defined");
-
-    //     _playground.ps.ui.getSuppressDialogs(function (err, value) {
-    //         _validateNotifierResult(err);
-
-    //         strictEqual(typeof value, "boolean", "Result is a boolean");
-
-    //         start();
-    //     });
-    // });
-
-    // /* _playground.ps.ui.setSuppressDialogs()
-    //  * Set the dialog mode. When set the old value is returned.
-    //  * The First value sets the dialog to true, the second to false
-    //  */
-    // asyncTest("_playground.ps.ui.setSuppressDialogs() functional", function () {
-    //     expect(3);
-
-    //     ok(typeof _playground.ps.ui.setSuppressDialogs === "function",
-    //          "_playground.ps.ui.setSuppressDialogs() function defined");
-
-    //     _playground.ps.ui.setSuppressDialogs(true, function (err, previousValue) {
-    //         _validateNotifierResult(err);
-
-    //         strictEqual(typeof previousValue, "boolean", "Result is a boolean");
-
-    //         // reset the dialog value
-    //         _playground.ps.ui.setSuppressDialogs(previousValue, function () { });
-
-    //         start();
-    //     });
-    // });
-
-    //  _playground.ps.ui.setSuppressDialogs()
-    //  * Get/set the dialog mode. Confirms the "symmetry" of get/set.
-    //  * While it is initialized to false, at this point we cannot make assumptions about its value.
-    //  * Value validation is also an issue as we are invoking setter tests asynchronously.
-     
-    // asyncTest("_playground.ps.ui.setSuppressDialogs() get/set", function () {
-    //     expect(11);
-
-    //     // Initial get of startValue
-    //     _playground.ps.ui.getSuppressDialogs(function (err, startValue) {
-    //         _validateNotifierResult(err);
-    //         strictEqual(typeof startValue, "boolean", "Result is a boolean");
-
-    //         // Invert startValue state on set and compare to previousValue
-    //         _playground.ps.ui.setSuppressDialogs(!startValue, function (err, previousValue) {
-    //             _validateNotifierResult(err);
-    //             strictEqual(typeof previousValue, "boolean", "Result is a boolean");
-    //             strictEqual(previousValue, startValue, "previousValue returned by set should equal prior get value");
-
-    //             // get to confirm set
-    //             _playground.ps.ui.getSuppressDialogs(function (err, newValue) {
-    //                 _validateNotifierResult(err);
-    //                 strictEqual(newValue, !startValue, "newValue (on get) should equal that previously set");
-
-    //                 // set back to the initial (startValue) state
-    //                 _playground.ps.ui.setSuppressDialogs(startValue, function (err, previousValue) {
-    //                     _validateNotifierResult(err);
-    //                     strictEqual(previousValue, !startValue,
-    //                                 "previousValue returned by set should equal prior get value");
-
-    //                     // get to confirm set
-    //                     _playground.ps.ui.getSuppressDialogs(function (err, endValue) {
-    //                         _validateNotifierResult(err);
-    //                         strictEqual(endValue, startValue, "endValue (on get) should equal the startValue");
-
-    //                         start();
-    //                     });
-    //                 });
-    //             });
-    //         });
-    //     });
-    // });
+    // --------------------- Menu tests ---------------------
 
     /* _playground.ps.ui.installMenu()
      * Validates: defined, type
@@ -1337,7 +1337,7 @@ define(function () {
         ok(typeof _playground.os.eventKeyCode === "object",
             "_playground.os.eventKeyCode defined");
         // CHANGE THIS VALUE WHEN ADDING OR REMOVING eventKeyCode PROPERTIES!
-        var expectedSize = 68;
+        var expectedSize = 31;
         var actualSize = Object.getOwnPropertyNames(_playground.os.eventKeyCode).length;
         strictEqual(actualSize, expectedSize, "_playground.os.eventKeyCode size");
         // constants
@@ -1373,78 +1373,6 @@ define(function () {
             "_playground.os.eventKeyCode.INSERT");
         ok(typeof _playground.os.eventKeyCode.DELETE === "number",
             "_playground.os.eventKeyCode.DELETE");
-        ok(typeof _playground.os.eventKeyCode.KEY_0 === "number",
-            "_playground.os.eventKeyCode.KEY_0");
-        ok(typeof _playground.os.eventKeyCode.KEY_1 === "number",
-            "_playground.os.eventKeyCode.KEY_1");
-        ok(typeof _playground.os.eventKeyCode.KEY_2 === "number",
-            "_playground.os.eventKeyCode.KEY_2");
-        ok(typeof _playground.os.eventKeyCode.KEY_3 === "number",
-            "_playground.os.eventKeyCode.KEY_3");
-        ok(typeof _playground.os.eventKeyCode.KEY_4 === "number",
-            "_playground.os.eventKeyCode.KEY_4");
-        ok(typeof _playground.os.eventKeyCode.KEY_5 === "number",
-            "_playground.os.eventKeyCode.KEY_5");
-        ok(typeof _playground.os.eventKeyCode.KEY_6 === "number",
-            "_playground.os.eventKeyCode.KEY_6");
-        ok(typeof _playground.os.eventKeyCode.KEY_7 === "number",
-            "_playground.os.eventKeyCode.KEY_7");
-        ok(typeof _playground.os.eventKeyCode.KEY_8 === "number",
-            "_playground.os.eventKeyCode.KEY_8");
-        ok(typeof _playground.os.eventKeyCode.KEY_9 === "number",
-            "_playground.os.eventKeyCode.KEY_9");
-        ok(typeof _playground.os.eventKeyCode.KEY_A === "number",
-            "_playground.os.eventKeyCode.KEY_A");
-        ok(typeof _playground.os.eventKeyCode.KEY_B === "number",
-            "_playground.os.eventKeyCode.KEY_B");
-        ok(typeof _playground.os.eventKeyCode.KEY_C === "number",
-            "_playground.os.eventKeyCode.KEY_C");
-        ok(typeof _playground.os.eventKeyCode.KEY_D === "number",
-            "_playground.os.eventKeyCode.KEY_D");
-        ok(typeof _playground.os.eventKeyCode.KEY_E === "number",
-            "_playground.os.eventKeyCode.KEY_E");
-        ok(typeof _playground.os.eventKeyCode.KEY_F === "number",
-            "_playground.os.eventKeyCode.KEY_F");
-        ok(typeof _playground.os.eventKeyCode.KEY_G === "number",
-            "_playground.os.eventKeyCode.KEY_G");
-        ok(typeof _playground.os.eventKeyCode.KEY_H === "number",
-            "_playground.os.eventKeyCode.KEY_H");
-        ok(typeof _playground.os.eventKeyCode.KEY_I === "number",
-            "_playground.os.eventKeyCode.KEY_I");
-        ok(typeof _playground.os.eventKeyCode.KEY_J === "number",
-            "_playground.os.eventKeyCode.KEY_J");
-        ok(typeof _playground.os.eventKeyCode.KEY_K === "number",
-            "_playground.os.eventKeyCode.KEY_K");
-        ok(typeof _playground.os.eventKeyCode.KEY_L === "number",
-            "_playground.os.eventKeyCode.KEY_L");
-        ok(typeof _playground.os.eventKeyCode.KEY_M === "number",
-            "_playground.os.eventKeyCode.KEY_M");
-        ok(typeof _playground.os.eventKeyCode.KEY_N === "number",
-            "_playground.os.eventKeyCode.KEY_N");
-        ok(typeof _playground.os.eventKeyCode.KEY_O === "number",
-            "_playground.os.eventKeyCode.KEY_O");
-        ok(typeof _playground.os.eventKeyCode.KEY_P === "number",
-            "_playground.os.eventKeyCode.KEY_P");
-        ok(typeof _playground.os.eventKeyCode.KEY_Q === "number",
-            "_playground.os.eventKeyCode.KEY_Q");
-        ok(typeof _playground.os.eventKeyCode.KEY_R === "number",
-            "_playground.os.eventKeyCode.KEY_R");
-        ok(typeof _playground.os.eventKeyCode.KEY_S === "number",
-            "_playground.os.eventKeyCode.KEY_S");
-        ok(typeof _playground.os.eventKeyCode.KEY_T === "number",
-            "_playground.os.eventKeyCode.KEY_T");
-        ok(typeof _playground.os.eventKeyCode.KEY_U === "number",
-            "_playground.os.eventKeyCode.KEY_U");
-        ok(typeof _playground.os.eventKeyCode.KEY_V === "number",
-            "_playground.os.eventKeyCode.KEY_V");
-        ok(typeof _playground.os.eventKeyCode.KEY_W === "number",
-            "_playground.os.eventKeyCode.KEY_W");
-        ok(typeof _playground.os.eventKeyCode.KEY_X === "number",
-            "_playground.os.eventKeyCode.KEY_X");
-        ok(typeof _playground.os.eventKeyCode.KEY_Y === "number",
-            "_playground.os.eventKeyCode.KEY_Y");
-        ok(typeof _playground.os.eventKeyCode.KEY_Z === "number",
-            "_playground.os.eventKeyCode.KEY_Z");
         ok(typeof _playground.os.eventKeyCode.WIN_LEFT === "number",
             "_playground.os.eventKeyCode.WIN_LEFT");
         ok(typeof _playground.os.eventKeyCode.WIN_RIGHT === "number",
@@ -1475,8 +1403,6 @@ define(function () {
             "_playground.os.eventKeyCode.KEY_F11");
         ok(typeof _playground.os.eventKeyCode.KEY_F12 === "number",
             "_playground.os.eventKeyCode.KEY_F12");
-        ok(typeof _playground.os.eventKeyCode.KEY_GRAVE === "number",
-            "_playground.os.eventKeyCode.KEY_GRAVE");
     });
 
     /* _playground.os.notifierKind constants object
@@ -1487,7 +1413,7 @@ define(function () {
         ok(typeof _playground.os.notifierKind === "object",
             "_playground.os.notifierKind defined");
         // CHANGE THIS VALUE WHEN ADDING OR REMOVING notifierKind PROPERTIES!
-        var expectedSize = 6;
+        var expectedSize = 7;
         var actualSize = Object.getOwnPropertyNames(_playground.os.notifierKind).length;
         strictEqual(actualSize, expectedSize, "_playground.os.notifierKind size");
         // constants
@@ -1499,6 +1425,8 @@ define(function () {
             "_playground.os.notifierKind.KEYBOARDFOCUS_CHANGED");
         ok(typeof _playground.os.notifierKind.EXTERNAL_MOUSE_DOWN === "string",
             "_playground.os.notifierKind.EXTERNAL_MOUSE_DOWN");
+        ok(typeof _playground.os.notifierKind.EXTERNAL_KEYEVENT === "string",
+            "_playground.os.notifierKind.EXTERNAL_KEYEVENT");
         ok(typeof _playground.os.notifierKind.TOUCH === "string",
             "_playground.os.notifierKind.TOUCH");
         ok(typeof _playground.os.notifierKind.CONVERTIBLE_SLATE_MODE_CHANGED === "string",
