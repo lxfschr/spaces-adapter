@@ -82,7 +82,7 @@ define(function (require, exports) {
      * @return {PlayObject}
      */
     var setStrokeAlignment = function (sourceRef, alignment) {
-        assert(referenceOf(sourceRef) === "layer", "setStrokeAlignment is passed a non-layer reference");
+        assert(referenceOf(sourceRef) === "contentLayer", "setStrokeAlignment is passed a non-layer reference");
         return new PlayObject(
             "set",
             {
@@ -116,7 +116,7 @@ define(function (require, exports) {
      * @return {PlayObject}
      */
     var setStrokeCap = function (sourceRef, cap) {
-        assert(referenceOf(sourceRef) === "layer", "setStrokeCap is passed a non-layer reference");
+        assert(referenceOf(sourceRef) === "contentLayer", "setStrokeCap is passed a non-layer reference");
         return new PlayObject(
             "set",
             {
@@ -148,7 +148,7 @@ define(function (require, exports) {
      * @return {PlayObject}
      */
     var setStrokeCorner = function (sourceRef, corner) {
-        assert(referenceOf(sourceRef) === "layer", "setStrokeCorner is passed a non-layer reference");
+        assert(referenceOf(sourceRef) === "contentLayer", "setStrokeCorner is passed a non-layer reference");
         return new PlayObject (
             "set",
             {
@@ -191,7 +191,7 @@ define(function (require, exports) {
      * raw.contentLayer.setShapeFillTypeSolidColor([100,200,150]);
      */
     var setShapeFillTypeSolidColor = function (sourceRef, rgb) {
-        assert(referenceOf(sourceRef) === "layer", "setShapeFillTypeSolidColor is passed a non-layer reference");
+        assert(referenceOf(sourceRef) === "contentLayer", "setShapeFillTypeSolidColor is passed a non-layer reference");
         if (rgb === null) {
             return _setShapeFillTypeNoColor();
         }
@@ -228,9 +228,9 @@ define(function (require, exports) {
      * raw.contentLayer.setStrokeFillTypeSolidColor([100,200,150]);
      */
     var setStrokeFillTypeSolidColor = function (sourceRef, rgb) {
-        assert(referenceOf(sourceRef) === "layer", "setStrokeAlignment is passed a non-layer reference");
+        assert(referenceOf(sourceRef) === "contentLayer", "setStrokeAlignment is passed a non-layer reference");
         if (rgb === null) {
-            return _setStrokeFillTypeNoColor();
+            return _setStrokeFillTypeNoColor(sourceRef);
         }
         return new PlayObject(
             "set",
@@ -243,7 +243,7 @@ define(function (require, exports) {
                             "obj": "strokeStyle",
                             "value": {
                                 "strokeEnabled": true,
-                                "strokeStyleContent": shape.fillContents("solidColorLayer", rgb),
+                                "strokeStyleContent": shape.fillContentsObject("solidColorLayer", rgb),
                                 "strokeStyleVersion": 2
                             }
                         }
@@ -302,7 +302,7 @@ define(function (require, exports) {
                 "to": {
                     "obj": "shapeStyle",
                     "value": {
-                        "strokeStyle": shape.strokeFillStrokeStyle(false)
+                        "strokeStyle": shape.shapeStrokeObject(false)
                     }
                 }
             }
@@ -324,7 +324,7 @@ define(function (require, exports) {
      * raw.contentLayer.setShapeStrokeWidth(10);
      */
     var setShapeStrokeWidth = function (sourceRef, strokeWidth) {
-        assert(referenceOf(sourceRef) === "layer", "setShapeStrokeWidth is passed a non-layer reference");
+        assert(referenceOf(sourceRef) === "contentLayer", "setShapeStrokeWidth is passed a non-layer reference");
         return new PlayObject(
             "set",
             {
@@ -363,7 +363,7 @@ define(function (require, exports) {
      * raw.contentLayer.setStrokeFillTypePattern("pBubbles", 100);
      */
     var setStrokeFillTypePattern = function (sourceRef, fillTypePatternName, scaleVal) {
-        assert(referenceOf(sourceRef) === "layer", "setStrokeFillTypePattern is passed a non-layer reference");
+        assert(referenceOf(sourceRef) === "contentLayer", "setStrokeFillTypePattern is passed a non-layer reference");
         return new PlayObject(
             "set",
             {
@@ -422,7 +422,7 @@ define(function (require, exports) {
      * raw.contentLayer.setShapeFillTypePattern("pBubbles", 100);
      */
     var setShapeFillTypePattern = function (sourceRef, fillTypePatternName, scaleVal) {
-        assert(referenceOf(sourceRef) === "layer", "setShapeFillTypePattern is passed a non-layer reference");
+        assert(referenceOf(sourceRef) === "contentLayer", "setShapeFillTypePattern is passed a non-layer reference");
         return new PlayObject(
             "set",
             {
@@ -474,7 +474,7 @@ define(function (require, exports) {
      * raw.contentLayer.moveShape(20,20);
      */
     var moveShape = function (sourceRef, hVal, vVal) {
-        assert(referenceOf(sourceRef) === "layer", "moveShape is passed a non-layer reference");
+        assert(referenceOf(sourceRef) === "contentLayer", "moveShape is passed a non-layer reference");
         return new PlayObject(
             "set",
             {
@@ -537,7 +537,7 @@ define(function (require, exports) {
             strokeEnabledVal, fillContentStroke, fillContentStrokeVal, strokeAlignment,
             cap, corner, strokeWidth, typeShape, shapeVal) {
         
-        assert(referenceOf(sourceRef) === "layer", "createShape is passed a non-layer reference");
+        assert(referenceOf(sourceRef) === "contentLayer", "createShape is passed a non-layer reference");
         
         var patternLayerName;
         if (fillContentShape === "patternLayer") {
