@@ -76,6 +76,29 @@ define(function (require, exports) {
     };
 
     /**
+     * Constant values for types of strokes and fills
+     * @type {Object.<string, string>}
+     */
+    var contentTypes = {};
+    Object.defineProperties(contentTypes, {
+        SOLID_COLOR: {
+            value: "solidColor",
+            writeable: false,
+            enumerable: true
+        },
+        GRADIENT: {
+            value: "gradient",
+            writeable: false,
+            enumerable: true
+        },
+        PATTERN: {
+            value: "pattern",
+            writeable: false,
+            enumerable: true
+        }
+    });
+
+    /**
      * @param {ActionDescriptor} sourceRef Reference to layer(s) to edit
      * @param {string} alignment The stroke alignment. "outside", "center", or "inside"
      *
@@ -600,6 +623,7 @@ define(function (require, exports) {
     };
     
     exports.referenceBy = referenceBy;
+    exports.contentTypes = contentTypes;
 
     exports.setStrokeAlignment = setStrokeAlignment;
     exports.setStrokeCap = setStrokeCap;
