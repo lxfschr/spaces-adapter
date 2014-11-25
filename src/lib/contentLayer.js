@@ -212,9 +212,10 @@ define(function (require, exports) {
 
     /**
      * Set shape stroke fill to solid color with RGB color
+     * Also sets opacity if provided as an alpha property "a" of the rgba object parameter
      *
      * @param {ActionDescriptor} sourceRef Reference to layer(s) to edit
-     * @param {array | object | number } rgb The array of RGB color [red,green,blue] for shape fill color. 0 to 255
+     * @param {{r: !number, g: !number, b: !number, a: ?number}} rgba color in standard rgba object format
      *
      * @return {PlayObject}
      *
@@ -222,35 +223,36 @@ define(function (require, exports) {
      * Select a layer
      *
      * Examples:
-     * var myColor = [100,200,150];
-     * raw.contentLayer.setStrokeFillTypeSolidColor(myColor);
-     *
-     * raw.contentLayer.setStrokeFillTypeSolidColor([100,200,150]);
+     * var myColor = {r: 100, g: 250, b: 25, a: 0.6},
+     *     layerRef = contentLayer.referenceBy.current;
+     *     
+     *     strokeObj = contentLayer.setStrokeFillTypeSolidColor(layerRef, myColor);
      */
-    var setStrokeFillTypeSolidColor = function (sourceRef, rgb) {
+    var setStrokeFillTypeSolidColor = function (sourceRef, rgba) {
         assert(referenceOf(sourceRef) === "contentLayer", "setStrokeAlignment is passed a non-layer reference");
-        if (rgb === null) {
+        if (rgba === null) {
             return _setStrokeFillTypeNoColor(sourceRef);
         }
-        return new PlayObject(
-            "set",
-            {
-                "null": sourceRef,
-                "to": {
-                    "obj": "shapeStyle",
-                    "value": {
-                        "strokeStyle": {
-                            "obj": "strokeStyle",
-                            "value": {
-                                "strokeEnabled": true,
-                                "strokeStyleContent": shape.fillContentsObject("solidColorLayer", rgb),
-                                "strokeStyleVersion": 2
-                            }
+        var descriptor = {
+            "null": sourceRef,
+            "to": {
+                "obj": "shapeStyle",
+                "value": {
+                    "strokeStyle": {
+                        "obj": "strokeStyle",
+                        "value": {
+                            "strokeEnabled": true,
+                            "strokeStyleContent": shape.fillContentsObject("solidColorLayer", rgba),
+                            "strokeStyleVersion": 2
                         }
                     }
                 }
             }
-        );
+        };
+        if (rgba.hasOwnProperty("a")) {
+            descriptor.to.value.strokeStyle.value.strokeStyleOpacity = unitsIn.percent(rgba.a * 100);
+        }
+        return new PlayObject("set", descriptor);
     };
 
     /**
