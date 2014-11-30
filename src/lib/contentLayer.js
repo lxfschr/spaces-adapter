@@ -621,6 +621,42 @@ define(function (require, exports) {
             }
         );
     };
+
+    /**
+     * Set the border radius of a rectangle layer.
+     *
+     * @param {number} newRadius
+     * @return {PlayObject}
+     */
+    var setRadius = function (newRadius) {
+        return new PlayObject("changePathDetails", {
+            "keyActionChangeAllCorners": true,
+            "keyActionRadiiSource": 0,
+            "keyOriginRRectRadii": {
+                "obj": "radii",
+                "value": {
+                    "bottomLeft": {
+                        "unit": "pixelsUnit",
+                        "value": newRadius
+                    },
+                    "bottomRight": {
+                        "unit": "pixelsUnit",
+                        "value": newRadius
+                    },
+                    "topLeft": {
+                        "unit": "pixelsUnit",
+                        "value": newRadius
+                    },
+                    "topRight": {
+                        "unit": "pixelsUnit",
+                        "value": newRadius
+                    },
+                    "unitValueQuadVersion": 1
+                }
+            },
+            "keyOriginType": 1
+        });
+    };
     
     exports.referenceBy = referenceBy;
     exports.contentTypes = contentTypes;
@@ -635,5 +671,6 @@ define(function (require, exports) {
     exports.setShapeFillTypePattern = setShapeFillTypePattern;
     exports.moveShape = moveShape;
     exports.createShape = createShape;
+    exports.setRadius = setRadius;
 
 });
