@@ -139,6 +139,26 @@ define(function (require, exports, module) {
     };
 
     /**
+     * Constructs a property reference from the given action reference and
+     * property name.
+     *
+     * @private
+     * @param {(string|Array.<object>|object)} reference
+     * @param {string} property
+     * @return {Array.<object>}
+     */
+    var _makePropertyReference = function (reference, property) {
+        var propertyDescriptor = {
+                ref: "property",
+                property: property
+            };
+
+        return Array.isArray(reference) ?
+                reference.concat(propertyDescriptor) :
+                [reference, propertyDescriptor];
+    };
+
+    /**
      * Executes a low-level "get" call using an ActionReference.
      *
      * @param {(string|Array.<(string|Object)>|Object)} reference The reference to retrieve. Can be:
@@ -163,14 +183,7 @@ define(function (require, exports, module) {
      * @return {Promise.<?>} The value of the property, dependent on reference type
      */
     Descriptor.prototype.getProperty = function (reference, property) {
-        var propertyDescriptor = {
-                ref: "property",
-                property: property
-            },
-            propertyReference = Array.isArray(reference) ?
-                reference.concat(propertyDescriptor) :
-                [reference, propertyDescriptor];
-
+        var propertyReference = _makePropertyReference(reference, property);
 
         return this.get(propertyReference)
             .then(function (obj) {
@@ -303,6 +316,8 @@ define(function (require, exports, module) {
      * @see Descriptor.prototype.get
      * @see Descriptor.prototype.batchPlay
      * @param {Array.<object>} references The references to retrieve.
+     * @param {object=} options
+     * @param {object=} batchOptions
      * @return {Promise.<Array.<object>>} Resolves with an array of results.
      */
     Descriptor.prototype.batchGet = function (references, options, batchOptions) {
@@ -316,6 +331,39 @@ define(function (require, exports, module) {
         });
 
         return this.batchPlay(commands, options, batchOptions);
+    };
+
+    /**
+     * Executes a sequence of low-level "getProperty" calls using batchPlay.
+     *
+     * @see Descriptor.prototype.get
+     * @see Descriptor.prototype.batchPlay
+     * @param {Array.<object>} references The references to retrieve.
+     * @param {string} property
+     * @param {object=} options
+     * @param {object=} batchOptions     
+     * @return {Promise.<Array.<object>>} Resolves with an array of property results.
+     */
+    Descriptor.prototype.batchGetProperty = function (references, property, options, batchOptions) {
+        batchOptions = batchOptions || {};
+        var propertyReferences = references.map(function (reference) {
+            return _makePropertyReference(reference, property);
+        });
+
+        return this.batchGet(propertyReferences, options, batchOptions)
+            .then(function (response) {
+                if (batchOptions.continueOnError) {
+                    return response;
+                }
+
+                return response.map(function (result) {
+                    if (!result || !result.hasOwnProperty(property)) {
+                        throw new Error("No such property: " + property);
+                    }
+
+                    return result[property];
+                });
+            });
     };
 
     /**
