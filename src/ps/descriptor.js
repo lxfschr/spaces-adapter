@@ -234,7 +234,9 @@ define(function (require, exports, module) {
      * @param {object=} options Options applied to the execution of each ActionDescriptor individually
      * @param {{continueOnError: boolean=}}=} batchOptions Options that control how the batch of
      *      ActionDescriptors is executed.
-     * @return {Promise.<Array.object>} Resolves with the list of ActionDescriptor results. 
+     * @return {Promise.<Array.<object>>} Resolves with the list of ActionDescriptor results, or rejects
+     *      with either an adapter error, or a single command error if not continueOnError mode. In
+     *      continueOnError mode, always resolve with both the results and errors arrays.
      */
     Descriptor.prototype.batchPlay = function (commands, options, batchOptions) {
         batchOptions = batchOptions || {};
@@ -245,7 +247,29 @@ define(function (require, exports, module) {
         var batchPlayAsync = Promise.promisify(_playground.ps.descriptor.batchPlay,
             _playground.ps.descriptor);
 
-        return batchPlayAsync(commands, options, batchOptions);
+        return batchPlayAsync(commands, options, batchOptions)
+            .then(function (response) {
+                // Never reject in continueOnError mode; the caller must always check the results
+                if (batchOptions.continueOnError) {
+                    return response;
+                }
+
+                var theError;
+                response[1].some(function (error) {
+                    if (error) {
+                        theError = error;
+                        return true;
+                    }
+                });
+
+                if (theError) {
+                    // otherwise, throw the first error, because there is only one
+                    throw theError;
+                }
+                
+                // if there are no errors, resolve with just the results
+                return response[0];
+            });
     };
 
     /**
@@ -267,6 +291,27 @@ define(function (require, exports, module) {
             return {
                 name: object.command,
                 descriptor: object.descriptor
+            };
+        });
+
+        return this.batchPlay(commands, options, batchOptions);
+    };
+
+    /**
+     * Executes a sequence of low-level "get" calls using batchPlay.
+     *
+     * @see Descriptor.prototype.get
+     * @see Descriptor.prototype.batchPlay
+     * @param {Array.<object>} references The references to retrieve.
+     * @return {Promise.<Array.<object>>} Resolves with an array of results.
+     */
+    Descriptor.prototype.batchGet = function (references, options, batchOptions) {
+        var commands = references.map(function (reference) {
+            return {
+                name: "get",
+                descriptor: {
+                    "null": _wrap(reference)
+                }
             };
         });
 
