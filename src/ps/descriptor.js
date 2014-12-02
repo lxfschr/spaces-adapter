@@ -313,6 +313,11 @@ define(function (require, exports, module) {
     /**
      * Executes a sequence of low-level "get" calls using batchPlay.
      *
+     * NOTE: batchGet is currently slightly slower than simply executing the
+     * get calls independently, which is almost certainly an adapter bug.
+     * If that bug isn't fixed, we should consider replacing the implementation
+     * of this method with one that simply performs the gets independently.
+     *
      * @see Descriptor.prototype.get
      * @see Descriptor.prototype.batchPlay
      * @param {Array.<object>} references The references to retrieve.
