@@ -338,16 +338,16 @@ define(function (require, exports, module) {
      *
      * @see Descriptor.prototype.get
      * @see Descriptor.prototype.batchPlay
-     * @param {Array.<object>} references The references to retrieve.
-     * @param {string} property
+     * @param {Array.<{reference: object, property: string}>} refObjs
+     *      The references and properties to retrieve.
      * @param {object=} options
      * @param {object=} batchOptions     
      * @return {Promise.<Array.<object>>} Resolves with an array of property results.
      */
-    Descriptor.prototype.batchGetProperty = function (references, property, options, batchOptions) {
+    Descriptor.prototype.batchGetProperties = function (refObjs, options, batchOptions) {
         batchOptions = batchOptions || {};
-        var propertyReferences = references.map(function (reference) {
-            return _makePropertyReference(reference, property);
+        var propertyReferences = refObjs.map(function (refObj) {
+            return _makePropertyReference(refObj.reference, refObj.property);
         });
 
         return this.batchGet(propertyReferences, options, batchOptions)
@@ -356,7 +356,8 @@ define(function (require, exports, module) {
                     return response;
                 }
 
-                return response.map(function (result) {
+                return response.map(function (result, index) {
+                    var property = refObjs[index].property;
                     if (!result || !result.hasOwnProperty(property)) {
                         throw new Error("No such property: " + property);
                     }
@@ -365,6 +366,30 @@ define(function (require, exports, module) {
                 });
             });
     };
+
+    /**
+     * Executes a sequence of low-level "getProperty" calls for a single property
+     * using batchPlay.
+     *
+     * @see Descriptor.prototype.get
+     * @see Descriptor.prototype.batchPlay
+     * @param {object} references The references to retrieve
+     * @param {string} property The property to retrieve
+     * @param {object=} options
+     * @param {object=} batchOptions
+     * @return {Promise.<Array.<object>>} Resolves with an array of property results.
+     */
+    Descriptor.prototype.batchGetProperty = function (references, property, options, batchOptions) {
+        var refObjs = references.map(function (reference) {
+            return {
+                reference: reference,
+                property: property
+            };
+        });
+
+        return this.batchGetProperties(refObjs, options, batchOptions);
+    };
+
 
     /**
      * @type {Descriptor} The Descriptor singleton
