@@ -139,6 +139,26 @@ define(function (require, exports, module) {
     };
 
     /**
+     * Constructs a property reference from the given action reference and
+     * property name.
+     *
+     * @private
+     * @param {(string|Array.<object>|object)} reference
+     * @param {string} property
+     * @return {Array.<object>}
+     */
+    var _makePropertyReference = function (reference, property) {
+        var propertyDescriptor = {
+                ref: "property",
+                property: property
+            };
+
+        return Array.isArray(reference) ?
+                reference.concat(propertyDescriptor) :
+                [reference, propertyDescriptor];
+    };
+
+    /**
      * Executes a low-level "get" call using an ActionReference.
      *
      * @param {(string|Array.<(string|Object)>|Object)} reference The reference to retrieve. Can be:
@@ -163,14 +183,7 @@ define(function (require, exports, module) {
      * @return {Promise.<?>} The value of the property, dependent on reference type
      */
     Descriptor.prototype.getProperty = function (reference, property) {
-        var propertyDescriptor = {
-                ref: "property",
-                property: property
-            },
-            propertyReference = Array.isArray(reference) ?
-                reference.concat(propertyDescriptor) :
-                [reference, propertyDescriptor];
-
+        var propertyReference = _makePropertyReference(reference, property);
 
         return this.get(propertyReference)
             .then(function (obj) {
@@ -234,7 +247,9 @@ define(function (require, exports, module) {
      * @param {object=} options Options applied to the execution of each ActionDescriptor individually
      * @param {{continueOnError: boolean=}}=} batchOptions Options that control how the batch of
      *      ActionDescriptors is executed.
-     * @return {Promise.<Array.object>} Resolves with the list of ActionDescriptor results. 
+     * @return {Promise.<Array.<object>>} Resolves with the list of ActionDescriptor results, or rejects
+     *      with either an adapter error, or a single command error if not continueOnError mode. In
+     *      continueOnError mode, always resolve with both the results and errors arrays.
      */
     Descriptor.prototype.batchPlay = function (commands, options, batchOptions) {
         batchOptions = batchOptions || {};
@@ -245,7 +260,29 @@ define(function (require, exports, module) {
         var batchPlayAsync = Promise.promisify(_playground.ps.descriptor.batchPlay,
             _playground.ps.descriptor);
 
-        return batchPlayAsync(commands, options, batchOptions);
+        return batchPlayAsync(commands, options, batchOptions)
+            .then(function (response) {
+                // Never reject in continueOnError mode; the caller must always check the results
+                if (batchOptions.continueOnError) {
+                    return response;
+                }
+
+                var theError;
+                response[1].some(function (error) {
+                    if (error) {
+                        theError = error;
+                        return true;
+                    }
+                });
+
+                if (theError) {
+                    // otherwise, throw the first error, because there is only one
+                    throw theError;
+                }
+                
+                // if there are no errors, resolve with just the results
+                return response[0];
+            });
     };
 
     /**
@@ -272,6 +309,92 @@ define(function (require, exports, module) {
 
         return this.batchPlay(commands, options, batchOptions);
     };
+
+    /**
+     * Executes a sequence of low-level "get" calls using batchPlay.
+     *
+     * NOTE: batchGet is currently slightly slower than simply executing the
+     * get calls independently, which is almost certainly an adapter bug.
+     * If that bug isn't fixed, we should consider replacing the implementation
+     * of this method with one that simply performs the gets independently.
+     *
+     * @see Descriptor.prototype.get
+     * @see Descriptor.prototype.batchPlay
+     * @param {Array.<object>} references The references to retrieve.
+     * @param {object=} options
+     * @param {object=} batchOptions
+     * @return {Promise.<Array.<object>>} Resolves with an array of results.
+     */
+    Descriptor.prototype.batchGet = function (references, options, batchOptions) {
+        var commands = references.map(function (reference) {
+            return {
+                name: "get",
+                descriptor: {
+                    "null": _wrap(reference)
+                }
+            };
+        });
+
+        return this.batchPlay(commands, options, batchOptions);
+    };
+
+    /**
+     * Executes a sequence of low-level "getProperty" calls using batchPlay.
+     *
+     * @see Descriptor.prototype.get
+     * @see Descriptor.prototype.batchPlay
+     * @param {Array.<{reference: object, property: string}>} refObjs
+     *      The references and properties to retrieve.
+     * @param {object=} options
+     * @param {object=} batchOptions     
+     * @return {Promise.<Array.<object>>} Resolves with an array of property results.
+     */
+    Descriptor.prototype.batchGetProperties = function (refObjs, options, batchOptions) {
+        batchOptions = batchOptions || {};
+        var propertyReferences = refObjs.map(function (refObj) {
+            return _makePropertyReference(refObj.reference, refObj.property);
+        });
+
+        return this.batchGet(propertyReferences, options, batchOptions)
+            .then(function (response) {
+                if (batchOptions.continueOnError) {
+                    return response;
+                }
+
+                return response.map(function (result, index) {
+                    var property = refObjs[index].property;
+                    if (!result || !result.hasOwnProperty(property)) {
+                        throw new Error("No such property: " + property);
+                    }
+
+                    return result[property];
+                });
+            });
+    };
+
+    /**
+     * Executes a sequence of low-level "getProperty" calls for a single property
+     * using batchPlay.
+     *
+     * @see Descriptor.prototype.get
+     * @see Descriptor.prototype.batchPlay
+     * @param {object} references The references to retrieve
+     * @param {string} property The property to retrieve
+     * @param {object=} options
+     * @param {object=} batchOptions
+     * @return {Promise.<Array.<object>>} Resolves with an array of property results.
+     */
+    Descriptor.prototype.batchGetProperty = function (references, property, options, batchOptions) {
+        var refObjs = references.map(function (reference) {
+            return {
+                reference: reference,
+                property: property
+            };
+        });
+
+        return this.batchGetProperties(refObjs, options, batchOptions);
+    };
+
 
     /**
      * @type {Descriptor} The Descriptor singleton
