@@ -402,12 +402,17 @@ define(function (require, exports) {
         assert(referenceOf(ref) === "layer", "setLocking is passed a non-layer reference");
         var lockObject = lock ? {"protectAll": true} : {"protectNone": true};
         return new PlayObject(
-            "applyLocking",
+            "set",
             {
                 "null": ref,
-                "layerLocking": {
-                    "obj": "layerLocking",
-                    "value": lockObject
+                "to": {
+                    "obj": "layer",
+                    "value" : {
+                        "layerLocking": {
+                            "obj": "layerLocking",
+                            "value": lockObject
+                        }
+                    }
                 }
             }
         );
