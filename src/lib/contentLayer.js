@@ -216,7 +216,7 @@ define(function (require, exports) {
     var setShapeFillTypeSolidColor = function (sourceRef, rgb) {
         assert(referenceOf(sourceRef) === "contentLayer", "setShapeFillTypeSolidColor is passed a non-layer reference");
         if (rgb === null) {
-            return _setShapeFillTypeNoColor();
+            return _setShapeFillTypeNoColor(sourceRef);
         }
         return new PlayObject(
             "set",
@@ -225,8 +225,8 @@ define(function (require, exports) {
                 "to": {
                     "obj": "shapeStyle",
                     "value": {
-                        "fillContents": shape.fillContents("solidColorLayer", rgb),
-                        "strokeStyle": shape.shapeFillStrokeStyle(true)
+                        "fillContents": shape.fillContentsObject("solidColorLayer", rgb),
+                        "strokeStyle": shape.shapeFillObject(true)
                     }
                 }
             }
@@ -299,7 +299,7 @@ define(function (require, exports) {
                 "to": {
                     "obj": "shapeStyle",
                     "value": {
-                        "strokeStyle": shape.shapeFillStrokeStyle(false)
+                        "strokeStyle": shape.shapeFillObject(false)
                     }
                 }
             }
@@ -591,7 +591,7 @@ define(function (require, exports) {
                                     "enum": "blendMode",
                                     "value": "normal"
                                 },
-                                "strokeStyleContent": shape.fillContents(fillContentStroke, fillContentStrokeVal),
+                                "strokeStyleContent": shape.fillContentsObject(fillContentStroke, fillContentStrokeVal),
                                 "strokeStyleLineAlignment": {
                                     "enum": "strokeStyleLineAlignment",
                                     "value": _strokeAlignment[strokeAlignment]
@@ -615,7 +615,7 @@ define(function (require, exports) {
                                 "strokeStyleVersion": 2
                             }
                         },
-                        "type": shape.fillContents(fillContentShape, fillContentShapeVal)
+                        "type": shape.fillContentsObject(fillContentShape, fillContentShapeVal)
                     }
                 }
             }
