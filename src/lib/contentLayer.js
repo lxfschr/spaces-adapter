@@ -79,8 +79,7 @@ define(function (require, exports) {
      * Constant values for types of strokes and fills
      * @type {Object.<string, string>}
      */
-    var contentTypes = {};
-    Object.defineProperties(contentTypes, {
+    var contentTypes = Object.defineProperties({}, {
         SOLID_COLOR: {
             value: "solidColor",
             writeable: false,
@@ -97,6 +96,56 @@ define(function (require, exports) {
             enumerable: true
         }
     });
+
+    /**
+     * Shape origin types
+     * 
+     * @const
+     * @type {Object.<string, number>}
+     */
+    var originTypes = Object.defineProperties({}, {
+        ORIGIN_UNDEFINED: {
+            value: -1,
+            enumerable: true,
+            writeable: false
+        },
+        ORIGIN_NONE: {
+            value: 0,
+            enumerable: true,
+            writeable: false
+        },
+        ORIGIN_RECT: {
+            value: 1,
+            enumerable: true,
+            writeable: false
+        },
+        ORIGIN_ROUNDED_RECT: {
+            value: 2,
+            enumerable: true,
+            writeable: false
+        },
+        ORIGIN_POLYGON: {
+            value: 3,
+            enumerable: true,
+            writeable: false
+        },
+        ORIGIN_LINE: {
+            value: 4,
+            enumerable: true,
+            writeable: false
+        },
+        ORIGIN_ELLIPSE: {
+            value: 5,
+            enumerable: true,
+            writeable: false
+        },
+        ORIGIN_CUSTOM: {
+            value: 6,
+            enumerable: true,
+            writeable: false
+        }
+    });
+
 
     /**
      * @param {ActionDescriptor} sourceRef Reference to layer(s) to edit
@@ -654,12 +703,13 @@ define(function (require, exports) {
                     "unitValueQuadVersion": 1
                 }
             },
-            "keyOriginType": 1
+            "keyOriginType": originTypes.ORIGIN_RECT
         });
     };
     
     exports.referenceBy = referenceBy;
     exports.contentTypes = contentTypes;
+    exports.originTypes = originTypes;
 
     exports.setStrokeAlignment = setStrokeAlignment;
     exports.setStrokeCap = setStrokeCap;
