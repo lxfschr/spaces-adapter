@@ -32,6 +32,84 @@ define(function (require, exports) {
         referenceOf = require("./reference").refersTo;
         
     /**
+     * Possible layer kind values
+     * @const
+     */
+    var layerKinds = Object.defineProperties({}, {
+        "ANY": {
+            writeable: false,
+            enumerable: true,
+            value:  0
+        },
+        PIXEL: {
+            writeable: false,
+            enumerable: true,
+            value:  1
+        },
+        ADJUSTMENT: {
+            writeable: false,
+            enumerable: true,
+            value:  2
+        },
+        TEXT: {
+            writeable: false,
+            enumerable: true,
+            value:  3
+        },
+        VECTOR: {
+            writeable: false,
+            enumerable: true,
+            value:  4
+        },
+        SMARTOBJECT: {
+            writeable: false,
+            enumerable: true,
+            value:  5
+        },
+        VIDEO: {
+            writeable: false,
+            enumerable: true,
+            value:  6
+        },
+        GROUP: {
+            writeable: false,
+            enumerable: true,
+            value:  7
+        },
+        "3D": {
+            writeable: false,
+            enumerable: true,
+            value:  8
+        },
+        GRADIENT: {
+            writeable: false,
+            enumerable: true,
+            value:  9
+        },
+        PATTERN: {
+            writeable: false,
+            enumerable: true,
+            value:  10
+        },
+        SOLIDCOLOR: {
+            writeable: false,
+            enumerable: true,
+            value:  11
+        },
+        BACKGROUND: {
+            writeable: false,
+            enumerable: true,
+            value:  12
+        },
+        GROUPEND: {
+            writeable: false,
+            enumerable: true,
+            value:  13
+        }
+    });
+
+
+    /**
      * Moves the source layer to right before target reference 
      * (usually done by id)
      * 
@@ -445,6 +523,7 @@ define(function (require, exports) {
     // _offsetCommand
     
     exports.referenceBy = referenceBy;
+    exports.layerKinds = layerKinds;
     
     exports.reorder = reorder;
     exports.align = align;
