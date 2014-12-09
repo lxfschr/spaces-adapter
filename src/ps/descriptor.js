@@ -303,7 +303,7 @@ define(function (require, exports, module) {
         var commands = objects.map(function (object) {
             return {
                 name: object.command,
-                descriptor: object.descriptor
+                descriptor: _wrap(object.descriptor)
             };
         });
 
