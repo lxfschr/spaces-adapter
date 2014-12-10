@@ -415,6 +415,35 @@ define(function (require, exports) {
         );
     };
 
+    /**
+     * Set the Transform Path property of the document. This is available in
+     * the classic UI menu as View > Extras..Show > Target Path
+     * 
+     * @param {object} sourceRef
+     * @param {boolean} enabled
+     * @return {PlayObject}
+     */
+    var setTargetPath = function (sourceRef, enabled) {
+        assert(referenceOf(sourceRef) === "document", "selectDocument is passed a non-document reference");
+
+        var reference = {
+            "ref": [
+                {
+                    "ref": "property",
+                    "property": "targetPathVisibility"
+                },
+                sourceRef
+            ]
+        };
+
+        var descriptor = {
+            null: reference,
+            to: enabled
+        };
+
+        return new PlayObject("set", descriptor);
+    };
+
     exports.referenceBy = referenceBy;
     
     exports.open = openDocument;
@@ -423,5 +452,5 @@ define(function (require, exports) {
     exports.select = selectDocument;
     exports.create = createDocument;
     exports.resize = resizeDocument;
-
+    exports.setTargetPath = setTargetPath;
 });
