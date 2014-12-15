@@ -30,8 +30,11 @@ define(function (require, exports) {
         colorObject = require("./color").colorObject;
     
     var assert = require("../util").assert,
-        referenceOf = require("./reference").refersTo;
+        reference = require("./reference");
     
+    var referenceOf = reference.refersTo,
+        referenceBy = reference.wrapper("textLayer");
+
     /**
      * Create a text layer
      *
@@ -77,8 +80,8 @@ define(function (require, exports) {
      * Set the font face
      *
      * @param {ActionDescriptor} sourceRef Layer reference
-     * @param {string} face The string of font family name
-     * @param {string} weight The string of font style name
+     * @param {string} family The family name of the font
+     * @param {string} style The style of the font     
      *
      * @returns {PlayObject} The action descriptor of the text style.
      *
@@ -86,17 +89,37 @@ define(function (require, exports) {
      * Select a text layer
      *
      * Examples:
-     * setFace("Helvetica","Light");
+     * setFace("Helvetica", "Light");
      */
-    var setFace = function (sourceRef, face, weight) {
+    var setFace = function (sourceRef, family, style) {
+        // NOTE: Using a source ref with layer IDs crashes Photoshop. This also
+        // doesn't seem to work with postScriptName
+
         assert(referenceOf(sourceRef) === "textLayer", "setFace expects a textLayer reference");
+        sourceRef = {
+            "ref": "textLayer",
+            "value": "$Trgt",
+            "enum": "$Ordn"
+        };
+
         return new PlayObject(
             "set",
             {
-                "null": sourceRef,
-                "to": {
-                    fontName: face,
-                    fontStyleName: weight
+                null: {
+                    ref: [
+                        {
+                            ref: "property",
+                            property: "textStyle"
+                        },
+                        sourceRef
+                    ]
+                },
+                to: {
+                    obj: "textStyle",
+                    value: {
+                        fontName: family,
+                        fontStyleName: style
+                    }
                 }
             }
         );
@@ -121,15 +144,30 @@ define(function (require, exports) {
      * setSize(14, "pt");
      */
     var setSize = function (sourceRef, val, unit) {
+        // NOTE: See warning in setFace
         assert(referenceOf(sourceRef) === "textLayer", "setSize expects a textLayer reference");
+        sourceRef = {
+            "ref": "textLayer",
+            "value": "$Trgt",
+            "enum": "$Ordn"
+        };
+
         return new PlayObject(
             "set",
             {
-                "null": sourceRef,
-                "to": {
-                    "obj": "textStyle",
-                    "value": {
-                        "size": unitsIn[unit](val)
+                null: {
+                    ref: [
+                        {
+                            ref: "property",
+                            property: "textStyle"
+                        },
+                        sourceRef
+                    ]
+                },
+                to: {
+                    obj: "textStyle",
+                    value: {
+                        size: unitsIn[unit](val)
                     }
                 }
             }
@@ -255,26 +293,35 @@ define(function (require, exports) {
      * Set the text color
      *
      * @param {ActionDescriptor} sourceRef Layer reference
-     * @param {array} arrayTextColor The array of RGB color [red,green,blue]. 0 to 255
+     * @param {Color} color The color of the layer. Opacity is ignored.
      *
      * @return {PlayObject} The action descriptor of the text style.
-     *
-     * Preconditions:
-     * Select a text layer
-     *
-     * Examples:
-     * setColor([100,200,100]);
      */
-    var setColor = function (sourceRef, arrayTextColor) {
+    var setColor = function (sourceRef, color) {
+        // NOTE: See warning in setFace
         assert(referenceOf(sourceRef) === "textLayer", "setColor expects a textLayer reference");
+        sourceRef = {
+            "ref": "textLayer",
+            "value": "$Trgt",
+            "enum": "$Ordn"
+        };
+
         return new PlayObject(
             "set",
             {
-                "null": sourceRef,
-                "to": {
-                    "obj": "textStyle",
-                    "value": {
-                        "color": colorObject(arrayTextColor)
+                null: {
+                    ref: [
+                        {
+                            ref: "property",
+                            property: "textStyle"
+                        },
+                        sourceRef
+                    ]
+                },
+                to: {
+                    obj: "textStyle",
+                    value: {
+                        color: colorObject(color)
                     }
                 }
             }
@@ -403,6 +450,8 @@ define(function (require, exports) {
             }
         );
     };
+
+    exports.referenceBy = referenceBy;
 
     exports.createText = createText;
     exports.setFace = setFace;
