@@ -64,7 +64,7 @@ define(function (require, exports) {
                 bConstrainProportions:      settings.bConstrainProportions || true,
                 width:              settings.width || sourceRef.width,
                 height:             settings.height || sourceRef.height,
-                colorSpace:         settings.colorSpace || "RGBColor",
+                colorSpace:         settings.colorSpace || "RGBColorMode",
                 resolution:         settings.resolution
             },
             fileType,
@@ -118,10 +118,10 @@ define(function (require, exports) {
         art: "artBox"
     };
     openDocument.mode = {
-        rgb: "RGBColor",
+        rgb: "RGBColorMode",
         gray: "grayscaleMode",
-        cmyk: "CMYKColorEnum",
-        lab: "labColor"
+        cmyk: "CMYKColorMode",
+        lab: "labColorMode"
     };
 
     /**
@@ -335,7 +335,7 @@ define(function (require, exports) {
      * @param {number} settings.height The document height.
      * @param {number} settings.resolution The document resolution.
      * @param {string} settings.fill The document fill. "white", "backgroundColor", "transparency"
-     * @param {string} settings.colorMode The document color mode. "RGBColor", "bitmapMode", "grayscaleMode" 
+     * @param {string} settings.colorMode The document color mode. "RGBColorMode", "bitmapMode", "grayscaleMode" 
                         "CMYKColorMode", "labColorMode"
      * @param {number} settings.depth The color mode depth
      * @param {string} settings.colorProfile The document color profile. "sRGB IEC61966-2.1", "Adobe RGB (1998)"
@@ -350,7 +350,7 @@ define(function (require, exports) {
                 height:     settings.width || 5,
                 resolution: settings.resolution || 72,
                 fill:       settings.fill || "white",
-                colorMode:  settings.colorMode || "RGBColor",
+                colorMode:  settings.colorMode || "RGBColorMode",
                 depth:      settings.depth || 8,
                 colorProfile:    settings.colorProfile || "sRGB IEC61966-2.1",
                 pixelAspectRatio:  settings.pixelAspectRatio || 1
