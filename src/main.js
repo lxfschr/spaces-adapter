@@ -21,18 +21,20 @@
  * 
  */
 
+/* global _playground */
+
 define(function (require, exports) {
     "use strict";
 
     /**
-     * Version of the Playground API.
+     * Version of the Playground adapter plugin API.
      * Follows Semver 2.0.0 conventions: http://semver.org/spec/v2.0.0.html
      *
      * @const
-     * @type{string}
+     * @type {string}
      */
-    var PLAYGROUND_API_VERSION = "0.0.1";
-
-    Object.defineProperty(exports, "version", {enumerable: true, value: PLAYGROUND_API_VERSION});
-
+    Object.defineProperty(exports, "version", {
+        enumerable: true,
+        value: _playground.version
+    });
 });
