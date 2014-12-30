@@ -373,6 +373,41 @@ define(function (require, exports, module) {
     };
 
     /**
+     * Fetch optional properties, which might not exist, and ignore errors.
+     * 
+     * @param {object} reference
+     * @param {Array.<string>} properties
+     * @return {Promise.<object>} Always resolves to an object, but keys that
+     *  don't exist are omitted from the resolved value.
+     */
+    Descriptor.prototype.batchGetOptionalProperties = function (reference, properties) {
+        var makeRefObj = function (property) {
+            return {
+                reference: reference,
+                property: property
+            };
+        };
+
+        var refObjs = properties.map(makeRefObj),
+            batchOptions = {
+                continueOnError: true
+            };
+
+        return this.batchGetProperties(refObjs, undefined, batchOptions)
+            .then(function (results) {
+                var values = results[0];
+
+                return values.reduce(function (result, value, index) {
+                    var property = properties[index];
+                    if (value && value.hasOwnProperty(property)) {
+                        result[property] = value[property];
+                    }
+                    return result;
+                }, {});
+            });
+    };
+
+    /**
      * Executes a sequence of low-level "getProperty" calls for a single property
      * using batchPlay.
      *
