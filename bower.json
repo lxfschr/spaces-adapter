@@ -20,8 +20,8 @@
     "src/thirdparty"
   ],
   "dependencies": {
-    "eventEmitter": "~4.2.9",
-    "bluebird": "~2.3.11"
+    "eventEmitter": "~4.2.11",
+    "bluebird": "~2.5.2"
   },
   "devDependencies": {
     "requirejs": "~2.1.15",
