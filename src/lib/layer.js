@@ -416,6 +416,40 @@ define(function (require, exports) {
             }
         );
     };
+
+    /**
+     * FIXME: Only works with current document!
+     * SIDE EFFECT: Creates a brand new layer with a new ID and name
+     * 
+     * @param {number} id Background layer id
+     * 
+     * @return {PlayObject}
+     */
+    var unlockBackgroundLayer = function (id) {
+        return new PlayObject(
+            "set",
+            {
+                "layerID": id,
+                "null": {
+                    "property": "background",
+                    "ref": "layer"
+                },
+                "to": {
+                    "obj": "layer",
+                    "value": {
+                        "mode": {
+                            "enum": "blendMode",
+                            "value": "normal"
+                        },
+                        "opacity": {
+                            "unit": "percentUnit",
+                            "value": 100
+                        }
+                    }
+                }
+            }
+        );
+    };
     
     /**
      * @param {ActionDescriptor} ref - Reference of layer(s) to delete
@@ -544,4 +578,5 @@ define(function (require, exports) {
     exports.groupSelected = groupSelectedLayers;
     exports.setLocking = setLocking;
     exports.translate = translate;
+    exports.unlockBackground = unlockBackgroundLayer;
 });
