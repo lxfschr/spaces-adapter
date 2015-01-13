@@ -316,7 +316,8 @@ define(function (require, exports) {
     var setSize = function (ref, _w, _h) {
         assert(referenceOf(ref) === "layer", "setHeight is passed a non-layer reference");
         var sizeDescriptor = {
-                "null": ref
+                "null": ref,
+                "snapToDocBounds": true
             };
 
         if (_w) {
@@ -348,6 +349,7 @@ define(function (require, exports) {
             "transform",
             {
                 "null": ref,
+                "snapToDocBounds": true,
                 "angle": inUnits.angle(angle)
             }
         );
@@ -542,6 +544,7 @@ define(function (require, exports) {
             "transform",
             {
                 "null": ref,
+                "snapToDocBounds": true,
                 "position": {
                     "obj": "position",
                     "value": {
