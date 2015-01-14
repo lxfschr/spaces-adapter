@@ -175,11 +175,33 @@ define(function (require, exports) {
     };
 
     /**
+     * Constant values for types of alignment
+     * @type {Object.<string, string>}
+     */
+    var alignmentTypes = Object.defineProperties({}, {
+        LEFT: {
+            value: "left",
+            enumerable: true
+        },
+        CENTER: {
+            value: "center",
+            enumerable: true
+        },
+        RIGHT: {
+            value: "right",
+            enumerable: true
+        },
+        JUSTIFY: {
+            value: "justifyAll",
+            enumerable: true
+        }
+    });
+
+    /**
      * Set the font alignment
      *
      * @param {ActionDescriptor} sourceRef Layer reference
-     * @param {string} orient The alignment of the type.  "right", "center", "left", "justifyAll"
-     *
+     * @param {string} alignment The alignment of the type, as described by the alignmentTypes enum.
      * @return {PlayObject} The action descriptor of the paragraph style.
      *
      * Preconditions:
@@ -188,17 +210,32 @@ define(function (require, exports) {
      * Examples:
      * setAlignment("center");
      */
-    var setAlignment = function (sourceRef, orient) {
+    var setAlignment = function (sourceRef, alignment) {
+        // NOTE: See warning in setFace
         assert(referenceOf(sourceRef) === "textLayer", "setAlignment expects a textLayer reference");
+        sourceRef = {
+            "ref": "textLayer",
+            "value": "$Trgt",
+            "enum": "$Ordn"
+        };
         return new PlayObject(
             "set",
             {
-                "null": sourceRef,
+                null: {
+                    ref: [
+                        {
+                            ref: "property",
+                            property: "paragraphStyle"
+                        },
+                        sourceRef
+                    ]
+                },
                 "to": {
+                    "obj": "paragraphStyle",
                     "value": {
                         "align": {
                             "enum": "alignmentType",
-                            "value": orient
+                            "value": alignment
                         }
                     }
                 }
@@ -228,12 +265,26 @@ define(function (require, exports) {
      * setLeading(false,14);
      */
     var setLeading = function (sourceRef, auto, val, unit) {
+        // NOTE: See warning in setFace
         assert(referenceOf(sourceRef) === "textLayer", "setLeading expects a textLayer reference");
+        sourceRef = {
+            "ref": "textLayer",
+            "value": "$Trgt",
+            "enum": "$Ordn"
+        };
         if (auto === false) {
             return new PlayObject(
                 "set",
                 {
-                    "null": sourceRef,
+                    null: {
+                        ref: [
+                            {
+                                ref: "property",
+                                property: "textStyle"
+                            },
+                            sourceRef
+                        ]
+                    },
                     "to": {
                         "obj": "textStyle",
                         "value": {
@@ -247,7 +298,15 @@ define(function (require, exports) {
             return new PlayObject(
                 "set",
                 {
-                    "null": sourceRef,
+                    null: {
+                        ref: [
+                            {
+                                ref: "property",
+                                property: "textStyle"
+                            },
+                            sourceRef
+                        ]
+                    },
                     "to": {
                         "obj": "textStyle",
                         "value": {
@@ -274,11 +333,25 @@ define(function (require, exports) {
      * setLeading(10);
      */
     var setTracking = function (sourceRef, val) {
+        // NOTE: See warning in setFace        
         assert(referenceOf(sourceRef) === "textLayer", "setTracking expects a textLayer reference");
+        sourceRef = {
+            "ref": "textLayer",
+            "value": "$Trgt",
+            "enum": "$Ordn"
+        };
         return new PlayObject(
             "set",
             {
-                "null": sourceRef,
+                null: {
+                    ref: [
+                        {
+                            ref: "property",
+                            property: "textStyle"
+                        },
+                        sourceRef
+                    ]
+                },
                 "to": {
                     "obj": "textStyle",
                     "value": {
@@ -457,6 +530,7 @@ define(function (require, exports) {
     exports.setFace = setFace;
     exports.setSize = setSize;
     exports.setAlignment = setAlignment;
+    exports.alignmentTypes = alignmentTypes;
     exports.setLeading = setLeading;
     exports.setTracking = setTracking;
     exports.setColor = setColor;
