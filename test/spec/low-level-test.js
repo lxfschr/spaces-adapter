@@ -21,8 +21,9 @@
  *
  */
 
-/* global _playground, module, console */
+/* global _playground, module, console, performance, define */
 /* global test, asyncTest, expect, start, ok, equal, strictEqual, deepEqual */
+/* jshint unused:false */
 
 define(function () {
     "use strict";
@@ -33,7 +34,9 @@ define(function () {
     // ------------------
 
     /**
-     * Validates that the returned result-value is a success code
+     * Validates the returned err/result value returned in an API function callback
+     * This validator should not be used where an error is expected (e.g. in a negative test)
+     * because a test failure is triggered on a failing result.
      *
      * @private
      * @param {Error=} err
@@ -43,19 +46,41 @@ define(function () {
         // number property that has the value 0
 
         var testPasses = false;
-        if (err === undefined) {
-            testPasses = true;
-        } else if (err === null) {
-            console.log("validateNotifierResult encountered a 'null' object");
-            testPasses = false;
-        } else if (err.number !== undefined && err.number === 0) {
-            testPasses = true;
-        } else {
-            console.log("validateNotifierResult a malformed err object: " + err);
-            testPasses = false;
+        var logstr;
+        do {
+            if (err === undefined) {
+                testPasses = true;
+                logstr = "err === undefined: OK / succeeded";
+                break;
+            }
+            if (err === null) {
+                logstr = "err is null";
+                break;
+            }
+            if (! err instanceof Error) {
+                logstr = "err is not a proper Error object";
+                break;
+            }
+            if (err.number === undefined) {
+                logstr = "malformed Error object: has no 'number' property";
+                break;
+            }
+            if (err.number === 0) {
+                testPasses = true;
+                logstr = "err.number == 0: OK / succeeded";
+                break;
+            }
+            if (err.message !== undefined)
+            {
+                logstr = "err.message: '" + err.message + "'";
+            } else {
+                logstr = "NO ERROR MESSAGE PROVIDED";
+            }
+        } while (0);
+        if (! testPasses) {
+            console.error("_validateNotifierResult FAIL:", logstr);
         }
-
-        ok(testPasses, "result is success");
+        ok(testPasses, logstr);
     };
 
     /**
@@ -116,6 +141,24 @@ define(function () {
         ok(typeof _playground === "object", "_playground type");
     });
 
+    /* _playground.version Object property
+     * Validates: defined, type, member names and types
+     * Form: {"major": n, "minor": n, "patch": n}
+     */
+/*
+    test("_playground.version Object property: defined, type, member names and types", function () {
+        ok(_playground.hasOwnProperty("version"), "_playground object should have a 'version' property");
+        ok(typeof _playground.version === "object", "_playground.version type");
+        strictEqual(_playground.version.keys().length, 3, "_playground.version should have 3 properties");
+        strictEqual(typeof version.major, "number", "version.major type should be 'number'");
+        ok(version.major >= 0, "version.major value should be >= 0");
+        strictEqual(typeof version.minor, "number", "version.minor type should be 'number'");
+        ok(version.minor >= 0, "version.minor value should be >= 0");
+        strictEqual(typeof version.patch, "number", "version.patch type should be 'number'");
+        ok(version.patch >= 0, "version.patch value should be >= 0");
+    });
+*/
+
     /* _playground.errorCodes constants object
      * Validates: defined, type, number of elements, their type, ref by name
      */
@@ -150,7 +193,7 @@ define(function () {
      * Includes type validation of return object latentVisibility and suspended
      * properties.
      */
-    asyncTest("_playground.getExecutionMode() function", function () {
+    asyncTest("_playground.getExecutionMode() identity, type, functional", function () {
         expect(5);
         ok(typeof _playground.getExecutionMode === "function",
             "_playground.getExecutionMode() function defined");
@@ -308,7 +351,8 @@ define(function () {
      * Validates: defined, type, number of elements, their type, ref by name
      */
     test("_playground.notifierOptions.interaction constants object", function () {
-        ok(typeof _playground.notifierOptions.interaction === "object", "_playground.notifierOptions.interaction defined");
+        ok(typeof _playground.notifierOptions.interaction === "object",
+           "_playground.notifierOptions.interaction defined");
         // CHANGE THIS VALUE WHEN ADDING OR REMOVING interaction PROPERTIES!
         var expectedSize = 2;
         var actualSize = Object.getOwnPropertyNames(_playground.notifierOptions.interaction).length;
@@ -318,6 +362,65 @@ define(function () {
             "_playground.notifierOptions.interaction.PROGRESS");
         ok(typeof _playground.notifierOptions.interaction.ERROR === "number",
             "_playground.notifierOptions.interaction.ERROR");
+    });
+
+    /* _playground.setNotifier() functional, set/reset for _playground.notifierGroup.PHOTOSHOP
+     * Validates: calls for set/reset
+     * These tests don't attempt to cause the event to fire, but simply call setNotifier
+     * with a valid "set" inputs and then a "reset" input (callback arg == undefined)
+     * Unfortunately, without triggering a callback, there isn't anything to validate
+     * other than an exception isn't thrown.
+     * SEE: Adapter API Blackbox Tests for coverage for this area to observe actual notifications occurring.
+     */
+    test("_playground.setNotifier() functional: set/reset for _playground.notifierGroup.PHOTOSHOP", function () {
+        var notifierGroup = _playground.notifierGroup.PHOTOSHOP;
+        var options = {};
+        _playground.setNotifier(notifierGroup, options, function (err, notificationKind, info) {});
+        _playground.setNotifier(notifierGroup, options, undefined);
+        ok(true, "Test needs at least one validator, but no actions should actually be triggered");
+    });
+
+    test("_playground.setNotifier() functional: set/reset for _playground.notifierGroup.OS", function () {
+        var notifierGroup = _playground.notifierGroup.OS;
+        var options = {};
+        _playground.setNotifier(notifierGroup, options, function (err, notificationKind, info) {});
+        _playground.setNotifier(notifierGroup, options, undefined);
+        ok(true, "Test needs at least one validator, but no actions should actually be triggered");
+    });
+
+    test("_playground.setNotifier() functional: set/reset for _playground.notifierGroup.MENU", function () {
+        var notifierGroup = _playground.notifierGroup.MENU;
+        var options = {};
+        _playground.setNotifier(notifierGroup, options, function (err, notificationKind, info) {});
+        _playground.setNotifier(notifierGroup, options, undefined);
+        ok(true, "Test needs at least one validator, but no actions should actually be triggered");
+    });
+
+    test("_playground.setNotifier() functional: set/reset for _playground.notifierGroup.INTERACTION, interactionKind=ERROR", function () {
+        var notifierGroup = _playground.notifierGroup.INTERACTION;
+        var options = {"notificationKind": _playground.notifierOptions.interaction.ERROR};
+        _playground.setNotifier(notifierGroup, options, function (err, notificationKind, info) {});
+        _playground.setNotifier(notifierGroup, options, undefined);
+        ok(true, "Test needs at least one validator, but no actions should actually be triggered");
+    });
+
+    test("_playground.setNotifier() functional: set/reset for _playground.notifierGroup.INTERACTION, interactionKind=PROGRESS", function () {
+        var notifierGroup = _playground.notifierGroup.INTERACTION;
+        var options = {"notificationKind": _playground.notifierOptions.interaction.PROGRESS};
+        _playground.setNotifier(notifierGroup, options, function (err, notificationKind, info) {});
+        _playground.setNotifier(notifierGroup, options, undefined);
+        ok(true, "Test needs at least one validator, but no actions should actually be triggered");
+    });
+    
+
+    // -------------------------- _playground.config ------------------------------
+
+    /* _playground.config object
+     * Validates: defined, type
+     */
+    test("_playground.config object defined, type", function () {
+        ok(!!_playground.config, "_playground.config defined");
+        ok(typeof _playground.config === "object", "_playground.config type");
     });
 
     // ---------------------- _playground._debug ------------------------------
@@ -370,59 +473,93 @@ define(function () {
 
     /* _playground._debug.descriptorIdentity() function
      * tests for defined and a single round-trip C++<=>JS with empty
-     * descriptor objects 
+     * descriptor objects
      */
     test("_playground._debug.descriptorIdentity() defined", function () {
         ok(typeof _playground._debug.descriptorIdentity === "function",
             "_playground._debug.descriptorIdentity() defined");
     });
 
-    asyncTest("_playground._debug.descriptorIdentity(): timing test (single)", function () {
-        expect(2);
-        var warn_max_rt_time = 5; // ms
-        var error_max_rt_time = 10; // ms
-        var start_time = performance.now();
-        _playground._debug.descriptorIdentity({}, {}, function (err, descriptor, reference) {
-            var elapsed = performance.now() - start_time;
-            _validateNotifierResult(err);
-            if (elapsed > warn_max_rt_time && elapsed <= error_max_rt_time) {
-                console.warn("Single round trip time (", elapsed.toFixed(2),
-                             "ms) exceeds WARN threshold (", warn_max_rt_time, "ms)");
-            }
-            ok(elapsed <= error_max_rt_time,
-               "Single round trip time (" + elapsed.toFixed(2)
-               + "ms): should not exceed ERROR threshold (" + error_max_rt_time + "ms)");
-            start();
-        });
-    });
+    // tburbage (2014/12/10): Withdrawing the single execution round trip timing test
+    // for now. It is very common for the very first call to exceed our max
+    // round-trip time of 15ms, but subsequent executions are almost never
+    // over the error threshold. The multiple iterations execution test is
+    // more reliable...
 
-    /* _playground._debug.descriptorIdentity(): timing test, multiple iterations averaged
+    // asyncTest("_playground._debug.descriptorIdentity(): timing test (single)", function () {
+    //     expect(2);
+    //     var warnMaxTime = 10; // ms
+    //     var errorMaxTime = 15; // ms
+    //     var startTime = performance.now();
+    //     _playground._debug.descriptorIdentity({}, {}, function (err, descriptor, reference) {
+    //         var elapsed = performance.now() - startTime;
+    //         _validateNotifierResult(err);
+    //         if (elapsed > warnMaxTime && elapsed <= errorMaxTime) {
+    //             console.warn("Single round trip time (", elapsed.toFixed(2),
+    //                          "ms) exceeds WARN threshold (", warnMaxTime, "ms)");
+    //         }
+    //         ok(elapsed <= errorMaxTime,
+    //            "Single round trip time (" + elapsed.toFixed(2) +
+    //            "ms): should not exceed ERROR threshold (" + errorMaxTime + "ms)");
+    //         start();
+    //     });
+    // });
+
+    /* _playground._debug.descriptorIdentity(): timing test, multiple iterations
      */
-    asyncTest("_playground._debug.descriptorIdentity(): timing test, multiple iterations averaged", function () {
+    asyncTest("_playground._debug.descriptorIdentity(): timing test, multiple iterations", function () {
         expect(1);
         var callback = function (err, descriptor, reference) {
-            callbacks_received++;
-            if (callbacks_received < iterations) {
+            timings[callbacksReceived] = performance.now();
+            callbacksReceived++;
+            if (callbacksReceived < iterations) {
                 _playground._debug.descriptorIdentity({}, {}, callback);
             }
             else
             {
-                var elapsed = performance.now() - start_time;
-                var avg_rt_time = elapsed / iterations;
-                if (avg_rt_time > warn_max_avg_rt_time) {
-                    console.warn("Average round trip time (ms) exceeds expected. EXP:", warn_max_avg_rt_time,
-                                 "; ACTUAL:", avg_rt_time.toFixed(2));
+                var elapsed = timings[timings.length - 1] - startTime;
+                var avgTime = elapsed / iterations;
+                var discreteTimings = timings.map(function (currentValue, index, array) {
+                    if (index > 0) {
+                        return currentValue - array[index - 1];
+                    }
+                    return currentValue - startTime;
+                });
+                var sortedTimings = discreteTimings.sort();
+                var maxTime = sortedTimings[sortedTimings.length - 1];
+                var minTime = sortedTimings[0];
+                var medianTime = sortedTimings[Math.floor(sortedTimings.length / 2)];
+                var reportAsWarning = avgTime > warnMaxTime && avgTime < errorMaxTime ||
+                    medianTime > warnMaxTime && medianTime < errorMaxTime;
+                var reportAsError = avgTime > errorMaxTime || medianTime > errorMaxTime;
+                var logstring = "AVG ROUND TRIP TIME EXCEEDS THRESHOLD (warn: ";
+                logstring += warnMaxTime;
+                logstring += ", error: ";
+                logstring += errorMaxTime;
+                logstring += "): iterations:" + iterations;
+                logstring += "TIMINGS (ms): avg: ";
+                logstring += avgTime;
+                logstring += "median: ";
+                logstring += medianTime;
+                logstring += "max: ";
+                logstring += maxTime;
+                logstring += "min: ";
+                logstring += minTime;
+                if (reportAsWarning) {
+                    console.warn(logstring);
                 }
-                ok(avg_rt_time <= error_max_avg_rt_time, "Average round trip time (" + avg_rt_time.toFixed(2)
-                   + "ms) should not exceed " + error_max_avg_rt_time + "ms");
+                ok(! reportAsError, logstring);
                 start();
             }
         };
         var iterations = 100;
-        var warn_max_avg_rt_time = 5; // ms
-        var error_max_avg_rt_time = 10; // ms
-        var callbacks_received = 0;
-        var start_time = performance.now();
+        // WARN for Avg/median timings > warnMaxTime and < errorMaxTime (console.warn())
+        // Test ERROR if either average or median is > errorMaxTime
+        var warnMaxTime = 10; // ms
+        var errorMaxTime = 15; // ms
+        var callbacksReceived = 0;
+        var timings = new Array(iterations);
+        var startTime = performance.now();
         _playground._debug.descriptorIdentity({}, {}, callback);
     });
 
@@ -452,16 +589,6 @@ define(function () {
             "_playground._debug.enableDebugContextMenu function defined");
     });
 
-    /* _playground._debug_adHoc()
-     * TODO: Add functional test with simple, non-"destructive" command
-     * Probably a good blackbox test candidate
-     */
-    test("_playground._debug_adHoc() defined", function () {
-        ok(typeof _playground._debug.adHoc === "function",
-            "_playground._debug.adHoc function defined");
-    });
-
-
     // ------------------------- _playground.ps -------------------------------
 
     /* _playground.ps property/object
@@ -474,7 +601,7 @@ define(function () {
 
     /* _playground.ps.endModalToolState()
      * Validates: defined, type
-     * See blackbox-tests.js for interactive testing control
+     * SEE: Adapter API Blackbox Tests for interactive testing control
      */
     test("_playground.ps.endModalToolState function defined", function () {
         ok(typeof _playground.ps.endModalToolState === "function",
@@ -553,14 +680,6 @@ define(function () {
         ok(typeof _playground.ps.descriptor.interactionMode.SILENT === "number",
             "_playground.ps.descriptor.interactionMode.SILENT");
     });
-
-    /* SKIPPING THESE FUNCTIONS FOR NOW DUE TO NOTE IN PlaygroundExtension.js
-     * that these functions will all be changing:
-     * _playground.ps.descriptor.registerEventListener()
-     * _playground.ps.descriptor.unRegisterEventListener()
-     * _playground.ps.descriptor.addEvent()
-     * _playground.ps.descriptor.removeEvent()
-     */
 
     /* _playground.ps.descriptor.get()
      * Validates: defined, type
@@ -939,7 +1058,10 @@ define(function () {
 
     /* _playground.ps.ui.setWidgetTypeVisibility()
      * Validates: defined, type
-     * See blackbox-tests.js for interactive testing control
+     * SEE: Adapter API Blackbox Tests for full interactive testing control.
+     * tburbage (2014/12/12): Since there is no way to query for initial state,
+     * I'd rather not alter the UI state the user/developer may have intentionally
+     * set before the tests are run.
      */
     test("_playground.ps.ui.setWidgetTypeVisibility() function defined", function () {
         ok(typeof _playground.ps.ui.setWidgetTypeVisibility === "function",
@@ -992,26 +1114,58 @@ define(function () {
         });
     });
 
-    /* _playground.ps.ui.setPointerPropagationMode()
-     * Validates: Functional: simple set call, err result.
-     * TODO: Could be improved by getting initial/set to new/get of that/set back
+    /* _playground.ps.ui.setPointerPropagationMode(), get/set.
+     * Gets the initial state, sets for each of the other supported states, then back to the initial state.
+     * Validates setPointerPropagationMode() and getPointerPropagationMode() callback args.
      */
-    asyncTest("_playground.ps.ui.setPointerPropagationMode() functional", function () {
-        expect(2);
+    asyncTest("_playground.ps.ui.setPointerPropagationMode() get/set", function () {
+        // Note all of the validation is in the getPointerPropagationMode() callback.
+        // It gets called 4 times, once after getting the initial value, then 3 more times
+        // following a set for each of the pointerPropagationMode constants to validate
+        // the set calls.
+        expect(14);
 
-        ok(typeof _playground.ps.ui.setPointerPropagationMode === "function",
-            "_playground.ps.ui.setPointerPropagationMode() function defined");
-
-        var options = {
-            defaultMode: _playground.ps.ui.pointerPropagationMode.ALPHA_PROPAGATE
+        // getPointerPropagationMode() callback
+        var getModeCallback = function (err, mode) {
+            _validateNotifierResult(err);
+            // Set up a mode "set" list with the initial mode to be set last (i.e. reset)
+            if (setModeList.length === 0) {
+                for (var key in _playground.ps.ui.pointerPropagationMode) {
+                    if (_playground.ps.ui.pointerPropagationMode[key] !== mode) {
+                        setModeList.push(_playground.ps.ui.pointerPropagationMode[key]);
+                    }
+                }
+                setModeList.push(mode);
+            } else {
+                // Primary validation that get returns the same mode as had been set
+                strictEqual(mode, setModeList[setModeIndex], "mode from get following set");
+                setModeIndex++;
+            }
+            ok(mode in setModeList, "mode on get should be a valid pointerPropagationMode member");
+            if (setModeIndex < setModeList.length) {
+                var options = {defaultMode: setModeList[setModeIndex]};
+                _playground.ps.ui.setPointerPropagationMode(options, setModeCallback);
+            } else {
+                start();
+            }
         };
 
-        _playground.ps.ui.setPointerPropagationMode(options, function (err) {
+        // setPointerPropagationMode() callback
+        var setModeCallback = function (err) {
             _validateNotifierResult(err);
+            _playground.ps.ui.getPointerPropagationMode(getModeCallback);
+        };
 
-            start();
-        });
+        var setModeList = [];
+        var setModeIndex = 0;
+        _playground.ps.ui.getPointerPropagationMode(getModeCallback);
     });
+
+
+    // tburbage (2014/12/12): Intend to add functional test(s) for
+    // _playground.ps.ui.setPointerEventPropagationPolicy()
+    // after definition of what are the supported set actions is resolved.
+
 
     /* _playground.ps.ui.PolicyAction constants object
      * Only valid for Mac
@@ -1054,20 +1208,77 @@ define(function () {
             "_playground.ps.ui.keyboardPropagationMode.NEVER_PROPAGATE");
     });
 
-    /* _playground.ps.ui.setKeyboardPropagationMode()
-     * Validates: defined, type
+    /* _playground.ps.ui.getKeyboardPropagationMode()
+     * Validates: defined, type, call and callback, callback args
+     * Does not assume what the returned will be (i.e. "default" value), but does validate
+     * that the returned mode is a defined value in keyboardPropagationMode
      */
-    test("_playground.ps.ui.setKeyboardPropagationMode() function defined", function () {
-        ok(typeof _playground.ps.ui.setKeyboardPropagationMode === "function",
-            "_playground.ps.ui.setKeyboardPropagationMode() function defined");
+    asyncTest("_playground.ps.ui.getKeyboardPropagationMode() functional", function () {
+        expect(4);
+
+        ok(typeof _playground.ps.ui.getKeyboardPropagationMode === "function",
+             "_playground.ps.ui.getKeyboardPropagationMode() function defined");
+
+        _playground.ps.ui.getKeyboardPropagationMode(function (err, mode) {
+            _validateNotifierResult(err);
+            strictEqual(typeof mode, "number", "typeof 'mode' arg should be 'number'");
+            var modeFound = false;
+            for (var key in _playground.ps.ui.keyboardPropagationMode) {
+                if (mode === _playground.ps.ui.keyboardPropagationMode[key]) {
+                    modeFound = true;
+                    break;
+                }
+            }
+            ok(modeFound, "Returned mode should be a member of _playground.ps.ui.keyboardPropagationMode");
+            start();
+        });
     });
 
-    /* _playground.ps.ui.getKeyboardPropagationMode()
-     * Validates: defined, type
+    /* _playground.ps.ui.setKeyboardPropagationMode(), get/set.
+     * Gets the initial state, sets for each of the other supported states, then back to the initial state.
+     * Validates setKeyboardPropagationMode() and getKeyboardPropagationMode() callback args.
      */
-    test("_playground.ps.ui.getKeyboardPropagationMode() function defined", function () {
-        ok(typeof _playground.ps.ui.getKeyboardPropagationMode === "function",
-            "_playground.ps.ui.getKeyboardPropagationMode() function defined");
+    asyncTest("_playground.ps.ui.setKeyboardPropagationMode() get/set", function () {
+        // Note all of the validation is in the getKeyboardPropagationMode() callback.
+        // It gets called 4 times, once after getting the initial value, then 3 more times
+        // following a set for each of the keyboardPropagationMode constants to validate
+        // the set calls.
+        expect(14);
+
+        // getKeyboardPropagationMode() callback
+        var getModeCallback = function (err, mode) {
+            _validateNotifierResult(err);
+            // Set up a mode "set" list with the initial setting last
+            if (setModeList.length === 0) {
+                for (var key in _playground.ps.ui.pointerPropagationMode) {
+                    if (_playground.ps.ui.pointerPropagationMode[key] !== mode) {
+                        setModeList.push(_playground.ps.ui.pointerPropagationMode[key]);
+                    }
+                }
+                setModeList.push(mode);
+            } else {
+                // Primary validation that get returns the same mode as had been set
+                strictEqual(mode, setModeList[setModeIndex], "mode from get following set");
+                setModeIndex++;
+            }
+            ok(mode in setModeList, "mode on get should be a valid pointerPropagationMode member");
+            if (setModeIndex < setModeList.length) {
+                var options = {defaultMode: setModeList[setModeIndex]};
+                _playground.ps.ui.setKeyboardPropagationMode(options, setModeCallback);
+            } else {
+                start();
+            }
+        };
+
+        // setKeyboardPropagationMode() callback
+        var setModeCallback = function (err) {
+            _validateNotifierResult(err);
+            _playground.ps.ui.getKeyboardPropagationMode(getModeCallback);
+        };
+
+        var setModeList = [];
+        var setModeIndex = 0;
+        _playground.ps.ui.getKeyboardPropagationMode(getModeCallback);
     });
 
     /* _playground.ps.ui.setKeyboardEventPropagationPolicy()
@@ -1077,16 +1288,6 @@ define(function () {
         ok(typeof _playground.ps.ui.setKeyboardEventPropagationPolicy === "function",
             "_playground.ps.ui.setKeyboardEventPropagationPolicy() function defined");
     });
-
-    /* _playground.ps.ui.getKeyboardEventPropagationPolicy()
-     * Validates: defined, type
-     * NOT YET DEFINED (COMMENTED OUT IN PlaygroundExtension.js)
-     * UNCOMMENT WHEN IT IS.
-     */
-    // test("_playground.ps.ui.getKeyboardEventPropagationPolicy() function defined", function () {
-    //     ok(typeof _playground.ps.ui.getKeyboardEventPropagationPolicy === "function",
-    //        "_playground.ps.ui.getKeyboardEventPropagationPolicy() function defined");
-    // });
 
     /* _playground.ps.ui.setKeyboardEventPropagationPolicy()
      * Functional: negative, empty options
@@ -1115,6 +1316,12 @@ define(function () {
             start();
         });
     });
+
+
+    // tburbage (2014/12/12): Intend to add functional test(s) for
+    // _playground.ps.ui.setKeyboardEventPropagationPolicy() functional
+    // after definition of what are the supported set actions is resolved.
+
 
     /* _playground.ps.ui.overscrollMode constants object
      * Validates: defined, type, number of elements, their type, ref by name
@@ -1277,6 +1484,13 @@ define(function () {
              "_playground.ps.ui.installMenu() function defined");
     });
 
+    // tburbage (2014/12/12): Decided NOT to add a functional set/reset
+    // for installMenu() because Designshop has a method for running these
+    // tests from its own custom menu. There isn't a way to get the current
+    // custom menu, install a new one, then restore the previous one (defined
+    // elsewhere)
+    // SEE: Adapter API Blackbox Tests, "_playground.ps.ui" section for this
+    // coverage.
 
     // -------------------------- _playground.os ------------------------------
 
@@ -1295,7 +1509,7 @@ define(function () {
         ok(typeof _playground.os.eventKind === "object",
             "_playground.os.eventKind defined");
         // CHANGE THIS VALUE WHEN ADDING OR REMOVING eventKind PROPERTIES!
-        var expectedSize = 3;
+        var expectedSize = 4;
         var actualSize = Object.getOwnPropertyNames(_playground.os.eventKind).length;
         strictEqual(actualSize, expectedSize, "_playground.os.eventKind size");
         // constants
@@ -1305,6 +1519,8 @@ define(function () {
             "_playground.os.eventKind.KEY_DOWN");
         ok(typeof _playground.os.eventKind.KEY_UP === "number",
             "_playground.os.eventKind.KEY_UP");
+        ok(typeof _playground.os.eventKind.FLAGS_CHANGED === "number",
+            "_playground.os.eventKind.FLAGS_CHANGED");
     });
 
     /* _playground.os.eventModifiers constants object
@@ -1337,7 +1553,7 @@ define(function () {
         ok(typeof _playground.os.eventKeyCode === "object",
             "_playground.os.eventKeyCode defined");
         // CHANGE THIS VALUE WHEN ADDING OR REMOVING eventKeyCode PROPERTIES!
-        var expectedSize = 31;
+        var expectedSize = 30;
         var actualSize = Object.getOwnPropertyNames(_playground.os.eventKeyCode).length;
         strictEqual(actualSize, expectedSize, "_playground.os.eventKeyCode size");
         // constants
@@ -1351,8 +1567,6 @@ define(function () {
             "_playground.os.eventKeyCode.ENTER");
         ok(typeof _playground.os.eventKeyCode.ESCAPE === "number",
             "_playground.os.eventKeyCode.ESCAPE");
-        ok(typeof _playground.os.eventKeyCode.SPACE === "number",
-            "_playground.os.eventKeyCode.SPACE");
         ok(typeof _playground.os.eventKeyCode.PAGE_UP === "number",
             "_playground.os.eventKeyCode.PAGE_UP");
         ok(typeof _playground.os.eventKeyCode.PAGE_DOWN === "number",
@@ -1489,17 +1703,26 @@ define(function () {
             "_playground.os.keyboardFocus.isActive() function defined");
     });
 
-    /* _playground.os.keyboardFocus.isActive()
-     * Functional: Call, validate return value type, err check.
+    /* _playground.os.keyboardFocus: acquire(), release(), isActive() functional
+     * 
      */
-    asyncTest("_playground.os.keyboardFocus.isActive() functional", function () {
-        expect(2);
-        // options param/arg is currently unused
-        _playground.os.keyboardFocus.isActive({}, function (err, value) {
+    asyncTest("_playground.os.keyboardFocus: acquire() / release() / isActive() functional", function () {
+        expect(7);
+        _playground.os.keyboardFocus.acquire({}, function (err) {
             _validateNotifierResult(err);
-            strictEqual(typeof value, "boolean", "value type");
-            console.info("_playground.os.keyboardFocus.isActive():", value);
-            start();
+            _playground.os.keyboardFocus.isActive({}, function (err, value) {
+                _validateNotifierResult(err);
+                strictEqual(typeof value, "boolean", "value type");
+                strictEqual(value, true, "focus should be active following acquire()");
+                _playground.os.keyboardFocus.release({}, function (err) {                
+                    _validateNotifierResult(err);
+                    _playground.os.keyboardFocus.isActive({}, function (err, value) {
+                        _validateNotifierResult(err);
+                        strictEqual(value, false, "focus should not be active following release()");
+                        start();
+                    });
+                });
+            });
         });
     });
 
@@ -1524,4 +1747,643 @@ define(function () {
     });
 
     // no test for setting this property, it is read-only.
+
+
+    // ------------------------- _playground.os.clipboard ----------------------------
+
+    /* _playground.os.clipboard object
+     * Validates: defined, type
+     */
+    test("_playground.os.clipboard object defined, type", function () {
+        ok(!!_playground.os.clipboard, "_playground.os.clipboard defined");
+        ok(typeof _playground.os.clipboard === "object", "_playground.os.clipboard type");
+    });
+
+
+    // clipboard support currently only available for Mac
+    // the negative tests will still pass because their error conditions are detected
+    // before the actual interaction with the system clipboard takes place.
+    if (navigator.platform !== "Win32") {
+
+
+    /* _playground.os.clipboard: write(), read() functional: simple string
+     * Validates: All valid args, verifies the string set on write() is the same on read()
+     *
+     */
+    asyncTest("_playground.os.clipboard: write(), read() functional: simple string", function () {
+        expect(9);
+        ok(typeof _playground.os.clipboard.write === "function",
+            "_playground.os.clipboard.write() function defined");
+        ok(typeof _playground.os.clipboard.read === "function",
+            "_playground.os.clipboard.read() function defined");
+        var options = {
+            "format": "string",
+            "data": "_playground.os.clipboard test"
+        };
+
+        _playground.os.clipboard.write(options, function (err) {
+            _validateNotifierResult(err);
+            var options = {
+                "formats": ["string"]
+            };
+            _playground.os.clipboard.read(options, function (err, info) {
+                _validateNotifierResult(err);
+                strictEqual(typeof info, "object", "read() info arg");
+                strictEqual(typeof info.format, "string",
+                      "read() info arg, format property type");
+                strictEqual(info.format, "string",
+                      "read() info arg, format property value");
+                strictEqual(typeof info.data, "string",
+                      "read() info arg, data property type");
+                strictEqual(info.data, "_playground.os.clipboard test",
+                      "read() info arg, data property value");
+                start();
+            });
+        });
+    });
+
+    /* _playground.os.clipboard: write(), read() functional: string with special and Unicode chars
+     * Validates: All valid args, verifies the string set on write() is the same on read()
+     * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Values,_variables,_and_literals#String_literals
+     */
+    asyncTest("_playground.os.clipboard: write(), read() functional: simple string", function () {
+        expect(7);
+        var inputString = "Clipboard string: ";
+        inputString += "tab: \t";
+        inputString += "; newline: \n";
+        inputString += "; doublequote: \"";
+        inputString += "; singlequote: \'";
+        inputString += "; Latin-1 hex (copyright symbol): \xA9";
+        inputString += "; Unicode (copyright symbol): \u00A9";
+
+        var options = {
+            "format": "string",
+            "data": inputString
+        };
+
+        _playground.os.clipboard.write(options, function (err) {
+            _validateNotifierResult(err);
+            var options = {
+                "formats": ["string"]
+            };
+            _playground.os.clipboard.read(options, function (err, info) {
+                _validateNotifierResult(err);
+                strictEqual(typeof info, "object", "read() info arg");
+                strictEqual(typeof info.format, "string",
+                      "read() info arg, format property type");
+                strictEqual(info.format, "string",
+                      "read() info arg, format property value");
+                strictEqual(typeof info.data, "string",
+                      "read() info arg, data property type");
+                strictEqual(info.data, inputString,
+                      "read() info arg, data property value");
+                start();
+            });
+        });
+    });
+
+
+    } // if (navigator.platform !== "Win32")
+
+
+    /* _playground.os.clipboard: write() negative: undefined 'options' arg
+     * Expect the callback notification but with an error
+     * Do not expect a native error/exception to be thrown
+     */
+    asyncTest("_playground.os.clipboard: write() negative: undefined 'options' arg", function () {
+        expect(2);
+
+        try {
+            _playground.os.clipboard.write(undefined, function (err) {
+                _validateNotifierResultError(err, _playground.errorCodes.CONVERSION_ERROR);
+                start();
+            });
+            ok(true, "Runtime error not expected to be thrown");
+        }
+        catch (err) {
+            ok(false, "Runtime error not expected to be thrown");
+        }
+    });
+
+    /* _playground.os.clipboard: write() negative: undefined 'callback' arg
+     * Expect a native error/exception to be thrown
+     */
+    test("_playground.os.clipboard: write() negative: undefined 'callback' arg", function () {
+        var expectedErrorStr = "Async native function invoked without a notifier as the last argument.";
+        var options = {
+            "format": "string",
+            "data": "_playground.os.clipboard test"
+        };
+
+        try {
+            _playground.os.clipboard.write(options, undefined);
+            ok(false, "Runtime error is expected to be thrown");
+        }
+        catch (err) {
+            strictEqual(err.message.slice(0, expectedErrorStr.length),
+                        expectedErrorStr,
+                        "Runtime error expected to be thrown");
+        }
+    });
+
+    /* https://watsonexp.corp.adobe.com/#bug=3909817
+     * No error is thrown when when a callback function reference with incorrect number of parameters
+     * is passed to a Playground API function (CLOSED/AS DESIGNED)
+     * We do absolutely no arg count validation for the API callback functions provided by the caller...
+     */
+
+    /* _playground.os.clipboard: write() negative: invalid 'options.format' value
+     * Expect the callback notification but with an error
+     * Do not expect a native error/exception to be thrown
+     */
+    asyncTest("_playground.os.clipboard: write() negative: invalid 'options.format' string value", function () {
+        expect(2);
+
+        var options = {
+            "format": "",
+            "data": "_playground.os.clipboard test"
+        };
+
+        try {
+            _playground.os.clipboard.write(options, function (err) {
+                _validateNotifierResultError(err, _playground.errorCodes.ARGUMENT_ERROR);
+                start();
+            });
+            ok(true, "Runtime error not expected to be thrown");
+        }
+        catch (err) {
+            ok(false, "Runtime error not expected to be thrown");
+        }
+    });
+
+    /* _playground.os.clipboard: write() negative: omitted 'options.format'
+     * Expect the callback notification but with an error
+     * Do not expect a native error/exception to be thrown
+     */
+    asyncTest("_playground.os.clipboard: write() negative: omitted 'options.format'", function () {
+        expect(2);
+
+        var options = {
+            "data": "_playground.os.clipboard test"
+        };
+
+        try {
+            _playground.os.clipboard.write(options, function (err) {
+                _validateNotifierResultError(err, _playground.errorCodes.ARGUMENT_ERROR);
+                start();
+            });
+            ok(true, "Runtime error not expected to be thrown");
+        }
+        catch (err) {
+            ok(false, "Runtime error not expected to be thrown");
+        }
+    });
+
+    /* _playground.os.clipboard: write() negative: invalid 'options.format' type: undefined
+     * Expect the callback notification but with an error
+     * Do not expect a native error/exception to be thrown
+     */
+    asyncTest("_playground.os.clipboard: write() negative: invalid 'options.format' type: undefined", function () {
+        expect(2);
+
+        var options = {
+            "format": undefined,
+            "data": "_playground.os.clipboard test"
+        };
+
+        try {
+            _playground.os.clipboard.write(options, function (err) {
+                _validateNotifierResultError(err, _playground.errorCodes.CONVERSION_ERROR);
+                start();
+            });
+            ok(true, "Runtime error not expected to be thrown");
+        }
+        catch (err) {
+            ok(false, "Runtime error not expected to be thrown");
+        }
+    });
+
+    /* _playground.os.clipboard: write() negative: invalid 'options.format' type: number
+     * Expect the callback notification but with an error
+     * Do not expect a native error/exception to be thrown
+     */
+    asyncTest("_playground.os.clipboard: write() negative: invalid 'options.format' type: number", function () {
+        expect(2);
+
+        var options = {
+            "format": 0,
+            "data": "_playground.os.clipboard test"
+        };
+
+        try {
+            _playground.os.clipboard.write(options, function (err) {
+                _validateNotifierResultError(err, _playground.errorCodes.ARGUMENT_ERROR);
+                start();
+            });
+            ok(true, "Runtime error not expected to be thrown");
+        }
+        catch (err) {
+            ok(false, "Runtime error not expected to be thrown");
+        }
+    });
+
+    /* _playground.os.clipboard: write() negative: invalid 'options.format' type: boolean
+     * Expect the callback notification but with an error
+     * Do not expect a native error/exception to be thrown
+     */
+    asyncTest("_playground.os.clipboard: write() negative: invalid 'options.format' type: boolean", function () {
+        expect(2);
+
+        var options = {
+            "format": false,
+            "data": "_playground.os.clipboard test"
+        };
+
+        try {
+            _playground.os.clipboard.write(options, function (err) {
+                _validateNotifierResultError(err, _playground.errorCodes.ARGUMENT_ERROR);
+                start();
+            });
+            ok(true, "Runtime error not expected to be thrown");
+        }
+        catch (err) {
+            ok(false, "Runtime error not expected to be thrown");
+        }
+    });
+
+    /* _playground.os.clipboard: write() negative: invalid 'options.format' type: null
+     * Expect the callback notification but with an error
+     * Do not expect a native error/exception to be thrown
+     */
+    asyncTest("_playground.os.clipboard: write() negative: invalid 'options.format' type: null", function () {
+        expect(2);
+
+        var options = {
+            "format": null,
+            "data": "_playground.os.clipboard test"
+        };
+
+        try {
+            _playground.os.clipboard.write(options, function (err) {
+                _validateNotifierResultError(err, _playground.errorCodes.ARGUMENT_ERROR);
+                start();
+            });
+            ok(true, "Runtime error not expected to be thrown");
+        }
+        catch (err) {
+            ok(false, "Runtime error not expected to be thrown");
+        }
+    });
+
+    /* _playground.os.clipboard: write() negative: invalid 'options.format' type: object
+     * Expect the callback notification but with an error
+     * Do not expect a native error/exception to be thrown
+     */
+    asyncTest("_playground.os.clipboard: write() negative: invalid 'options.format' type: object", function () {
+        expect(2);
+
+        var options = {
+            "format": {},
+            "data": "_playground.os.clipboard test"
+        };
+
+        try {
+            _playground.os.clipboard.write(options, function (err) {
+                _validateNotifierResultError(err, _playground.errorCodes.ARGUMENT_ERROR);
+                start();
+            });
+            ok(true, "Runtime error not expected to be thrown");
+        }
+        catch (err) {
+            ok(false, "Runtime error not expected to be thrown");
+        }
+    });
+
+    /* _playground.os.clipboard: write() negative: omitted 'options.data'
+     * Expect the callback notification but with an error
+     * Do not expect a native error/exception to be thrown
+     */
+    asyncTest("_playground.os.clipboard: write() negative: omitted 'options.data'", function () {
+        expect(2);
+
+        var options = {
+            "format": "string",
+        };
+
+        try {
+            _playground.os.clipboard.write(options, function (err) {
+                _validateNotifierResultError(err, _playground.errorCodes.ARGUMENT_ERROR);
+                start();
+            });
+            ok(true, "Runtime error not expected to be thrown");
+        }
+        catch (err) {
+            ok(false, "Runtime error not expected to be thrown");
+        }
+    });
+
+    /* _playground.os.clipboard: write() negative: invalid 'options.data' type: undefined
+     * Expect the callback notification but with an error
+     * Do not expect a native error/exception to be thrown
+     */
+    asyncTest("_playground.os.clipboard: write() negative: invalid 'options.data' type: undefined", function () {
+        expect(2);
+
+        var options = {
+            "format": "string",
+            "data": undefined
+        };
+
+        try {
+            _playground.os.clipboard.write(options, function (err) {
+                _validateNotifierResultError(err, _playground.errorCodes.CONVERSION_ERROR);
+                start();
+            });
+            ok(true, "Runtime error not expected to be thrown");
+        }
+        catch (err) {
+            ok(false, "Runtime error not expected to be thrown");
+        }
+    });
+
+    /* _playground.os.clipboard: write() negative: invalid 'options.data' type: number
+     * Expect the callback notification but with an error
+     * Do not expect a native error/exception to be thrown
+     */
+    asyncTest("_playground.os.clipboard: write() negative: invalid 'options.data' type: number", function () {
+        expect(2);
+
+        var options = {
+            "format": "string",
+            "data": 1.5
+        };
+
+        try {
+            _playground.os.clipboard.write(options, function (err) {
+                _validateNotifierResultError(err, _playground.errorCodes.ARGUMENT_ERROR);
+                start();
+            });
+            ok(true, "Runtime error not expected to be thrown");
+        }
+        catch (err) {
+            ok(false, "Runtime error not expected to be thrown");
+        }
+    });
+
+    /* _playground.os.clipboard: write() negative: invalid 'options.data' type: boolean
+     * Expect the callback notification but with an error
+     * Do not expect a native error/exception to be thrown
+     */
+    asyncTest("_playground.os.clipboard: write() negative: invalid 'options.data' type: boolean", function () {
+        expect(2);
+
+        var options = {
+            "format": "string",
+            "data": true
+        };
+
+        try {
+            _playground.os.clipboard.write(options, function (err) {
+                _validateNotifierResultError(err, _playground.errorCodes.ARGUMENT_ERROR);
+                start();
+            });
+            ok(true, "Runtime error not expected to be thrown");
+        }
+        catch (err) {
+            ok(false, "Runtime error not expected to be thrown");
+        }
+    });
+
+    /* _playground.os.clipboard: write() negative: invalid 'options.data' type: null
+     * Expect the callback notification but with an error
+     * Do not expect a native error/exception to be thrown
+     */
+    asyncTest("_playground.os.clipboard: write() negative: invalid 'options.data' type: null", function () {
+        expect(2);
+
+        var options = {
+            "format": "string",
+            "data": null
+        };
+
+        try {
+            _playground.os.clipboard.write(options, function (err) {
+                _validateNotifierResultError(err, _playground.errorCodes.ARGUMENT_ERROR);
+                start();
+            });
+            ok(true, "Runtime error not expected to be thrown");
+        }
+        catch (err) {
+            ok(false, "Runtime error not expected to be thrown");
+        }
+    });
+
+    /* _playground.os.clipboard: write() negative: invalid 'options.data' type: object
+     * Expect the callback notification but with an error
+     * Do not expect a native error/exception to be thrown
+     */
+    asyncTest("_playground.os.clipboard: write() negative: invalid 'options.data' type: object", function () {
+        expect(2);
+
+        var options = {
+            "format": "string",
+            "data": {}
+        };
+
+        try {
+            _playground.os.clipboard.write(options, function (err) {
+                _validateNotifierResultError(err, _playground.errorCodes.ARGUMENT_ERROR);
+                start();
+            });
+            ok(true, "Runtime error not expected to be thrown");
+        }
+        catch (err) {
+            ok(false, "Runtime error not expected to be thrown");
+        }
+    });
+
+    /* _playground.os.clipboard: read() negative: undefined 'options' arg
+     * Expect the callback notification but with an error
+     * Do not expect a native error/exception to be thrown
+     */
+    asyncTest("_playground.os.clipboard: read() negative: undefined 'options' arg", function () {
+        expect(2);
+
+        try {
+            _playground.os.clipboard.read(undefined, function (err) {
+                _validateNotifierResultError(err, _playground.errorCodes.CONVERSION_ERROR);
+                start();
+            });
+            ok(true, "Runtime error not expected to be thrown");
+        }
+        catch (err) {
+            ok(false, "Runtime error not expected to be thrown");
+        }
+    });
+
+    /* _playground.os.clipboard: read() negative: undefined 'callback' arg
+     * Expect a native error/exception to be thrown
+     */
+    test("_playground.os.clipboard: read() negative: undefined 'callback' arg", function () {
+        var expectedErrorStr = "Async native function invoked without a notifier as the last argument.";
+        var options = {
+            "formats": ["string"]
+        };
+
+        try {
+            _playground.os.clipboard.read(options, undefined);
+            ok(false, "Runtime error is expected to be thrown");
+        }
+        catch (err) {
+            strictEqual(err.message.slice(0, expectedErrorStr.length),
+                        expectedErrorStr,
+                        "Runtime error expected to be thrown");
+        }
+    });
+
+    /* _playground.os.clipboard: read() negative: invalid 'options.formats' type string value
+     * Expect the callback notification but with an error
+     * Do not expect a native error/exception to be thrown
+     */
+    asyncTest("_playground.os.clipboard: read() negative: invalid 'options.formats' type string value", function () {
+        expect(2);
+
+        var options = {
+            "formats": [""]
+        };
+
+        try {
+            _playground.os.clipboard.read(options, function (err, info) {
+                _validateNotifierResultError(err, _playground.errorCodes.ARGUMENT_ERROR);
+                start();
+            });
+            ok(true, "Runtime error not expected to be thrown");
+        }
+        catch (err) {
+            ok(false, "Runtime error not expected to be thrown");
+        }
+    });
+
+    /* _playground.os.clipboard: read() negative: invalid 'options.formats' type value
+     * Expect the callback notification but with an error
+     * Do not expect a native error/exception to be thrown
+     */
+    asyncTest("_playground.os.clipboard: read() negative: invalid 'options.formats' type", function () {
+        expect(2);
+
+        var options = {
+            "formats": "string, should be array"
+        };
+
+        try {
+            _playground.os.clipboard.read(options, function (err, info) {
+                _validateNotifierResultError(err, _playground.errorCodes.ARGUMENT_ERROR);
+                start();
+            });
+            ok(true, "Runtime error not expected to be thrown");
+        }
+        catch (err) {
+            ok(false, "Runtime error not expected to be thrown");
+        }
+    });
+
+
+    /* _playground.os.clipboard: read() negative: omitted 'options.formats'
+     * Expect the callback notification but with an error
+     * Do not expect a native error/exception to be thrown
+     */
+    asyncTest("_playground.os.clipboard: read() negative: omitted 'options.formats'", function () {
+        expect(2);
+
+        var options = {
+        };
+
+        try {
+            _playground.os.clipboard.read(options, function (err, info) {
+                _validateNotifierResultError(err, _playground.errorCodes.ARGUMENT_ERROR);
+                start();
+            });
+            ok(true, "Runtime error not expected to be thrown");
+        }
+        catch (err) {
+            ok(false, "Runtime error not expected to be thrown");
+        }
+    });
+
+    /* _playground.os.clipboard: read() negative: invalid 'options.formats' type: undefined
+     * Expect the callback notification but with an error
+     * Do not expect a native error/exception to be thrown
+     */
+    asyncTest("_playground.os.clipboard: read() negative: invalid 'options.formats' type: undefined", function () {
+        expect(2);
+
+        var options = {
+            "formats": undefined,
+        };
+
+        try {
+            _playground.os.clipboard.read(options, function (err, info) {
+                _validateNotifierResultError(err, _playground.errorCodes.CONVERSION_ERROR);
+                start();
+            });
+            ok(true, "Runtime error not expected to be thrown");
+        }
+        catch (err) {
+            ok(false, "Runtime error not expected to be thrown");
+        }
+    });
+
+    /* _playground.os.clipboard: read() negative: invalid 'options.formats' type: null
+     * Expect the callback notification but with an error
+     * Do not expect a native error/exception to be thrown
+     */
+    asyncTest("_playground.os.clipboard: read() negative: invalid 'options.formats' type: null", function () {
+        expect(2);
+
+        var options = {
+            "formats": null,
+        };
+
+        try {
+            _playground.os.clipboard.read(options, function (err, info) {
+                _validateNotifierResultError(err, _playground.errorCodes.ARGUMENT_ERROR);
+                start();
+            });
+            ok(true, "Runtime error not expected to be thrown");
+        }
+        catch (err) {
+            ok(false, "Runtime error not expected to be thrown");
+        }
+    });
+
+    /* _playground.os.clipboard: read() negative: invalid 'options.formats' type: object
+     * Expect the callback notification but with an error
+     * Do not expect a native error/exception to be thrown
+     */
+    asyncTest("_playground.os.clipboard: read() negative: invalid 'options.formats' type: object", function () {
+        expect(2);
+
+        var options = {
+            "formats": {},
+        };
+
+        try {
+            _playground.os.clipboard.read(options, function (err, info) {
+                _validateNotifierResultError(err, _playground.errorCodes.ARGUMENT_ERROR);
+                start();
+            });
+            ok(true, "Runtime error not expected to be thrown");
+        }
+        catch (err) {
+            ok(false, "Runtime error not expected to be thrown");
+        }
+    });
+
+
+    // END OF TESTS
+    console.log("Adapter version",
+                _playground.version.major + "." +
+                _playground.version.minor + "." +
+                _playground.version.patch,
+                ": low level API tests completed");
 });
