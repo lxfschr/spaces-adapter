@@ -92,7 +92,8 @@ define(function (require, exports) {
         assert(referenceOf(ref) === "layer", "setDropShadow is passed a non-layer reference");
 
         var layerEffectPsProperties = {
-            enabled: properties.enabled === undefined ? true : properties.enabled
+            enabled: properties.enabled === undefined ? true : properties.enabled,
+            useGlobalAngle: properties.useGlobalAngle === undefined ? true : properties.useGlobalAngle
         };
 
         if (_.isObject(properties.color)) {
