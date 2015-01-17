@@ -307,13 +307,44 @@ define(function (require, exports) {
     };
 
     /**
+     * @param {ActionDescriptor} ref Refernece of layer(s) to set position
+     * @param {Unit} _x Left side to set in Units
+     * @param {Unit} _y Top side to set in Units
+     *
+     * @returns {PlayObject} [description]
+     */
+    var setPosition = function (ref, _x, _y) {
+        assert(referenceOf(ref) === "layer", "setPosition is passed a non-layer reference");
+        return new PlayObject(
+            "transform",
+            {
+                "null": ref,
+                "snapToDocBounds": true,
+                "relative": false,
+                "position": {
+                    "obj": "position",
+                    "value": {
+                        "horizontal": _x,
+                        "vertical": _y
+                    }
+                }
+            }
+        );
+    };
+
+    /**
      * @param {ActionDescriptor} ref - Reference of layer(s) to set size
      * @param {Unit} _w - Width to set in Units
      * @param {Unit} _h - Height to set in Units
+     * @param {boolean} relative Whether to set the size from center, or top-left corner of selection
+     * @param {Unit} _x Left of the bounds, if relative is false, this has to be provided
+     * @param {Unit} _y Top of the bounds, if relative is false, this has to be provided
+     *
+     * If relative is false, Photoshop will resize the layers from top left, but push them to top left of document
      * 
      * @returns {PlayObject}
      */
-    var setSize = function (ref, _w, _h) {
+    var setSize = function (ref, _w, _h, relative, _x, _y) {
         assert(referenceOf(ref) === "layer", "setHeight is passed a non-layer reference");
         var sizeDescriptor = {
                 "null": ref,
@@ -328,6 +359,23 @@ define(function (require, exports) {
             sizeDescriptor.height = _h;
         }
 
+        // Relative is true by default in Photoshop
+        if (relative !== undefined && !relative) {
+            sizeDescriptor.relative = false;
+
+            assert(_x !== undefined && _y !== undefined,
+                "Calling setSize with absolute flag with no x,y provided");
+
+            sizeDescriptor.position = {
+                "obj": "position",
+                "value": {
+                    "horizontal": _x,
+                    "vertical": _y
+                }
+            };
+        } else {
+            sizeDescriptor.relative = true;
+        }
 
         return new PlayObject(
             "transform",
@@ -571,6 +619,7 @@ define(function (require, exports) {
     exports.show = show;
     exports.duplicate = duplicate;
     exports.flip = flip;
+    exports.setPosition = setPosition;
     exports.setSize = setSize;
     exports.rotate = rotate;
     exports.setOpacity = setOpacity;
