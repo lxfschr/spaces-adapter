@@ -41,6 +41,11 @@ define(function (require, exports, module) {
     var _keyboardFocus = Promise.promisifyAll(_playground.os.keyboardFocus);
 
     /**
+     * Promisified version of low-level keyboard focus functions
+     */
+    var _clipboard = Promise.promisifyAll(_playground.os.clipboard);
+
+    /**
      * The OS object provides helper methods for dealing with operating
      * system by way of Photoshop.
      *
@@ -52,6 +57,39 @@ define(function (require, exports, module) {
         EventEmitter.call(this);
     };
     util.inherits(OS, EventEmitter);
+
+    /**
+     * OS notifier kinds
+     * 
+     * @const
+     * @type{Object.<string, number>}
+     */
+    OS.prototype.notifierKind = _os.notifierKind;
+
+    /**
+     * OS event kinds
+     * 
+     * @const
+     * @type{Object.<string, number>}
+     */
+    OS.prototype.eventKind = _os.eventKind;
+
+    /**
+     * OS event modifiers
+     * 
+     * @const
+     * @type{Object.<string, number>}
+     */
+    OS.prototype.eventModifiers = _os.eventModifiers;
+
+    /**
+     * OS event keyCodes
+     * 
+     * @const
+     * @type{Object.<string, number>}
+     */
+    OS.prototype.eventKeyCode = _os.eventKeyCode;
+
 
     /**
      * Event handler for events from the native bridge.
@@ -118,37 +156,30 @@ define(function (require, exports, module) {
     };
 
     /**
-     * OS notifier kinds
-     * 
-     * @const
-     * @type{Object.<string, number>}
+     * @param {Array.<string>=} formats
+     * @return {Promise.<{data: *, format: string}>}
      */
-    OS.prototype.notifierKind = _os.notifierKind;
+    OS.prototype.clipboardRead = function (formats) {
+        var options = {
+            formats: formats || ["string"]
+        };
+
+        return _clipboard.readAsync(options);
+    };
 
     /**
-     * OS event kinds
-     * 
-     * @const
-     * @type{Object.<string, number>}
+     * @param {*} data
+     * @param {string=} format
+     * @return {Promise}
      */
-    OS.prototype.eventKind = _os.eventKind;
+    OS.prototype.clipboardWrite = function (data, format) {
+        var options = {
+            data: data,
+            format: format || "string"
+        };
 
-    /**
-     * OS event modifiers
-     * 
-     * @const
-     * @type{Object.<string, number>}
-     */
-    OS.prototype.eventModifiers = _os.eventModifiers;
-
-    /**
-     * OS event keyCodes
-     * 
-     * @const
-     * @type{Object.<string, number>}
-     */
-    OS.prototype.eventKeyCode = _os.eventKeyCode;
-
+        return _clipboard.writeAsync(options);
+    };
 
     /** @type {OS} The OS singleton */
     var theOS = new OS();
