@@ -169,7 +169,7 @@ define(function (require, exports, module) {
 
     /**
      * @param {*} data
-     * @param {string} format
+     * @param {string=} format
      * @return {Promise}
      */
     OS.prototype.clipboardWrite = function (data, format) {
