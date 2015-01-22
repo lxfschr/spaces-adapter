@@ -246,6 +246,37 @@ define(function (require, exports) {
     };
 
     /**
+     * Set shape stroke opacity
+     * This currently sets all selected layers
+     *
+     * @param {ActionDescriptor} sourceRef Reference to layer(s) to edit
+     * @param {number} opacity opacity as a percentage [0,100]
+     *
+     * @return {PlayObject}
+     */
+    var setStrokeOpacity = function (sourceRef, opacity) {
+        assert(referenceOf(sourceRef) === "contentLayer", "setStrokeOpacity is passed a non-layer reference");
+        var descriptor = {
+            "null": sourceRef,
+            "to": {
+                "obj": "shapeStyle",
+                "value": {
+                    "strokeStyle": {
+                        "obj": "strokeStyle",
+                        "value": {
+                            "strokeEnabled": true,
+                            "strokeStyleOpacity": unitsIn.percent(opacity),
+                            "strokeStyleVersion": 2
+                        }
+                    }
+                }
+            }
+        };
+        return new PlayObject("set", descriptor);
+    };
+
+
+    /**
      * Set shape fill to solid color with RGB color
      *
      * @param {ActionDescriptor} sourceRef Reference to layer(s) to edit
@@ -301,7 +332,7 @@ define(function (require, exports) {
      *     strokeObj = contentLayer.setStrokeFillTypeSolidColor(layerRef, myColor);
      */
     var setStrokeFillTypeSolidColor = function (sourceRef, rgba) {
-        assert(referenceOf(sourceRef) === "contentLayer", "setStrokeAlignment is passed a non-layer reference");
+        assert(referenceOf(sourceRef) === "contentLayer", "setStrokeFillTypeSolidColor is passed a non-layer reference");
         if (rgba === null) {
             return _setStrokeFillTypeNoColor(sourceRef);
         }
@@ -714,6 +745,7 @@ define(function (require, exports) {
     exports.setStrokeAlignment = setStrokeAlignment;
     exports.setStrokeCap = setStrokeCap;
     exports.setStrokeCorner = setStrokeCorner;
+    exports.setStrokeOpacity = setStrokeOpacity;
     exports.setShapeFillTypeSolidColor = setShapeFillTypeSolidColor;
     exports.setStrokeFillTypeSolidColor = setStrokeFillTypeSolidColor;
     exports.setShapeStrokeWidth = setShapeStrokeWidth;
