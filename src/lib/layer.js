@@ -324,8 +324,8 @@ define(function (require, exports) {
                 "position": {
                     "obj": "position",
                     "value": {
-                        "horizontal": _x,
-                        "vertical": _y
+                        "horizontal": inUnits.pixels(_x),
+                        "vertical": inUnits.pixels(_y)
                     }
                 }
             }
@@ -352,11 +352,11 @@ define(function (require, exports) {
             };
 
         if (_w) {
-            sizeDescriptor.width = _w;
+            sizeDescriptor.width = inUnits.pixels(_w);
         }
 
         if (_h) {
-            sizeDescriptor.height = _h;
+            sizeDescriptor.height = inUnits.pixels(_h);
         }
 
         // Relative is true by default in Photoshop
@@ -369,8 +369,8 @@ define(function (require, exports) {
             sizeDescriptor.position = {
                 "obj": "position",
                 "value": {
-                    "horizontal": _x,
-                    "vertical": _y
+                    "horizontal": inUnits.pixels(_x),
+                    "vertical": inUnits.pixels(_y)
                 }
             };
         } else {
@@ -596,8 +596,8 @@ define(function (require, exports) {
                 "position": {
                     "obj": "position",
                     "value": {
-                        "horizontal": x,
-                        "vertical": y
+                        "horizontal": inUnits.pixels(x),
+                        "vertical": inUnits.pixels(y)
                     }
                 }
             }
