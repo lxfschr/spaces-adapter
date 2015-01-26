@@ -461,7 +461,12 @@ define(function (require, exports) {
                 "null": ref,
                 "to": {
                     "obj": "layer",
-                    "value": mode
+                    "value": {
+                        "mode": {
+                            "enum": "blendMode",
+                            "value": mode
+                        }
+                    }
                 }
             }
         );
