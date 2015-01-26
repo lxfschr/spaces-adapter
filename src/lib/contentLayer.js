@@ -332,7 +332,8 @@ define(function (require, exports) {
      *     strokeObj = contentLayer.setStrokeFillTypeSolidColor(layerRef, myColor);
      */
     var setStrokeFillTypeSolidColor = function (sourceRef, rgba) {
-        assert(referenceOf(sourceRef) === "contentLayer", "setStrokeFillTypeSolidColor is passed a non-layer reference");
+        assert(referenceOf(sourceRef) === "contentLayer",
+            "setStrokeFillTypeSolidColor is passed a non-layer reference");
         if (rgba === null) {
             return _setStrokeFillTypeNoColor(sourceRef);
         }

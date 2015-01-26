@@ -338,7 +338,8 @@ define(function (require, exports) {
      * @param {string} settings.colorMode The document color mode. "RGBColorMode", "bitmapMode", "grayscaleMode" 
                         "CMYKColorMode", "labColorMode"
      * @param {number} settings.depth The color mode depth
-     * @param {string} settings.colorProfile The document color profile. "sRGB IEC61966-2.1", "Adobe RGB (1998)", default: "none"
+     * @param {string} settings.colorProfile The document color profile. "sRGB IEC61966-2.1", "Adobe RGB (1998)",
+     *  default: "none"
      * @param {string} settings.pixelAspectRatio The document pixel aspect ratio. 
      *
      * @return {PlayObject}
