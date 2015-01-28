@@ -257,13 +257,24 @@ define(function (require, exports, module) {
      * Executes a low-level "play" call on the PlayObject by unwrapping it
      *
      * @param {PlayObject} playObject Contains command, descriptor and options information
-     *
+     * @param {object=} options Overrides any options in the playObject
      * @returns {Promise} Resolves to the result of the call
      */
-    Descriptor.prototype.playObject = function (playObject) {
+    Descriptor.prototype.playObject = function (playObject, options) {
         var command = playObject.command,
             descriptor = _wrap(playObject.descriptor),
-            options = playObject.options;
+            playOptions = playObject.options;
+
+        // merge playOptions into options
+        if (options === undefined) {
+            options = playOptions;
+        } else if (playOptions) {
+            Object.keys(playOptions).forEach(function (key) {
+                if (!options.hasOwnProperty(key)) {
+                    options[key] = playOptions[key];
+                }
+            });
+        }
 
         return this.play(command, descriptor, options);
     };
