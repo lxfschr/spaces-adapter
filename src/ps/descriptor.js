@@ -196,6 +196,34 @@ define(function (require, exports, module) {
     };
 
     /**
+     * Executes a "set" call on the given property of the reference to set to value.
+     *
+     * @param {object} reference A full reference object, possibly created by lib/reference.js wrappers
+     * @param {string} property Property name to edit
+     * @param {object|string} value Desired new value of the property
+     * @param {Object=} options options, defaults to "silent"
+     * @return {Promise.<object>} Resolves when property is set
+     */
+    Descriptor.prototype.setProperty = function (reference, property, value, options) {
+        if (!reference.hasOwnProperty("ref")) {
+            throw new Error("You must pass a full reference to setProperty or else PS will crash!");
+        }
+
+        // We need to reverse this because for play calls _makePropertyReference orders it wrong
+        var propertyReference = _makePropertyReference(reference, property).reverse(),
+            propertyValue = {
+                "obj": property,
+                "value": value
+            },
+            propertyDescriptor = {
+                "null": {"ref": propertyReference},
+                "to": propertyValue
+            };
+
+        return this.play("set", propertyDescriptor, options);
+    };
+
+    /**
      * Defines an enumeration of three constants that control dialog display
      * while executing action descriptors: DONT_DISPLAY, DISPLAY and SILENT.
      * 
