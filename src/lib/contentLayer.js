@@ -706,31 +706,37 @@ define(function (require, exports) {
     /**
      * Set the border radius of a rectangle layer.
      *
-     * @param {number} newRadius
+     * @param {number} topLeft
+     * @param {?number} topRight 
+     * @param {?number} bottomRight
+     * @param {?number} bottomLeft
      * @return {PlayObject}
      */
-    var setRadius = function (newRadius) {
+    var setRadius = function (topLeft, topRight, bottomRight, bottomLeft) {
+        topRight = topRight || topLeft;
+        bottomRight = bottomRight || topLeft;
+        bottomLeft = bottomLeft || topLeft;
+
         return new PlayObject("changePathDetails", {
             "keyActionChangeAllCorners": true,
-            "keyActionRadiiSource": 0,
             "keyOriginRRectRadii": {
                 "obj": "radii",
                 "value": {
-                    "bottomLeft": {
-                        "unit": "pixelsUnit",
-                        "value": newRadius
-                    },
-                    "bottomRight": {
-                        "unit": "pixelsUnit",
-                        "value": newRadius
-                    },
                     "topLeft": {
                         "unit": "pixelsUnit",
-                        "value": newRadius
+                        "value": topLeft
                     },
                     "topRight": {
                         "unit": "pixelsUnit",
-                        "value": newRadius
+                        "value": topRight
+                    },
+                    "bottomLeft": {
+                        "unit": "pixelsUnit",
+                        "value": bottomLeft
+                    },
+                    "bottomRight": {
+                        "unit": "pixelsUnit",
+                        "value": bottomRight
                     },
                     "unitValueQuadVersion": 1
                 }
