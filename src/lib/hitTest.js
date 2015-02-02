@@ -46,7 +46,44 @@ define(function (require, exports) {
             }
         );
     };
+
+    /**
+     * Will return the color data under the given pixels
+     * using current Eye dropper tool settings
+     * colorSampler is available when sampleData is true
+     *
+     * @param {number} px X coordinate - horizontal
+     * @param {[type]} py Y coordinate - vertical
+     *
+     * @return {{sampleData: <boolean>, colorSampler: <object>}} [description]
+     */
+    var colorSampleAtPoint = function (px, py) {
+        return new PlayObject(
+            "colorSampler",
+            {
+                "null": {
+                    "ref": "document",
+                    "enum": "ordinal",
+                    "value": "targetEnum"
+                },
+                "samplePoint": {
+                    "obj": "samplePoint",
+                    "value": {
+                        "horizontal": {
+                            "unit": "distanceUnit",
+                            "value": px
+                        },
+                        "vertical": {
+                            "unit": "distanceUnit",
+                            "value": py
+                        }
+                    }
+                }
+            }
+        );
+    };
     
     exports.layerIDsAtPoint = layerIDsAtPoint;
+    exports.colorSampleAtPoint = colorSampleAtPoint;
 
 });
