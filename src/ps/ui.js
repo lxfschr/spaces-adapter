@@ -144,6 +144,25 @@ define(function (require, exports, module) {
     };
 
     /**
+     * Determines whether target path drawing is currently suppressed.
+     * 
+     * @return {Promise.<boolean>}
+     */
+    UI.prototype.getSuppressTargetPaths = function () {
+        return _ui.getSuppressTargetPathsAsync();
+    };
+
+    /**
+     * Sets whether or not target path drawing should be suppressed.
+     * 
+     * @param {boolean} suppress Whether or not target path drawing should be suppressed
+     * @return {Promise}
+     */
+    UI.prototype.setSuppressTargetPaths = function (suppress) {
+        return _ui.setSuppressTargetPathsAsync(suppress);
+    };
+
+    /**
      * Sets whether or not the Photoshop classic chrome is visible
      *
      * @param {boolean} visible Whether or not the chrome should be visible
