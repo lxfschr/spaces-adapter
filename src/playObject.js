@@ -39,11 +39,14 @@ define(function (require, exports, module) {
     var PlayObject = function (command, descriptor, options) {
         this.command = command;
         this.descriptor = descriptor;
+        this.options = {
+            interactionMode: Descriptor.interactionMode.SILENT
+        };
 
         if (options !== undefined) {
-            options = {
-                interactionMode: Descriptor.interactionMode.SILENT
-            };
+            Object.keys(options).forEach(function (property) {
+                this.options[property] = options[property];
+            }, this);
         }
     };
 
