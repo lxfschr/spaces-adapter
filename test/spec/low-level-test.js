@@ -302,7 +302,6 @@ define(function () {
         expect(3);
         var notifierGroup = _playground.notifierGroup.INTERACTION;
         var options = {"notificationKind": _playground.notifierOptions.interaction.ERROR};
-        var options = {};
         _playground.setNotifier(notifierGroup, options, function (err, type, info) {
             _validateNotifierResult(err);
             strictEqual(type, undefined, "callback type arg on set should be undefined");
@@ -351,7 +350,7 @@ if (0) {
      */
     asyncTest("_playground.setNotifier() functional/negative: set with undefined notifierGroup", function () {
         expect(3);
-        var notifierGroup = undefined; // not a valid notifierGroup string value
+        var notifierGroup; // undefined is not a valid notifierGroup string value
         var options = {};
         _playground.setNotifier(notifierGroup, options, function (err, notificationKind, info) {
             _validateNotifierResultError(err, _playground.errorCodes.ARGUMENT_ERROR);
