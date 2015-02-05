@@ -38,6 +38,9 @@ define(function () {
      * This validator should not be used where an error is expected (e.g. in a negative test)
      * because a test failure is triggered on a failing result.
      *
+     * NOTE: A single QUnit validation is always executed here. Be sure to
+     * account for that in your 'expected' validation count in asyncTests.
+     *
      * @private
      * @param {Error=} err
      */
@@ -45,11 +48,11 @@ define(function () {
         // Acceptable success codes are: undefined, or an object with a
         // number property that has the value 0
 
-        var testPasses = false;
+        var fPass = false;
         var logstr;
         do {
             if (err === undefined) {
-                testPasses = true;
+                fPass = true;
                 logstr = "err === undefined: OK / succeeded";
                 break;
             }
@@ -66,7 +69,7 @@ define(function () {
                 break;
             }
             if (err.number === 0) {
-                testPasses = true;
+                fPass = true;
                 logstr = "err.number == 0: OK / succeeded";
                 break;
             }
@@ -77,54 +80,65 @@ define(function () {
                 logstr = "NO ERROR MESSAGE PROVIDED";
             }
         } while (0);
-        if (! testPasses) {
+        if (! fPass) {
             console.error("_validateNotifierResult FAIL:", logstr);
         }
-        ok(testPasses, logstr);
+        ok(fPass, logstr);
     };
 
     /**
-     * Validates that the returned result-value is an error object containing
-     * number and message properties. Other properties are possible too.
+     * Validates that the returned result-value is an Error object containing
+     * number and message properties. Other properties are possible too. This
+     * is used in negative tests to confirm an error with the proper/expected
+     * form is returned. Note there is no specific validation of the error's
+     * 'message' property, only its (errorCode) value. Validate the 'message'
+     * value as needed in the test case code.
+     *
+     * NOTE: A single QUnit validation is always executed here. Be sure to
+     * account for that in your 'expected' validation count in asyncTests.
      *
      * @private
      * @param {Error=} err
-     * @param {number=} expectedError
+     * @param {number=} expectedErrorCode
      */
-    var _validateNotifierResultError = function (err, expectedError) {
+    var _validateNotifierResultError = function (err, expectedErrorCode) {
 
-        var testPasses = false;
+        var fValidForm = false;
+        var logstr;
         do {
             if (err === undefined) {
+                logstr = "err should not be undefined when an error is expected";
                 break;
             }
-
-            if (!(err instanceof Error)) {
-                console.log("err object is not an instance of the Error object" + err);
+            if (! (err instanceof Error)) {
+                logstr = "err object is not an instance of the Error object" + err;
                 break;
             }
             if (err.number === undefined) {
+                logstr = "err.number is not defined";
+                break;
+            }
+            if (typeof err.number !== "number") {
+                logstr = "err.number is not a numeric value";
                 break;
             }
             if (err.message === undefined) {
+                logstr = "err.message is not defined";
                 break;
             }
-
-            testPasses = true;
+            if (typeof err.message !== "string") {
+                logstr = "err.message is not a string";
+                break;
+            }
+            fValidForm = true;
         } while (false);
 
-        if (!testPasses) {
-            console.log("Invalid form of an error resultValue:");
-            console.log(err);
+        // if the err object has a valid form, then validate the error value
+        if (fValidForm) {
+            strictEqual(err.number, expectedErrorCode, "err.number compared to expected");
         } else {
-            testPasses = (err.number === expectedError);
-
-            if (!testPasses) {
-                console.log("resultValue did not have the expected error code:" +
-                    expectedError + " Actual error is: " + err.number);
-            }
+            ok(false, logstr);
         }
-        ok(testPasses, "error resultValue validation");
     };
 
     // -------------------------------------------------------------------------
@@ -145,19 +159,17 @@ define(function () {
      * Validates: defined, type, member names and types
      * Form: {"major": n, "minor": n, "patch": n}
      */
-/*
     test("_playground.version Object property: defined, type, member names and types", function () {
         ok(_playground.hasOwnProperty("version"), "_playground object should have a 'version' property");
         ok(typeof _playground.version === "object", "_playground.version type");
-        strictEqual(_playground.version.keys().length, 3, "_playground.version should have 3 properties");
-        strictEqual(typeof version.major, "number", "version.major type should be 'number'");
-        ok(version.major >= 0, "version.major value should be >= 0");
-        strictEqual(typeof version.minor, "number", "version.minor type should be 'number'");
-        ok(version.minor >= 0, "version.minor value should be >= 0");
-        strictEqual(typeof version.patch, "number", "version.patch type should be 'number'");
-        ok(version.patch >= 0, "version.patch value should be >= 0");
+        strictEqual(Object.keys(_playground.version).length, 3, "_playground.version should have 3 properties");
+        strictEqual(typeof _playground.version.major, "number", "version.major type should be 'number'");
+        ok(_playground.version.major >= 0, "version.major value should be >= 0");
+        strictEqual(typeof _playground.version.minor, "number", "version.minor type should be 'number'");
+        ok(_playground.version.minor >= 0, "version.minor value should be >= 0");
+        strictEqual(typeof _playground.version.patch, "number", "version.patch type should be 'number'");
+        ok(_playground.version.patch >= 0, "version.patch value should be >= 0");
     });
-*/
 
     /* _playground.errorCodes constants object
      * Validates: defined, type, number of elements, their type, ref by name
@@ -165,7 +177,7 @@ define(function () {
     test("_playground.errorCodes constants object", function () {
         ok(typeof _playground.errorCodes === "object", "_playground.errorCodes defined");
         // CHANGE THIS VALUE WHEN ADDING OR REMOVING errorCode PROPERTIES!
-        var expectedSize = 9;
+        var expectedSize = 10;
         var actualSize = Object.getOwnPropertyNames(_playground.errorCodes).length;
         equal(actualSize, expectedSize, "_playground.errorCodes size");
         // constants
@@ -179,6 +191,8 @@ define(function () {
             "_playground.errorCodes.ARGUMENT_ERROR");
         ok(typeof _playground.errorCodes.MISSING_NOTIFIER === "number",
             "_playground.errorCodes.MISSING_NOTIFIER");
+        ok(typeof _playground.errorCodes.REQUEST_REJECTED === "number",
+            "_playground.errorCodes.REQUEST_REJECTED");
         ok(typeof _playground.errorCodes.CONVERSION_ERROR === "number",
             "_playground.errorCodes.CONVERSION_ERROR");
         ok(typeof _playground.errorCodes.UNKNOWN_FUNCTION_ERROR === "number",
@@ -187,134 +201,6 @@ define(function () {
             "_playground.errorCodes.SUITEPEA_ERROR");
         ok(typeof _playground.errorCodes.REENTRANCY_ERROR === "number",
             "_playground.errorCodes.REENTRANCY_ERROR");
-    });
-
-    /* _playground.getExecutionMode() function
-     * Includes type validation of return object latentVisibility and suspended
-     * properties.
-     */
-    asyncTest("_playground.getExecutionMode() identity, type, functional", function () {
-        expect(5);
-        ok(typeof _playground.getExecutionMode === "function",
-            "_playground.getExecutionMode() function defined");
-        _playground.getExecutionMode(function (err, startValue) {
-            _validateNotifierResult(err);
-            strictEqual(typeof startValue, "object", "getExecutionMode() startValue");
-            strictEqual(typeof startValue.latentVisibility, "boolean",
-                      "getExecutionMode() startValue.latentVisibility property type");
-            strictEqual(typeof startValue.suspended, "boolean",
-                      "getExecutionMode() startValue.suspended property type");
-            start();
-        });
-    });
-
-    /* _playground.setExecutionMode() / getExecutionMode() set/get functional
-     * toggle latentVisibility
-     */
-    asyncTest("_playground.setExecutionMode()/getExecutionMode(): toggle latentVisibility", function () {
-        expect(17);
-
-        ok(typeof _playground.setExecutionMode === "function",
-            "_playground.setExecutionMode function defined");
-
-        // Initial get of startValue
-        _playground.getExecutionMode(function (err, startValue) {
-            _validateNotifierResult(err);
-
-            // Invert startValue.latentVisibility state and set, then compare to previousValue
-            var invertedStart = {latentVisibility: !startValue.latentVisibility,
-                                 suspended: startValue.suspended};
-            _playground.setExecutionMode(invertedStart, function (err, previousValue) {
-                _validateNotifierResult(err);
-                strictEqual(typeof previousValue, "object", "previousValue type");
-                strictEqual(previousValue.latentVisibility, startValue.latentVisibility,
-                          "previousValue.latentVisibility returned by set(1) should equal pre-set value");
-                strictEqual(previousValue.suspended, startValue.suspended,
-                          ".suspended should not have changed");
-                // get to confirm set
-                _playground.getExecutionMode(function (err, newValue) {
-                    _validateNotifierResult(err);
-                    strictEqual(typeof newValue, "object", "newValue type");
-                    strictEqual(newValue.latentVisibility, invertedStart.latentVisibility,
-                              "newValue.latentVisibility returned by get should equal set value");
-                    strictEqual(newValue.suspended, startValue.suspended,
-                              ".suspended should not have changed");
-
-                    // set back to the initial (startValue) state
-                    _playground.setExecutionMode(startValue, function (err, previousValue) {
-                        _validateNotifierResult(err);
-                        strictEqual(previousValue.latentVisibility, newValue.latentVisibility,
-                                  "previousValue.latentVisibility returned by set(2) should equal prior set value");
-                        strictEqual(previousValue.suspended, startValue.suspended,
-                                  ".suspended should not have changed");
-
-                        // one final get and compare to start
-                        _playground.getExecutionMode(function (err, endValue) {
-                            _validateNotifierResult(err);
-                            strictEqual(typeof endValue, "object", "newValue type");
-                            strictEqual(endValue.latentVisibility, startValue.latentVisibility,
-                                      "endValue.latentVisibility returned by set should equal restored start value");
-                            strictEqual(endValue.suspended, startValue.suspended,
-                                      ".suspended should not have changed");
-                            start();
-                        });
-                    });
-                });
-            });
-        });
-    });
-
-    /* _playground.setExecutionMode() / getExecutionMode() set/get functional
-     * toggle suspended
-     */
-    asyncTest("_playground.setExecutionMode()/getExecutionMode(): toggle suspended", function () {
-        expect(16);
-
-        // Initial get of startValue
-        _playground.getExecutionMode(function (err, startValue) {
-            _validateNotifierResult(err);
-
-            // Invert startValue.suspended state and set, then compare to previousValue
-            var invertedStart = {latentVisibility: startValue.latentVisibility,
-                                 suspended: !startValue.suspended};
-            _playground.setExecutionMode(invertedStart, function (err, previousValue) {
-                _validateNotifierResult(err);
-                strictEqual(typeof previousValue, "object", "previousValue type");
-                strictEqual(previousValue.suspended, startValue.suspended,
-                          "previousValue.suspended returned by set(1) should equal pre-set value");
-                strictEqual(previousValue.latentVisibility, startValue.latentVisibility,
-                          ".latentVisibility should not have changed");
-                // get to confirm set
-                _playground.getExecutionMode(function (err, newValue) {
-                    _validateNotifierResult(err);
-                    strictEqual(typeof newValue, "object", "newValue type");
-                    strictEqual(newValue.suspended, invertedStart.suspended,
-                              "newValue.suspended returned by get should equal set value");
-                    strictEqual(newValue.latentVisibility, startValue.latentVisibility,
-                              ".latentVisibility should not have changed");
-
-                    // set back to the initial (startValue) state
-                    _playground.setExecutionMode(startValue, function (err, previousValue) {
-                        _validateNotifierResult(err);
-                        strictEqual(previousValue.suspended, newValue.suspended,
-                                  "previousValue.suspended returned by set(2) should equal prior set value");
-                        strictEqual(previousValue.latentVisibility, startValue.latentVisibility,
-                                  ".latentVisibility should not have changed");
-
-                        // one final get and compare to start
-                        _playground.getExecutionMode(function (err, finalValue) {
-                            _validateNotifierResult(err);
-                            strictEqual(typeof finalValue, "object", "newValue type");
-                            strictEqual(finalValue.suspended, startValue.suspended,
-                                      "finalValue.suspended returned by set should equal restored start value");
-                            strictEqual(finalValue.latentVisibility, startValue.latentVisibility,
-                                      ".latentVisibility should not have changed");
-                            start();
-                        });
-                    });
-                });
-            });
-        });
     });
 
     /* _playground.notifierGroup constants object
@@ -372,46 +258,424 @@ define(function () {
      * other than an exception isn't thrown.
      * SEE: Adapter API Blackbox Tests for coverage for this area to observe actual notifications occurring.
      */
-    test("_playground.setNotifier() functional: set/reset for _playground.notifierGroup.PHOTOSHOP", function () {
+
+    asyncTest("_playground.setNotifier() functional: set/reset for _playground.notifierGroup.PHOTOSHOP", function () {
+        expect(3);
         var notifierGroup = _playground.notifierGroup.PHOTOSHOP;
         var options = {};
-        _playground.setNotifier(notifierGroup, options, function (err, notificationKind, info) {});
-        _playground.setNotifier(notifierGroup, options, undefined);
-        ok(true, "Test needs at least one validator, but no actions should actually be triggered");
+        _playground.setNotifier(notifierGroup, options, function (err, notificationKind, info) {
+            _validateNotifierResult(err);
+            strictEqual(notificationKind, undefined, "callback notificationKind arg on set should be undefined");
+            strictEqual(info, undefined, "callback info arg on set should be undefined");
+            _playground.setNotifier(notifierGroup, options, undefined);
+            start();
+        });
     });
 
-    test("_playground.setNotifier() functional: set/reset for _playground.notifierGroup.OS", function () {
+    asyncTest("_playground.setNotifier() functional: set/reset for _playground.notifierGroup.OS", function () {
+        expect(3);
         var notifierGroup = _playground.notifierGroup.OS;
         var options = {};
-        _playground.setNotifier(notifierGroup, options, function (err, notificationKind, info) {});
-        _playground.setNotifier(notifierGroup, options, undefined);
-        ok(true, "Test needs at least one validator, but no actions should actually be triggered");
+        _playground.setNotifier(notifierGroup, options, function (err, notificationKind, info) {
+            _validateNotifierResult(err);
+            strictEqual(notificationKind, undefined, "callback notificationKind arg on set should be undefined");
+            strictEqual(info, undefined, "callback info arg on set should be undefined");
+            _playground.setNotifier(notifierGroup, options, undefined);
+            start();
+        });
     });
 
-    test("_playground.setNotifier() functional: set/reset for _playground.notifierGroup.MENU", function () {
+    asyncTest("_playground.setNotifier() functional: set/reset for _playground.notifierGroup.MENU", function () {
+        expect(3);
         var notifierGroup = _playground.notifierGroup.MENU;
         var options = {};
-        _playground.setNotifier(notifierGroup, options, function (err, notificationKind, info) {});
-        _playground.setNotifier(notifierGroup, options, undefined);
-        ok(true, "Test needs at least one validator, but no actions should actually be triggered");
+        _playground.setNotifier(notifierGroup, options, function (err, menuCommand, info) {
+            _validateNotifierResult(err);
+            strictEqual(menuCommand, undefined, "callback menuCommand arg on set should be undefined");
+            strictEqual(info, undefined, "callback info arg on set should be undefined");
+            _playground.setNotifier(notifierGroup, options, undefined);
+            start();
+        });
     });
 
-    test("_playground.setNotifier() functional: set/reset for _playground.notifierGroup.INTERACTION, interactionKind=ERROR", function () {
+    asyncTest("_playground.setNotifier() functional: set/reset for _playground.notifierGroup.ERROR", function () {
+        expect(3);
         var notifierGroup = _playground.notifierGroup.INTERACTION;
         var options = {"notificationKind": _playground.notifierOptions.interaction.ERROR};
-        _playground.setNotifier(notifierGroup, options, function (err, notificationKind, info) {});
-        _playground.setNotifier(notifierGroup, options, undefined);
-        ok(true, "Test needs at least one validator, but no actions should actually be triggered");
+        var options = {};
+        _playground.setNotifier(notifierGroup, options, function (err, type, info) {
+            _validateNotifierResult(err);
+            strictEqual(type, undefined, "callback type arg on set should be undefined");
+            strictEqual(info, undefined, "callback info arg on set should be undefined");
+            _playground.setNotifier(notifierGroup, options, undefined);
+            start();
+        });
     });
 
-    test("_playground.setNotifier() functional: set/reset for _playground.notifierGroup.INTERACTION, interactionKind=PROGRESS", function () {
+    asyncTest("_playground.setNotifier() functional: set/reset for _playground.notifierGroup.PROGRESS", function () {
+        expect(3);
         var notifierGroup = _playground.notifierGroup.INTERACTION;
         var options = {"notificationKind": _playground.notifierOptions.interaction.PROGRESS};
-        _playground.setNotifier(notifierGroup, options, function (err, notificationKind, info) {});
-        _playground.setNotifier(notifierGroup, options, undefined);
-        ok(true, "Test needs at least one validator, but no actions should actually be triggered");
+        _playground.setNotifier(notifierGroup, options, function (err, type, info) {
+            _validateNotifierResult(err);
+            strictEqual(type, undefined, "callback type arg on set should be undefined");
+            strictEqual(info, undefined, "callback info arg on set should be undefined");
+            _playground.setNotifier(notifierGroup, options, undefined);
+            start();
+        });
     });
+
+// tburbage (2015/01/28): FAIL, BUT NEED REVIEW
+if (0) {
+    /* _playground.setNotifier() functional/negative: set with invalid notifierGroup string
+     * Validates: error handling on invalid input
+     */
+    asyncTest("_playground.setNotifier() functional/negative: set with invalid notifierGroup string value", function () {
+        expect(3);
+        var notifierGroup = ""; // not a valid notifierGroup string value
+        var options = {};
+        _playground.setNotifier(notifierGroup, options, function (err, notificationKind, info) {
+            _validateNotifierResultError(err, _playground.errorCodes.ARGUMENT_ERROR);
+            strictEqual(notificationKind, undefined, "callback notificationKind arg on set should be undefined");
+            strictEqual(info, undefined, "callback info arg on set should be undefined");
+            start();
+        });
+    });
+} // if (0)
+
+
+// tburbage (2015/01/28): FAIL, BUT NEED REVIEW
+if (0) {
+    /* _playground.setNotifier() functional/negative: set with undefined notifierGroup
+     * Validates: error handling on invalid input
+     */
+    asyncTest("_playground.setNotifier() functional/negative: set with undefined notifierGroup", function () {
+        expect(3);
+        var notifierGroup = undefined; // not a valid notifierGroup string value
+        var options = {};
+        _playground.setNotifier(notifierGroup, options, function (err, notificationKind, info) {
+            _validateNotifierResultError(err, _playground.errorCodes.ARGUMENT_ERROR);
+            strictEqual(notificationKind, undefined, "callback notificationKind arg on set should be undefined");
+            strictEqual(info, undefined, "callback info arg on set should be undefined");
+            start();
+        });
+    });
+} // if (0)
     
+    /* _playground.setNotifier() functional/negative: invalid input AND undefined callback
+     * Validates: A JavaScript exception should be thrown in this case
+     */
+    test("_playground.setNotifier() functional/negative: set with invalid input AND undefined callback", function () {
+        var exceptionThrown = false;
+        try {
+            _playground.setNotifier(undefined, undefined, undefined);
+        } catch (err) {
+            console.log("DEBUG:", err.number, err.message);
+            exceptionThrown = true;
+
+        }
+        ok(exceptionThrown, "Expect native Javascript exception to be thrown");
+    });
+
+    
+    // ------------------------- Properties: get/set -------------------------------
+
+    /* _playground.getPropertyValue() function, simple get: 'ui.tooltip.delay.coldToHot'
+     * Validates: defined, type, simple get call and callback
+     * 2015/01/14: ui.tooltip.delay.coldToHot initial value: 0.1
+     */
+    asyncTest("_playground.getPropertyValue(): 'ui.tooltip.delay.coldToHot'", function () {
+        expect(5);
+        ok(!!_playground.getPropertyValue, "_playground.getPropertyValue() defined");
+        ok(typeof _playground.getPropertyValue === "function", "_playground.getPropertyValue() type");
+        _playground.getPropertyValue("ui.tooltip.delay.coldToHot", {}, function (err, propertyValue) {
+            _validateNotifierResult(err);
+            ok(propertyValue >= 0.0, "initial value expected to be >= 0.0");
+            strictEqual("number", typeof propertyValue, "'propertyValue' arg type should be 'number'");
+            start();
+        });
+    });
+
+    /* _playground.setPropertyValue() function, simple set: 'ui.tooltip.delay.coldToHot'
+     * Validates: defined, type, simple set call and callback
+     */
+    asyncTest("_playground.setPropertyValue(): 'ui.tooltip.delay.coldToHot'", function () {
+        expect(3);
+        ok(!!_playground.setPropertyValue, "_playground.setPropertyValue() defined");
+        ok(typeof _playground.setPropertyValue === "function", "_playground.setPropertyValue() type");
+        _playground.setPropertyValue("ui.tooltip.delay.coldToHot", 0.1, {}, function (err) {
+            _validateNotifierResult(err);
+            start();
+        });
+    });
+
+    /* _playground.getPropertyValue() function, simple get: 'ui.tooltip.delay.coldToHot'
+     * Validates:
+     * - get initial, compare to expected default value
+     * - set to new positive value
+     * - get to validate positive value set
+     * - set to default
+     * - final get to validate set to default
+     * 2015/01/14: ui.tooltip.delay.coldToHot initial value: 0.1
+     */
+    asyncTest("get/set property value: functional: ui.tooltip.delay.coldToHot", function () {
+        expect(7);
+        var propertyName = "ui.tooltip.delay.coldToHot";
+        var expectedDefaultValue = 0.1;
+        var setNewValue = 0.5;
+        // options parameter for both getPropertyValue() and setPropertyValue() are currently unused
+        var getOptions = {};
+        var setOptions = {};
+        _playground.getPropertyValue(propertyName, getOptions, function (err, propValue) {
+            _validateNotifierResult(err);
+            // callback for the initial get
+            //console.log(propertyName + " initial value:", propValue);
+            strictEqual("number", typeof propValue, "propValue arg type should be 'number'");
+            strictEqual(propValue, expectedDefaultValue, "compare initial propValue returned to expected default value");
+            // Set to a new value
+            _playground.setPropertyValue(propertyName, setNewValue, setOptions, function (err) {
+                _validateNotifierResult(err);
+                _playground.getPropertyValue(propertyName, getOptions, function (err, propValue) {
+                    // callback for set to setNewValue
+                    strictEqual(propValue, setNewValue, "value after set to new value");
+                    _playground.setPropertyValue(propertyName, expectedDefaultValue, setOptions, function (err) {
+                        _validateNotifierResult(err);
+                        _playground.getPropertyValue(propertyName, getOptions, function (err, propValue) {
+                            // callback for final set back to expectedDefaultValue
+                            strictEqual(propValue, expectedDefaultValue, "value after set back to default value");
+                            start();
+                        });
+                    });
+                });
+            });
+        });
+    });
+
+    /* _playground.getPropertyValue() function, simple get: 'ui.tooltip.delay.hotToHot'
+     * Validates:
+     * - get initial, compare to expected default value
+     * - set to new positive value
+     * - get to validate positive value set
+     * - set to default
+     * - final get to validate set to default
+     * 2015/01/14: ui.tooltip.delay.hotToHot initial value: 0.15
+     */
+    asyncTest("get/set property value: functional: ui.tooltip.delay.hotToHot", function () {
+        expect(7);
+        var propertyName = "ui.tooltip.delay.hotToHot";
+        var expectedDefaultValue = 0.15;
+        var setNewValue = 0.5;
+        // options parameter for both getPropertyValue() and setPropertyValue() are currently unused
+        var getOptions = {};
+        var setOptions = {};
+        _playground.getPropertyValue(propertyName, getOptions, function (err, propValue) {
+            _validateNotifierResult(err);
+            // callback for the initial get
+            //console.log(propertyName + " initial value:", propValue);
+            strictEqual("number", typeof propValue, "propValue arg type should be 'number'");
+            strictEqual(propValue, expectedDefaultValue, "compare initial propValue returned to expected default value");
+            // Set to a new value
+            _playground.setPropertyValue(propertyName, setNewValue, setOptions, function (err) {
+                _validateNotifierResult(err);
+                _playground.getPropertyValue(propertyName, getOptions, function (err, propValue) {
+                    // callback for set to setNewValue
+                    strictEqual(propValue, setNewValue, "value after set to new value");
+                    _playground.setPropertyValue(propertyName, expectedDefaultValue, setOptions, function (err) {
+                        _validateNotifierResult(err);
+                        _playground.getPropertyValue(propertyName, getOptions, function (err, propValue) {
+                            // callback for final set back to expectedDefaultValue
+                            strictEqual(propValue, expectedDefaultValue, "value after set back to default value");
+                            start();
+                        });
+                    });
+                });
+            });
+        });
+    });
+
+    /* _playground.getPropertyValue() function, simple get: 'ui.tooltip.delay.hotToCold'
+     * Validates:
+     * - get initial, compare to expected default value
+     * - set to new positive value
+     * - get to validate positive value set
+     * - set to default
+     * - final get to validate set to default
+     * 2015/01/14: ui.tooltip.delay.hotToCold initial value: 0.25
+     */
+    asyncTest("get/set property value: functional: ui.tooltip.delay.hotToCold", function () {
+        expect(7);
+        var propertyName = "ui.tooltip.delay.hotToCold";
+        var expectedDefaultValue = 0.25;
+        var setNewValue = 0.5;
+        // options parameter for both getPropertyValue() and setPropertyValue() are currently unused
+        var getOptions = {};
+        var setOptions = {};
+        _playground.getPropertyValue(propertyName, getOptions, function (err, propValue) {
+            _validateNotifierResult(err);
+            // callback for the initial get
+            //console.log(propertyName + " initial value:", propValue);
+            strictEqual("number", typeof propValue, "propValue arg type should be 'number'");
+            strictEqual(propValue, expectedDefaultValue, "compare initial propValue returned to expected default value");
+            // Set to a new value
+            _playground.setPropertyValue(propertyName, setNewValue, setOptions, function (err) {
+                _validateNotifierResult(err);
+                _playground.getPropertyValue(propertyName, getOptions, function (err, propValue) {
+                    // callback for set to setNewValue
+                    strictEqual(propValue, setNewValue, "value after set to new value");
+                    _playground.setPropertyValue(propertyName, expectedDefaultValue, setOptions, function (err) {
+                        _validateNotifierResult(err);
+                        _playground.getPropertyValue(propertyName, getOptions, function (err, propValue) {
+                            // callback for final set back to expectedDefaultValue
+                            strictEqual(propValue, expectedDefaultValue, "value after set back to default value");
+                            start();
+                        });
+                    });
+                });
+            });
+        });
+    });
+
+    /* _playground.getPropertyValue() function, simple get: 'ui.tooltip.delay.autoHide'
+     * Validates:
+     * - get initial, compare to expected default value
+     * - set to new positive value
+     * - get to validate positive value set
+     * - set to 0, while the implementation treats as "autoHide disabled"
+     * - get to validate "disabled" value set
+     * - set to default,
+     * - final get to validate set to default
+     * 2015/01/14: ui.tooltip.delay.autoHide initial value: 10
+     */
+    asyncTest("get/set property value: functional: ui.tooltip.delay.autoHide", function () {
+        expect(9);
+        var propertyName = "ui.tooltip.delay.autoHide";
+        var expectedDefaultValue = 10;
+        var setNewPositiveValue = 1.5;
+        var setToDisabledStateValue = 0;
+        // options parameter for both getPropertyValue() and setPropertyValue() are currently unused
+        var getOptions = {};
+        var setOptions = {};
+        _playground.getPropertyValue(propertyName, getOptions, function (err, propValue) {
+            _validateNotifierResult(err);
+            // callback for the initial get
+            // console.log(propertyName + " initial value:", propValue);
+            strictEqual("number", typeof propValue, "propValue arg type should be 'number'");
+            strictEqual(propValue, expectedDefaultValue, "compare initial propValue returned to expected default value");
+            // Set to a new positive value
+            _playground.setPropertyValue(propertyName, setNewPositiveValue, setOptions, function (err) {
+                _validateNotifierResult(err);
+                _playground.getPropertyValue(propertyName, getOptions, function (err, propValue) {
+                    // callback for set to setNewPositiveValue
+                    strictEqual(propValue, setNewPositiveValue, "value after set to new positive value");
+                    // set to setToDisabledStateValue value
+                    _playground.setPropertyValue(propertyName, setToDisabledStateValue, setOptions, function (err) {
+                        _validateNotifierResult(err);
+                        _playground.getPropertyValue(propertyName, getOptions, function (err, propValue) {
+                            // callback for set to setToDisabledStateValue value
+                            strictEqual(propValue, setToDisabledStateValue, "value after set to setToDisabledStateValue");
+                            _playground.setPropertyValue(propertyName, expectedDefaultValue, setOptions, function (err) {
+                                _validateNotifierResult(err);
+                                _playground.getPropertyValue(propertyName, getOptions, function (err, propValue) {
+                                    // callback for final set back to expectedDefaultValue
+                                    strictEqual(propValue, expectedDefaultValue, "value after set back to default value");
+                                    start();
+                                });
+                            });
+                        });
+                    });
+                });
+            });
+        });
+    });
+
+    /* _playground.getPropertyValue() function: negative: undefined propertyName arg
+     * Validates: Negative input handling
+     */
+    asyncTest("_playground.getPropertyValue(): negative: undefined propertyName arg", function () {
+        expect(1);
+        _playground.getPropertyValue(undefined, {}, function (err, propertyValue) {
+            _validateNotifierResultError(err, _playground.errorCodes.CONVERSION_ERROR);
+            start();
+        });
+    });
+
+    /* _playground.getPropertyValue() function: negative: invalid propertyName arg
+     * Validates: Negative input handling
+     */
+    asyncTest("_playground.getPropertyValue(): negative: invalid propertyName arg", function () {
+        expect(1);
+        _playground.getPropertyValue("does_not_exist", {}, function (err, propertyValue) {
+            _validateNotifierResultError(err, _playground.errorCodes.ARGUMENT_ERROR);
+            start();
+        });
+    });
+
+    /* _playground.getPropertyValue() function: negative: undefined options arg
+     * Validates: Negative input handling
+     */
+    asyncTest("_playground.getPropertyValue(): negative: undefined options arg", function () {
+        expect(1);
+        _playground.getPropertyValue("ui.tooltip.delay.autoHide", undefined, function (err, propertyValue) {
+            _validateNotifierResultError(err, _playground.errorCodes.CONVERSION_ERROR);
+            start();
+        });
+    });
+
+    /* _playground.setPropertyValue() function: negative: undefined propertyName arg
+     * Validates: Negative input handling
+     */
+    asyncTest("_playground.setPropertyValue(): negative: undefined propertyName arg", function () {
+        expect(1);
+        _playground.setPropertyValue(undefined, 1.0, {}, function (err) {
+            _validateNotifierResultError(err, _playground.errorCodes.CONVERSION_ERROR);
+            start();
+        });
+    });
+
+    /* _playground.setPropertyValue() function: negative: invalid propertyName arg
+     * Validates: Negative input handling
+     */
+    asyncTest("_playground.setPropertyValue(): negative: invalid propertyName arg", function () {
+        expect(1);
+        _playground.setPropertyValue("does_not_exist", 1.0, {}, function (err) {
+            _validateNotifierResultError(err, _playground.errorCodes.ARGUMENT_ERROR);
+            start();
+        });
+    });
+
+    /* _playground.setPropertyValue() function: negative: undefined propertyValue arg
+     * Validates: Negative input handling
+     */
+    asyncTest("_playground.setPropertyValue(): negative: undefined propertyValue arg", function () {
+        expect(1);
+        _playground.setPropertyValue("ui.tooltip.delay.autoHide", undefined, {}, function (err) {
+            _validateNotifierResultError(err, _playground.errorCodes.CONVERSION_ERROR);
+            start();
+        });
+    });
+
+    /* _playground.setPropertyValue() function: negative: invalid propertyValue arg
+     * Validates: Negative input handling. A valid 'ui.tooltip.delay.hotToCold' value is >0
+     */
+    asyncTest("_playground.setPropertyValue(): negative: invalid propertyValue arg", function () {
+        expect(1);
+        _playground.setPropertyValue("ui.tooltip.delay.hotToCold", -1.0, {}, function (err) {
+            _validateNotifierResultError(err, _playground.errorCodes.ARGUMENT_ERROR);
+            start();
+        });
+    });
+
+    /* _playground.setPropertyValue() function: negative: undefined options arg
+     * Validates: Negative input handling
+     */
+    asyncTest("_playground.setPropertyValue(): negative: undefined options arg", function () {
+        expect(1);
+        _playground.setPropertyValue("ui.tooltip.delay.autoHide", 0, undefined, function (err, propertyValue) {
+            _validateNotifierResultError(err, _playground.errorCodes.CONVERSION_ERROR);
+            start();
+        });
+    });
+
 
     // -------------------------- _playground.config ------------------------------
 
@@ -842,7 +1106,7 @@ define(function () {
             }
         ];
 
-        _playground.ps.descriptor.batchPlay(commands, {}, {}, function (err, descriptors, errors) {
+        _playground.ps.descriptor.batchPlay(commands, {}, function (err, descriptors, errors) {
             _validateNotifierResult(err);
             ok(!err, "Call succeeded");
 
@@ -886,7 +1150,7 @@ define(function () {
             }
         ];
 
-        _playground.ps.descriptor.batchPlay(commands, {}, {}, function (err, descriptors, errors) {
+        _playground.ps.descriptor.batchPlay(commands, {}, function (err, descriptors, errors) {
             _validateNotifierResult(err);
             ok(!err, "Call succeeded");
 
@@ -925,7 +1189,7 @@ define(function () {
             }
         ];
 
-        _playground.ps.descriptor.batchPlay(commands, {}, {}, function (err, descriptors, errors) {
+        _playground.ps.descriptor.batchPlay(commands, {}, function (err, descriptors, errors) {
             _validateNotifierResultError(err, _playground.errorCodes.ARGUMENT_ERROR);
             ok(descriptors === undefined, "Call failed");
             ok(errors === undefined, "Call failed");
@@ -955,11 +1219,11 @@ define(function () {
             }
         ];
 
-        var batchOptions = {
+        var options = {
             continueOnError: true
         };
 
-        _playground.ps.descriptor.batchPlay(commands, {}, batchOptions, function (err, descriptors, errors) {
+        _playground.ps.descriptor.batchPlay(commands, options, function (err, descriptors, errors) {
             _validateNotifierResult(err);
             ok(!err, "Call succeeded");
 
@@ -1388,8 +1652,6 @@ define(function () {
         });
     });
 
-    // --------------------- Scrollbar tests ---------------------
-
     /* _playground.ps.ui.getSuppressScrollbars()
      * Functional: Get the scrollbar mode. While it is initialized to false, at this
      * point we cannot make assumptions about its value.
@@ -1474,6 +1736,56 @@ define(function () {
         });
     });
 
+    /* Get/set the SuppressTargetPaths state
+     * getSuppressTargetPaths(), setSuppressTargetPaths() functional
+     * Validates: identify, call and callback args for get and set, value toggle.
+     * Does not assume what the initial value is, but sets it to the inverse, then
+     * back to the initial state.
+     */
+    asyncTest("_playground.ps.ui.setSuppressTargetPaths() get/set", function () {
+        expect(13);
+
+        ok(typeof _playground.ps.ui.getSuppressTargetPaths === "function",
+             "_playground.ps.ui.getSuppressTargetPaths() function defined");
+
+        ok(typeof _playground.ps.ui.getSuppressTargetPaths === "function",
+             "_playground.ps.ui.getSuppressTargetPaths() function defined");
+        
+        // Initial get of startValue
+        _playground.ps.ui.getSuppressTargetPaths(function (err, startValue) {
+            _validateNotifierResult(err);
+            strictEqual(typeof startValue, "boolean", "Result is a boolean");
+
+            // Invert startValue state on set and compare to previousValue
+            _playground.ps.ui.setSuppressTargetPaths(!startValue, function (err, previousValue) {
+                _validateNotifierResult(err);
+                strictEqual(typeof previousValue, "boolean", "Result is a boolean");
+                strictEqual(previousValue, startValue, "previousValue returned by set should equal prior get value");
+
+                // get to confirm set
+                _playground.ps.ui.getSuppressTargetPaths(function (err, newValue) {
+                    _validateNotifierResult(err);
+                    strictEqual(newValue, !startValue, "newValue (on get) should equal that previously set");
+
+                    // set back to the initial (startValue) state
+                    _playground.ps.ui.setSuppressTargetPaths(startValue, function (err, previousValue) {
+                        _validateNotifierResult(err);
+                        strictEqual(previousValue, !startValue,
+                                    "previousValue returned by set should equal prior get value");
+
+                        // get to confirm set
+                        _playground.ps.ui.getSuppressTargetPaths(function (err, endValue) {
+                            _validateNotifierResult(err);
+                            strictEqual(endValue, startValue, "endValue (on get) should equal the startValue");
+
+                            start();
+                        });
+                    });
+                });
+            });
+        });
+    });
+    
     // --------------------- Menu tests ---------------------
 
     /* _playground.ps.ui.installMenu()
@@ -1704,7 +2016,7 @@ define(function () {
     });
 
     /* _playground.os.keyboardFocus: acquire(), release(), isActive() functional
-     * 
+     *
      */
     asyncTest("_playground.os.keyboardFocus: acquire() / release() / isActive() functional", function () {
         expect(7);
@@ -1714,7 +2026,7 @@ define(function () {
                 _validateNotifierResult(err);
                 strictEqual(typeof value, "boolean", "value type");
                 strictEqual(value, true, "focus should be active following acquire()");
-                _playground.os.keyboardFocus.release({}, function (err) {                
+                _playground.os.keyboardFocus.release({}, function (err) {
                     _validateNotifierResult(err);
                     _playground.os.keyboardFocus.isActive({}, function (err, value) {
                         _validateNotifierResult(err);
