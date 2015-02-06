@@ -354,7 +354,8 @@ define(function (require, exports) {
                 colorMode:  settings.colorMode || "RGBColorMode",
                 depth:      settings.depth || 8,
                 colorProfile:    settings.colorProfile || "none",
-                pixelAspectRatio:  settings.pixelAspectRatio || 1
+                pixelAspectRatio:  settings.pixelAspectRatio || 1,
+                artboard: settings.artboard || false
             };
         var newObj = {
             "obj": "document",
@@ -371,7 +372,8 @@ define(function (require, exports) {
                 },
                 "depth": params.depth,
                 "profile": params.colorProfile,
-                "pixelScaleFactor": params.pixelAspectRatio
+                "pixelScaleFactor": params.pixelAspectRatio,
+                "artboard": params.artboard
             }
         };
         var desc = {
