@@ -283,26 +283,25 @@ define(function (require, exports, module) {
      * Executes a low-level "batchPlay" call on the specified ActionDescriptors.
      *
      * @param {Array.<{name: string, descriptor: object}>} commands Array of ActionDescriptors to play
-     * @param {object=} options Options applied to the execution of each ActionDescriptor individually
-     * @param {{continueOnError: boolean=}}=} batchOptions Options that control how the batch of
-     *      ActionDescriptors is executed.
+     * @param {{continueOnError: boolean=}=} options Options applied to the execution of the batchPlay
      * @return {Promise.<Array.<object>>} Resolves with the list of ActionDescriptor results, or rejects
      *      with either an adapter error, or a single command error if not continueOnError mode. In
      *      continueOnError mode, always resolve with both the results and errors arrays.
      */
-    Descriptor.prototype.batchPlay = function (commands, options, batchOptions) {
-        batchOptions = batchOptions || {};
-        options = options || {
-            interactionMode: this.interactionMode.SILENT
-        };
+    Descriptor.prototype.batchPlay = function (commands, options) {
+        options = options || {};
+
+        if (!options.hasOwnProperty("interactionMode")) {
+            options.interactionMode = this.interactionMode.SILENT;
+        }
 
         var batchPlayAsync = Promise.promisify(_playground.ps.descriptor.batchPlay,
             _playground.ps.descriptor);
 
-        return batchPlayAsync(commands, options, batchOptions)
+        return batchPlayAsync(commands, options)
             .then(function (response) {
                 // Never reject in continueOnError mode; the caller must always check the results
-                if (batchOptions.continueOnError) {
+                if (options.continueOnError) {
                     return response;
                 }
 
@@ -328,17 +327,10 @@ define(function (require, exports, module) {
      * Executes a low-level "batchPlay" call on the specified PlayObjects.
      *
      * @param {Array.<PlayObject>} objects Array of PlayObjects to play
-     * @param {object=} options Options applied to the execution of each PlayObject individually
-     * @param {{continueOnError: boolean}=} batchOptions Options that control how the batch of
-     *      ActionDescriptors is executed.
+     * @param {{continueOnError: boolean=}=} options Options applied to the execution of the batchPlay
      * @return {Promise.<Array.object>} Resolves with the list of ActionDescriptor results. 
      */
-    Descriptor.prototype.batchPlayObjects = function (objects, options, batchOptions) {
-        batchOptions = batchOptions || {};
-        options = options || {
-            interactionMode: this.interactionMode.SILENT
-        };
-        
+    Descriptor.prototype.batchPlayObjects = function (objects, options) {
         var commands = objects.map(function (object) {
             return {
                 name: object.command,
@@ -346,7 +338,7 @@ define(function (require, exports, module) {
             };
         });
 
-        return this.batchPlay(commands, options, batchOptions);
+        return this.batchPlay(commands, options);
     };
 
     /**
@@ -361,10 +353,9 @@ define(function (require, exports, module) {
      * @see Descriptor.prototype.batchPlay
      * @param {Array.<object>} references The references to retrieve.
      * @param {object=} options
-     * @param {object=} batchOptions
      * @return {Promise.<Array.<object>>} Resolves with an array of results.
      */
-    Descriptor.prototype.batchGet = function (references, options, batchOptions) {
+    Descriptor.prototype.batchGet = function (references, options) {
         var commands = references.map(function (reference) {
             return {
                 name: "get",
@@ -374,7 +365,7 @@ define(function (require, exports, module) {
             };
         });
 
-        return this.batchPlay(commands, options, batchOptions);
+        return this.batchPlay(commands, options);
     };
 
     /**
@@ -385,18 +376,16 @@ define(function (require, exports, module) {
      * @param {Array.<{reference: object, property: string}>} refObjs
      *      The references and properties to retrieve.
      * @param {object=} options
-     * @param {object=} batchOptions     
      * @return {Promise.<Array.<object>>} Resolves with an array of property results.
      */
-    Descriptor.prototype.batchGetProperties = function (refObjs, options, batchOptions) {
-        batchOptions = batchOptions || {};
+    Descriptor.prototype.batchGetProperties = function (refObjs, options) {
         var propertyReferences = refObjs.map(function (refObj) {
             return _makePropertyReference(refObj.reference, refObj.property);
         });
 
-        return this.batchGet(propertyReferences, options, batchOptions)
+        return this.batchGet(propertyReferences, options)
             .then(function (response) {
-                if (batchOptions.continueOnError) {
+                if (options.continueOnError) {
                     return response;
                 }
 
@@ -427,12 +416,8 @@ define(function (require, exports, module) {
             };
         };
 
-        var refObjs = properties.map(makeRefObj),
-            batchOptions = {
-                continueOnError: true
-            };
-
-        return this.batchGetProperties(refObjs, undefined, batchOptions)
+        var refObjs = properties.map(makeRefObj);
+        return this.batchGetProperties(refObjs)
             .then(function (results) {
                 var values = results[0];
 
@@ -455,10 +440,9 @@ define(function (require, exports, module) {
      * @param {object} references The references to retrieve
      * @param {string} property The property to retrieve
      * @param {object=} options
-     * @param {object=} batchOptions
      * @return {Promise.<Array.<object>>} Resolves with an array of property results.
      */
-    Descriptor.prototype.batchGetProperty = function (references, property, options, batchOptions) {
+    Descriptor.prototype.batchGetProperty = function (references, property, options) {
         var refObjs = references.map(function (reference) {
             return {
                 reference: reference,
@@ -466,7 +450,7 @@ define(function (require, exports, module) {
             };
         });
 
-        return this.batchGetProperties(refObjs, options, batchOptions);
+        return this.batchGetProperties(refObjs, options);
     };
 
 
