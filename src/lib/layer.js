@@ -25,7 +25,8 @@ define(function (require, exports) {
     "use strict";
     
     var PlayObject = require("../playobject"),
-        referenceBy = require("./reference").wrapper("layer"),
+        referenceLib = require("./reference"),
+        referenceBy = referenceLib.wrapper("layer"),
         inUnits = require("./unit");
 
     var assert = require("../util").assert,
@@ -608,6 +609,20 @@ define(function (require, exports) {
             }
         );
     };
+
+    /**
+     * Combines the paths in the current layer
+     *
+     * @return {PlayObject}
+     */
+    var combinePaths = function () {
+        return new PlayObject(
+            "combine",
+            {
+                "null": referenceLib.wrapper("path").current
+            }
+        );
+    };
     
     // Left overs:
     // _offsetCommand
@@ -635,5 +650,6 @@ define(function (require, exports) {
     exports.groupSelected = groupSelectedLayers;
     exports.setLocking = setLocking;
     exports.translate = translate;
+    exports.combinePaths = combinePaths;
     exports.unlockBackground = unlockBackgroundLayer;
 });
