@@ -379,6 +379,8 @@ define(function (require, exports, module) {
      * @return {Promise.<Array.<object>>} Resolves with an array of property results.
      */
     Descriptor.prototype.batchGetProperties = function (refObjs, options) {
+        options = options || {};
+
         var propertyReferences = refObjs.map(function (refObj) {
             return _makePropertyReference(refObj.reference, refObj.property);
         });
