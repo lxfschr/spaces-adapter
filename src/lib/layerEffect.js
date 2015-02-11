@@ -42,7 +42,7 @@ define(function (require, exports) {
      * @param {ActionDescriptor} ref layer(s) reference
      * @param {string} layerEffectType type of layerEffect (example: dropShadow)
      * @param {object} layerEffectValue object that can be supplied for "to.value" in the descriptor
-     * @param {boolean} multi value that allows function to return the Multi Layer Effect friendly descriptor 
+     * @param {boolean=} multi value that allows function to return the Multi Layer Effect friendly descriptor 
      *
      * @return {PlayObject}
      */
@@ -118,6 +118,7 @@ define(function (require, exports) {
         }
         return layerEffectPsProperties;
     };
+
     /**
      * Update drop shadow layer effect properties for the given layer(s)
      * 
@@ -142,12 +143,13 @@ define(function (require, exports) {
      * Angles in degrees
      * Opacity percentage [0,100]
      *
+     * @private
      * @param {object} properties intermediate object format using Photoshop names, but without units
      *
      * @return {Descriptor}
      */
 
-    var  dropShadowDescriptor = function (properties) {
+    var  _dropShadowDescriptor = function (properties) {
         return {
             "obj": "dropShadow",
             "value": _dropShadowProperties(properties)
@@ -158,17 +160,16 @@ define(function (require, exports) {
      * Update multiple drop shadow layer effect properties for the given layer(s)
      *
      * @param {ActionDescriptor} ref - Reference of layer(s) to update
-     * @param {Array} propertyArray Array of DropShadow properties 
+     * @param {Array.<object>} propertyArray Array of DropShadow properties 
      *
      * @return {PlayObject}
      */
     var setDropShadows = function (ref, propertyArray) {
         assert(referenceOf(ref) === "layer", "setDropShadow is passed a non-layer reference");
-
-        var descriptorArray = propertyArray.reduce(function (array, properties) {
-            array.push(dropShadowDescriptor(properties));
-            return array;
-        }, []);
+        
+        var descriptorArray = propertyArray.map(function (properties) {
+            return _dropShadowDescriptor(properties);
+        });
 
         return _layerEffectDescriptor(ref, "dropShadowMulti", descriptorArray, true);
     };
@@ -176,7 +177,6 @@ define(function (require, exports) {
 
     exports.referenceBy = referenceBy;
 
-    exports.dropShadowDescriptor = dropShadowDescriptor;
     exports.setDropShadow = setDropShadow;
     exports.setDropShadows = setDropShadows;
 });
