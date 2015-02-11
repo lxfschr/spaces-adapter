@@ -416,8 +416,12 @@ define(function (require, exports, module) {
             };
         };
 
-        var refObjs = properties.map(makeRefObj);
-        return this.batchGetProperties(refObjs)
+        var refObjs = properties.map(makeRefObj),
+            options = {
+                continueOnError: true
+            };
+
+        return this.batchGetProperties(refObjs, options)
             .then(function (results) {
                 var values = results[0];
 
