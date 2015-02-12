@@ -42,17 +42,21 @@ define(function (require, exports) {
      * @param {ActionDescriptor} ref layer(s) reference
      * @param {string} layerEffectType type of layerEffect (example: dropShadow)
      * @param {object} layerEffectValue object that can be supplied for "to.value" in the descriptor
+     * @param {boolean=} multi value that allows function to return the Multi Layer Effect friendly descriptor 
      *
      * @return {PlayObject}
      */
-    var _layerEffectDescriptor = function (ref, layerEffectType, layerEffectValue) {
+    var _layerEffectDescriptor = function (ref, layerEffectType, layerEffectValue, multi) {
         var val = {};
 
-        //TODO future: validate the layerEffectType against a list.  Only supporting drop shadow for now
-        val[layerEffectType] = {
-            obj: layerEffectType,
-            value: layerEffectValue
-        };
+        if (multi) {
+            val[layerEffectType] = layerEffectValue;
+        } else {
+            val[layerEffectType] = {
+                obj: layerEffectType,
+                value: layerEffectValue
+            };
+        }
 
         return new PlayObject(
             "set",
@@ -73,24 +77,22 @@ define(function (require, exports) {
             }
         );
     };
-
+    
     /**
-     * Update drop shadow layer effect properties for the given layer(s)
+     * Parse DropShadow JS properties and assign units to make them acceptable to PS 
      * 
      * The expected format of the properties object is like:
      * {enabled: true, color: {r: 255, g: 0, b: 0}, blur: 20}
      * Distance/positions values in pixels
      * Angles in degrees
      * Opacity percentage [0,100]
+     * 
+     * @private
+     * @param {object} properties intermediate object format using Photoshop names, but without units
      *
-     * @param {ActionDescriptor} ref - Reference of layer(s) to update
-     * @param {object} properties intermediate object format using photoshop names, but without units
-     *
-     * @return {PlayObject}
+     * @return {object} PS friendly Properties 
      */
-    var setDropShadow = function (ref, properties) {
-        assert(referenceOf(ref) === "layer", "setDropShadow is passed a non-layer reference");
-
+    var _dropShadowProperties = function (properties) {
         var layerEffectPsProperties = {
             enabled: properties.enabled === undefined ? true : properties.enabled,
             useGlobalAngle: properties.useGlobalAngle === undefined ? true : properties.useGlobalAngle
@@ -114,11 +116,67 @@ define(function (require, exports) {
         if (_.isNumber(properties.distance)) {
             layerEffectPsProperties.distance = inUnits.pixels(properties.distance);
         }
-
-        return _layerEffectDescriptor(ref, "dropShadow", layerEffectPsProperties);
+        return layerEffectPsProperties;
     };
+
+    /**
+     * Update drop shadow layer effect properties for the given layer(s)
+     * 
+     *
+     * @param {ActionDescriptor} ref - Reference of layer(s) to update
+     * @param {object} properties intermediate object format using Photoshop names, but without units
+     *
+     * @return {PlayObject}
+     */
+    var setDropShadow = function (ref, properties) {
+        assert(referenceOf(ref) === "layer", "setDropShadow is passed a non-layer reference");
+
+        return _layerEffectDescriptor(ref, "dropShadow", _dropShadowProperties(properties));
+    };
+
+    /**
+     * Return drop shadow descriptor for the given properties
+     * 
+     * The expected format of the properties object is like:
+     * {enabled: true, color: {r: 255, g: 0, b: 0}, blur: 20}
+     * Distance/positions values in pixels
+     * Angles in degrees
+     * Opacity percentage [0,100]
+     *
+     * @private
+     * @param {object} properties intermediate object format using Photoshop names, but without units
+     *
+     * @return {Descriptor}
+     */
+
+    var  _dropShadowDescriptor = function (properties) {
+        return {
+            "obj": "dropShadow",
+            "value": _dropShadowProperties(properties)
+        };
+    };
+
+    /**
+     * Update multiple drop shadow layer effect properties for the given layer(s)
+     *
+     * @param {ActionDescriptor} ref - Reference of layer(s) to update
+     * @param {Array.<object>} propertyArray Array of DropShadow properties 
+     *
+     * @return {PlayObject}
+     */
+    var setDropShadows = function (ref, propertyArray) {
+        assert(referenceOf(ref) === "layer", "setDropShadow is passed a non-layer reference");
+        
+        var descriptorArray = propertyArray.map(function (properties) {
+            return _dropShadowDescriptor(properties);
+        });
+
+        return _layerEffectDescriptor(ref, "dropShadowMulti", descriptorArray, true);
+    };
+
 
     exports.referenceBy = referenceBy;
 
     exports.setDropShadow = setDropShadow;
+    exports.setDropShadows = setDropShadows;
 });
