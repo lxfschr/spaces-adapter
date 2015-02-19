@@ -1,6 +1,6 @@
 {
   "name": "playground-adapter",
-  "version": "0.0.1",
+  "version": "0.1.56",
   "homepage": "https://github.com/adobe-photoshop/playground-api",
   "authors": [
     "Joel Brandt <jobrandt@adobe.com>",
