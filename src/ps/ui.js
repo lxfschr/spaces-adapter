@@ -312,6 +312,18 @@ define(function (require, exports, module) {
     };
 
     /**
+     * Define the bounds of the non-UI portion of the application window.
+     *
+     * @param {{top: number, left: number, right:number, bottom: number}} offset
+     * @return {Promise.<{top: number, left: number, right:number, bottom: number}>}
+     */
+    UI.prototype.setOverlayOffsets = function (offset) {
+        return _ui.setOverlayOffsetsAsync({
+            offset: offset
+        });
+    };
+
+    /**
      * @type {UI} The UI singleton
      */
     var ui = new UI();
