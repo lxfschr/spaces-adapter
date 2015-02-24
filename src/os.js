@@ -181,6 +181,18 @@ define(function (require, exports, module) {
         return _clipboard.writeAsync(options);
     };
 
+    /**
+     * Set the tooltip label, or invalidate the tooltip if the label is empty.
+     *
+     * @param {string} label
+     * @return {Promise}
+     */
+    OS.prototype.setTooltip = function (label) {
+        return _os.setTooltipAsync({
+            label: label
+        });
+    };
+
     /** @type {OS} The OS singleton */
     var theOS = new OS();
 
