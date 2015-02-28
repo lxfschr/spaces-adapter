@@ -35,8 +35,8 @@ define(function (require, exports) {
         return new PlayObject(
             "changePathDetails",
             {
-                "keyActionMode":0,
-                "keyOriginType":3
+                "keyActionMode": 0,
+                "keyOriginType": 3
             }
         );
     };
@@ -50,8 +50,8 @@ define(function (require, exports) {
         return new PlayObject(
             "changePathDetails",
             {
-                "keyActionMode":1,
-                "keyOriginType":3
+                "keyActionMode": 1,
+                "keyOriginType": 3
             }
         );
     };
@@ -65,8 +65,8 @@ define(function (require, exports) {
         return new PlayObject(
             "changePathDetails",
             {
-                "keyActionMode":2,
-                "keyOriginType":3
+                "keyActionMode": 2,
+                "keyOriginType": 3
             }
         );
     };
@@ -80,8 +80,8 @@ define(function (require, exports) {
         return new PlayObject(
             "changePathDetails",
             {
-                "keyActionMode":3,
-                "keyOriginType":3
+                "keyActionMode": 3,
+                "keyOriginType": 3
             }
         );
     };
