@@ -473,6 +473,32 @@ define(function (require, exports) {
         );
     };
 
+   /**
+     * Sets the proportional scaling property of a layer descriptor.
+     *
+     * @param {ActionDescriptor} ref Reference of layer(s) to set blend mode
+     * @param {bool} mode Proptional scaling flag
+     * @return {PlayObject}
+     */
+    var setProportionalScaling = function (ref, proportion) {
+        assert(referenceOf(ref) === "layer", "setProportionalScaling is passed a non-layer reference");
+        return new PlayObject(
+            "set",
+            {
+                "null": ref,
+                "to": {
+                    "obj": "layer",
+                    "value": {
+                        "proportionalScaling": proportion
+                    }
+                }
+                
+            }
+        );
+    };
+
+
+
     /**
      * FIXME: Only works with current document!
      * SIDE EFFECT: Creates a brand new layer with a new ID and name
@@ -640,6 +666,7 @@ define(function (require, exports) {
     exports.duplicate = duplicate;
     exports.flip = flip;
     exports.setPosition = setPosition;
+    exports.setProportionalScaling = setProportionalScaling;
     exports.setSize = setSize;
     exports.rotate = rotate;
     exports.setOpacity = setOpacity;
