@@ -68,6 +68,7 @@ define(function (require, exports, module) {
         EventEmitter.call(this);
 
         this._menuEventHandler = this._menuEventHandler.bind(this);
+        this._interactionEventHandler = this._interactionEventHandler.bind(this);
     };
     util.inherits(UI, EventEmitter);
 
@@ -87,6 +88,41 @@ define(function (require, exports, module) {
 
         this.emit("menu", {
             command: menuCommand,
+            info: info
+        });
+    };
+
+    /**
+     * Event handler for interaction events (e.g., display of progress, error
+     * or options dialogs) from the native bridge.
+     *
+     * @private
+     * @param {*=} err Error information
+     * @param {number} type
+     * @param {object} info
+     */
+    UI.prototype._interactionEventHandler = function (err, type, info) {
+        if (err) {
+            this.emit("error", "Failed to handle interaction event: " + err);
+            return;
+        }
+
+        var eventKind;
+        switch (type) {
+        case "progress":
+            eventKind = "interactionProgress";
+            break;
+        case "error":
+            eventKind = "interactionError";
+            break;
+        case "options":
+            eventKind = "interactionOptions";
+            break;
+        default:
+            return; // setNotifier registration callback
+        }
+
+        this.emit(eventKind, {
             info: info
         });
     };
@@ -336,6 +372,13 @@ define(function (require, exports, module) {
 
     // Install the menu notifier group handler
     _playground.setNotifier(_playground.notifierGroup.MENU, {}, ui._menuEventHandler);
+
+    // Install the interaction notifier group handler. For now, only listen to "options"
+    // events, but not "progress" or "error" events, because listening for a particular
+    // class of events also suppresses the corresponding interaction dialog.
+    _playground.setNotifier(_playground.notifierGroup.INTERACTION, {
+        notificationKind: _playground.notifierOptions.interaction.OPTIONS
+    }, ui._interactionEventHandler);
 
     module.exports = ui;
 });
