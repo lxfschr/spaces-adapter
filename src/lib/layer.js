@@ -477,7 +477,7 @@ define(function (require, exports) {
      * Sets the proportional scaling property of a layer descriptor.
      *
      * @param {ActionDescriptor} ref Reference of layer(s) to set blend mode
-     * @param {bool} mode Proptional scaling flag
+     * @param {boolean} proportion Proptional scaling flag
      * @return {PlayObject}
      */
     var setProportionalScaling = function (ref, proportion) {
