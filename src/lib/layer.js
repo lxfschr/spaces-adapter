@@ -472,11 +472,13 @@ define(function (require, exports) {
             }
         );
     };
+
    /**
-     * @param {ActionDescriptor} ref - Reference of layer(s) to set blend mode
-     * @param {bool} mode - Proptional Scaling Flag
-     * 
-     * @returns {PlayObject}
+     * Sets the proportional scaling property of a layer descriptor.
+     *
+     * @param {ActionDescriptor} ref Reference of layer(s) to set blend mode
+     * @param {bool} mode Proptional scaling flag
+     * @return {PlayObject}
      */
     var setProportionalScaling = function (ref, proportion) {
         assert(referenceOf(ref) === "layer", "setProportionalScaling is passed a non-layer reference");
