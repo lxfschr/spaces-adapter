@@ -202,6 +202,12 @@ define(function (require, exports, module) {
     UI.prototype.policyAction = _playground.ps.ui.policyAction;
 
     /**
+     * Command kinds - Used for certain commands that are also used in
+     * OS dialogs (like copy/paste), with USER_DEFINED as extra
+     */
+    UI.prototype.commandKind = _playground.ps.ui.commandKind;
+
+    /**
      * Gets the mode of pointer propagation determining the rules of
      * what mouse events will be trickled down to Playground layer.
      * 
