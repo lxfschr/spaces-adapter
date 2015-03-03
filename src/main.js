@@ -26,15 +26,34 @@
 define(function (require, exports) {
     "use strict";
 
-    /**
-     * Version of the Playground adapter plugin API.
-     * Follows Semver 2.0.0 conventions: http://semver.org/spec/v2.0.0.html
-     *
-     * @const
-     * @type {string}
-     */
-    Object.defineProperty(exports, "version", {
-        enumerable: true,
-        value: _playground.version
+    var Promise = require("bluebird");
+
+    Object.defineProperties(exports, {
+        /**
+         * Version of the Playground adapter plugin API.
+         * Follows Semver 2.0.0 conventions: http://semver.org/spec/v2.0.0.html
+         *
+         * @const
+         * @type {string}
+         */
+        "version": {
+            enumerable: true,
+            value: _playground.version
+        },
+
+        /**
+         * Abort the current application and return control to Classic Photoshop.
+         * If a message is supplied, Classic Photoshop may display it to the user,
+         * e.g., in a dialog.
+         * 
+         * @param {{message: string=}}
+         * @return {Promise}
+         */
+        "abort": {
+            enumerable: true,
+            value: Promise.promisify(_playground.abort)
+        }
     });
+
+
 });
