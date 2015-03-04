@@ -193,6 +193,17 @@ define(function (require, exports, module) {
         });
     };
 
+    /**
+     * Resets the mouse cursor, letting it catch up without a mouse move event
+     *
+     * @param {object} options Currently unused
+     * @return {Promise}
+     */
+    OS.prototype.resetCursor = function (options) {
+        options = options || {};
+        return _os.resetCursorAsync(options);
+    };
+
     /** @type {OS} The OS singleton */
     var theOS = new OS();
 
