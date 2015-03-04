@@ -565,6 +565,28 @@ define(function (require, exports) {
     };
 
     /**
+     * Remove Stroke Style (AGMStrokeStyle) completely from the provided content layers
+     * This has the effect of removing a shape's stroke
+     * Note: this may have unexpected results on shapes without a fill
+     *
+     * @param {ActionDescriptor} sourceRef Reference to layer(s) to edit
+     * @return {PlayObject}
+     */
+    var deleteShapeStyle = function (sourceRef) {
+        assert(referenceOf(sourceRef) === "contentLayer", "deleteShapeStyle is passed a non-layer reference");
+        return new PlayObject(
+            "set",
+            {
+                "null": sourceRef,
+                to: {
+                    "obj": "deleteShapeStyle",
+                    "value": {}
+                }
+            }
+        );
+    };
+
+    /**
      * Move shape
      *
      * @param {ActionDescriptor} sourceRef Reference to layer(s) to edit
@@ -758,6 +780,7 @@ define(function (require, exports) {
     exports.setShapeStrokeWidth = setShapeStrokeWidth;
     exports.setStrokeFillTypePattern = setStrokeFillTypePattern;
     exports.setShapeFillTypePattern = setShapeFillTypePattern;
+    exports.deleteShapeStyle = deleteShapeStyle;
     exports.moveShape = moveShape;
     exports.createShape = createShape;
     exports.setRadius = setRadius;
