@@ -636,20 +636,6 @@ define(function (require, exports) {
         );
     };
 
-    /**
-     * Combines the paths in the current layer
-     *
-     * @return {PlayObject}
-     */
-    var combinePaths = function () {
-        return new PlayObject(
-            "combine",
-            {
-                "null": referenceLib.wrapper("path").current
-            }
-        );
-    };
-    
     // Left overs:
     // _offsetCommand
     
@@ -677,6 +663,5 @@ define(function (require, exports) {
     exports.groupSelected = groupSelectedLayers;
     exports.setLocking = setLocking;
     exports.translate = translate;
-    exports.combinePaths = combinePaths;
     exports.unlockBackground = unlockBackgroundLayer;
 });
