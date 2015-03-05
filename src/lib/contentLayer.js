@@ -35,11 +35,23 @@ define(function (require, exports) {
     /**
      * Stroke alignment possible values
      */
-    var _strokeAlignment = {
-        outside: "strokeStyleAlignOutside",
-        center: "strokeStyleAlignCenter",
-        inside: "strokeStyleAlignInside"
-    };
+    var alignmentTypes = Object.defineProperties({}, {
+        OUTSIDE: {
+            value: "strokeStyleAlignOutside",
+            writeable: false,
+            enumerable: true
+        },
+        CENTER: {
+            value: "strokeStyleAlignCenter",
+            writeable: false,
+            enumerable: true
+        },
+        INSIDE: {
+            value: "strokeStyleAlignInside",
+            writeable: false,
+            enumerable: true
+        }
+    });
     
     /**
      * Stroke cap possible values
@@ -168,7 +180,7 @@ define(function (require, exports) {
                                 "strokeEnabled": true,
                                 "strokeStyleLineAlignment": {
                                     "enum": "strokeStyleLineAlignment",
-                                    "value": _strokeAlignment[alignment]
+                                    "value": alignmentTypes[alignment]
                                 },
                                 "strokeStyleVersion": 2
                             }
@@ -697,7 +709,7 @@ define(function (require, exports) {
                                 "strokeStyleContent": shape.fillContentsObject(fillContentStroke, fillContentStrokeVal),
                                 "strokeStyleLineAlignment": {
                                     "enum": "strokeStyleLineAlignment",
-                                    "value": _strokeAlignment[strokeAlignment]
+                                    "value": alignmentTypes[strokeAlignment]
                                 },
                                 "strokeStyleLineCapType": {
                                     "enum": "strokeStyleLineCapType",
@@ -769,6 +781,7 @@ define(function (require, exports) {
     
     exports.referenceBy = referenceBy;
     exports.contentTypes = contentTypes;
+    exports.alignmentTypes = alignmentTypes;
     exports.originTypes = originTypes;
 
     exports.setStrokeAlignment = setStrokeAlignment;
