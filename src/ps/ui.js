@@ -94,7 +94,7 @@ define(function (require, exports, module) {
 
     /**
      * Event handler for interaction events (e.g., display of progress, error
-     * or options dialogs) from the native bridge.
+     * or options dialogs, context menus, etc.) from the native bridge.
      *
      * @private
      * @param {*=} err Error information
@@ -117,6 +117,12 @@ define(function (require, exports, module) {
             break;
         case "options":
             eventKind = "interactionOptions";
+            break;
+        case "context":
+            eventKind = "interactionContext";
+            break;
+        case "user":
+            eventKind = "interactionUser";
             break;
         default:
             return; // setNotifier registration callback
@@ -374,10 +380,11 @@ define(function (require, exports, module) {
     _playground.setNotifier(_playground.notifierGroup.MENU, {}, ui._menuEventHandler);
 
     // Install the interaction notifier group handler. For now, only listen to "options"
-    // events, but not "progress" or "error" events, because listening for a particular
-    // class of events also suppresses the corresponding interaction dialog.
+    // and "context" events, but not "progress" or "error" events, because listening for
+    // a particular class of events also suppresses the corresponding interaction dialog.
+    var _interactionOpts = _playground.notifierOptions.interaction;
     _playground.setNotifier(_playground.notifierGroup.INTERACTION, {
-        notificationKind: _playground.notifierOptions.interaction.OPTIONS
+        notificationKind: _interactionOpts.OPTIONS + _interactionOpts.CONTEXT
     }, ui._interactionEventHandler);
 
     module.exports = ui;
