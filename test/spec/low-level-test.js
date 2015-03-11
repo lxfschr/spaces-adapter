@@ -22,7 +22,7 @@
  */
 
 /* global _playground, module, console, performance, define */
-/* global test, asyncTest, expect, start, ok, equal, strictEqual, deepEqual */
+/* global test, asyncTest, expect, start, ok, strictEqual, deepEqual */
 /* jshint unused:false */
 
 define(function () {
@@ -176,10 +176,6 @@ define(function () {
      */
     test("_playground.errorCodes constants object", function () {
         ok(typeof _playground.errorCodes === "object", "_playground.errorCodes defined");
-        // CHANGE THIS VALUE WHEN ADDING OR REMOVING errorCode PROPERTIES!
-        var expectedSize = 10;
-        var actualSize = Object.getOwnPropertyNames(_playground.errorCodes).length;
-        equal(actualSize, expectedSize, "_playground.errorCodes size");
         // constants
         ok(typeof _playground.errorCodes.NO_ERROR === "number",
             "_playground.errorCodes.NO_ERROR");
@@ -208,10 +204,6 @@ define(function () {
      */
     test("_playground.notifierGroup constants object", function () {
         ok(typeof _playground.notifierGroup === "object", "_playground.notifierGroup defined");
-        // CHANGE THIS VALUE WHEN ADDING OR REMOVING notifierGroup PROPERTIES!
-        var expectedSize = 5;
-        var actualSize = Object.getOwnPropertyNames(_playground.notifierGroup).length;
-        strictEqual(actualSize, expectedSize, "_playground.notifierGroup size");
         // constants
         ok(typeof _playground.notifierGroup.PHOTOSHOP === "string",
             "_playground.notifierGroup.PHOTOSHOP");
@@ -239,15 +231,17 @@ define(function () {
     test("_playground.notifierOptions.interaction constants object", function () {
         ok(typeof _playground.notifierOptions.interaction === "object",
            "_playground.notifierOptions.interaction defined");
-        // CHANGE THIS VALUE WHEN ADDING OR REMOVING interaction PROPERTIES!
-        var expectedSize = 2;
-        var actualSize = Object.getOwnPropertyNames(_playground.notifierOptions.interaction).length;
-        equal(actualSize, expectedSize, "_playground.notifierOptions.interaction size");
         // constants
         ok(typeof _playground.notifierOptions.interaction.PROGRESS === "number",
             "_playground.notifierOptions.interaction.PROGRESS");
         ok(typeof _playground.notifierOptions.interaction.ERROR === "number",
             "_playground.notifierOptions.interaction.ERROR");
+        ok(typeof _playground.notifierOptions.interaction.OPTIONS === "number",
+            "_playground.notifierOptions.interaction.OPTIONS");
+        ok(typeof _playground.notifierOptions.interaction.CONTEXT === "number",
+            "_playground.notifierOptions.interaction.OPTIONS");
+        ok(typeof _playground.notifierOptions.interaction.USER === "number",
+            "_playground.notifierOptions.interaction.USER");
     });
 
     /* _playground.setNotifier() functional, set/reset for _playground.notifierGroup.PHOTOSHOP
@@ -324,6 +318,32 @@ define(function () {
         });
     });
 
+    asyncTest("_playground.setNotifier() functional: set/reset for _playground.notifierGroup.OPTIONS", function () {
+        expect(3);
+        var notifierGroup = _playground.notifierGroup.INTERACTION;
+        var options = {"notificationKind": _playground.notifierOptions.interaction.OPTIONS};
+        _playground.setNotifier(notifierGroup, options, function (err, type, info) {
+            _validateNotifierResult(err);
+            strictEqual(type, undefined, "callback type arg on set should be undefined");
+            strictEqual(info, undefined, "callback info arg on set should be undefined");
+            _playground.setNotifier(notifierGroup, options, undefined);
+            start();
+        });
+    });
+
+    asyncTest("_playground.setNotifier() functional: set/reset for _playground.notifierGroup.CONTEXT", function () {
+        expect(3);
+        var notifierGroup = _playground.notifierGroup.INTERACTION;
+        var options = {"notificationKind": _playground.notifierOptions.interaction.CONTEXT};
+        _playground.setNotifier(notifierGroup, options, function (err, type, info) {
+            _validateNotifierResult(err);
+            strictEqual(type, undefined, "callback type arg on set should be undefined");
+            strictEqual(info, undefined, "callback info arg on set should be undefined");
+            _playground.setNotifier(notifierGroup, options, undefined);
+            start();
+        });
+    });
+
 // tburbage (2015/01/28): FAIL, BUT NEED REVIEW
 if (0) {
     /* _playground.setNotifier() functional/negative: set with invalid notifierGroup string
@@ -350,7 +370,7 @@ if (0) {
      */
     asyncTest("_playground.setNotifier() functional/negative: set with undefined notifierGroup", function () {
         expect(3);
-        var notifierGroup; // undefined is not a valid notifierGroup string value
+        var notifierGroup; // undefined not a valid notifierGroup string value
         var options = {};
         _playground.setNotifier(notifierGroup, options, function (err, notificationKind, info) {
             _validateNotifierResultError(err, _playground.errorCodes.ARGUMENT_ERROR);
@@ -360,7 +380,7 @@ if (0) {
         });
     });
 } // if (0)
-    
+
     /* _playground.setNotifier() functional/negative: invalid input AND undefined callback
      * Validates: A JavaScript exception should be thrown in this case
      */
@@ -369,14 +389,13 @@ if (0) {
         try {
             _playground.setNotifier(undefined, undefined, undefined);
         } catch (err) {
-            console.log("DEBUG:", err.number, err.message);
             exceptionThrown = true;
 
         }
         ok(exceptionThrown, "Expect native Javascript exception to be thrown");
     });
 
-    
+
     // ------------------------- Properties: get/set -------------------------------
 
     /* _playground.getPropertyValue() function, simple get: 'ui.tooltip.delay.coldToHot'
@@ -675,6 +694,25 @@ if (0) {
         });
     });
 
+    /* _playground.abort()
+     * Validates: defined, type
+     * Because abort() will destroy the HTML surface (and abruptly end the test...)
+     * no functional test is feasible
+     */
+    test("_playground.abort() defined, type", function () {
+        ok(typeof _playground.abort === "function", "_playground.abort() type");
+    });
+
+    /* _playground.abort()
+     * Validates: negative: undefined 'options' arg
+     */
+    asyncTest("_playground.abort(): negative: undefined 'options' arg", function () {
+        expect(1);
+        _playground.abort(undefined, function(err) {
+            _validateNotifierResultError(err, _playground.errorCodes.CONVERSION_ERROR);
+            start();
+        });
+    });
 
     // -------------------------- _playground.config ------------------------------
 
@@ -743,35 +781,18 @@ if (0) {
             "_playground._debug.descriptorIdentity() defined");
     });
 
-    // tburbage (2014/12/10): Withdrawing the single execution round trip timing test
-    // for now. It is very common for the very first call to exceed our max
-    // round-trip time of 15ms, but subsequent executions are almost never
-    // over the error threshold. The multiple iterations execution test is
-    // more reliable...
-
-    // asyncTest("_playground._debug.descriptorIdentity(): timing test (single)", function () {
-    //     expect(2);
-    //     var warnMaxTime = 10; // ms
-    //     var errorMaxTime = 15; // ms
-    //     var startTime = performance.now();
-    //     _playground._debug.descriptorIdentity({}, {}, function (err, descriptor, reference) {
-    //         var elapsed = performance.now() - startTime;
-    //         _validateNotifierResult(err);
-    //         if (elapsed > warnMaxTime && elapsed <= errorMaxTime) {
-    //             console.warn("Single round trip time (", elapsed.toFixed(2),
-    //                          "ms) exceeds WARN threshold (", warnMaxTime, "ms)");
-    //         }
-    //         ok(elapsed <= errorMaxTime,
-    //            "Single round trip time (" + elapsed.toFixed(2) +
-    //            "ms): should not exceed ERROR threshold (" + errorMaxTime + "ms)");
-    //         start();
-    //     });
-    // });
-
     /* _playground._debug.descriptorIdentity(): timing test, multiple iterations
      */
     asyncTest("_playground._debug.descriptorIdentity(): timing test, multiple iterations", function () {
         expect(1);
+        var iterations = 100;
+        // WARN for Avg/median timings > warnThreshold and < errorThreshold (console.warn())
+        // Test ERROR if either average or median is > errorThreshold
+        var warnThreshold = 10.0; // ms
+        var errorThreshold = 15.0; // ms
+        var callbacksReceived = 0;
+        var timings = new Array(iterations);
+
         var callback = function (err, descriptor, reference) {
             timings[callbacksReceived] = performance.now();
             callbacksReceived++;
@@ -792,22 +813,23 @@ if (0) {
                 var maxTime = sortedTimings[sortedTimings.length - 1];
                 var minTime = sortedTimings[0];
                 var medianTime = sortedTimings[Math.floor(sortedTimings.length / 2)];
-                var reportAsWarning = avgTime > warnMaxTime && avgTime < errorMaxTime ||
-                    medianTime > warnMaxTime && medianTime < errorMaxTime;
-                var reportAsError = avgTime > errorMaxTime || medianTime > errorMaxTime;
-                var logstring = "AVG ROUND TRIP TIME EXCEEDS THRESHOLD (warn: ";
-                logstring += warnMaxTime;
+                var reportAsWarning = avgTime > warnThreshold && avgTime < errorThreshold ||
+                    medianTime > warnThreshold && medianTime < errorThreshold;
+                var reportAsError = avgTime > errorThreshold || medianTime > errorThreshold;
+                var logstring = "AVG ROUND TRIP TIMES (ms) ";
+                logstring += iterations;
+                logstring += " iterations (thresholds: warn: ";
+                logstring += warnThreshold;
                 logstring += ", error: ";
-                logstring += errorMaxTime;
-                logstring += "): iterations:" + iterations;
-                logstring += "TIMINGS (ms): avg: ";
-                logstring += avgTime;
-                logstring += "median: ";
-                logstring += medianTime;
-                logstring += "max: ";
-                logstring += maxTime;
-                logstring += "min: ";
-                logstring += minTime;
+                logstring += errorThreshold;
+                logstring += "): avg: ";
+                logstring += avgTime.toFixed(2);
+                logstring += ", median: ";
+                logstring += medianTime.toFixed(2);
+                logstring += ", max: ";
+                logstring += maxTime.toFixed(2);
+                logstring += ", min: ";
+                logstring += minTime.toFixed(2);
                 if (reportAsWarning) {
                     console.warn(logstring);
                 }
@@ -815,13 +837,6 @@ if (0) {
                 start();
             }
         };
-        var iterations = 100;
-        // WARN for Avg/median timings > warnMaxTime and < errorMaxTime (console.warn())
-        // Test ERROR if either average or median is > errorMaxTime
-        var warnMaxTime = 10; // ms
-        var errorMaxTime = 15; // ms
-        var callbacksReceived = 0;
-        var timings = new Array(iterations);
         var startTime = performance.now();
         _playground._debug.descriptorIdentity({}, {}, callback);
     });
@@ -931,10 +946,6 @@ if (0) {
     test("_playground.ps.descriptor.interactionMode constants object", function () {
         ok(typeof _playground.ps.descriptor.interactionMode === "object",
             "_playground.ps.descriptor.interactionMode defined, type");
-        // CHANGE THIS VALUE WHEN ADDING OR REMOVING interactionMode PROPERTIES!
-        var expectedSize = 3;
-        var actualSize = Object.getOwnPropertyNames(_playground.ps.descriptor.interactionMode).length;
-        strictEqual(actualSize, expectedSize, "_playground.ps.descriptor.interactionMode size");
         // constants
         ok(typeof _playground.ps.descriptor.interactionMode.DONT_DISPLAY === "number",
             "_playground.ps.descriptor.interactionMode.DONT_DISPLAY");
@@ -1161,7 +1172,7 @@ if (0) {
             ok(!errors[0], "Error is falsy");
 
             ok(!descriptors[1], "Result is falsy");
-            _validateNotifierResultError(errors[1], _playground.errorCodes.UNKNOWN_ERROR);
+            _validateNotifierResultError(errors[1], _playground.errorCodes.SUITEPEA_ERROR);
 
             start();
         });
@@ -1234,7 +1245,7 @@ if (0) {
             ok(!errors[0], "Error is falsy");
 
             ok(!descriptors[1], "descriptors[1] is falsy");
-            _validateNotifierResultError(errors[1], _playground.errorCodes.UNKNOWN_ERROR);
+            _validateNotifierResultError(errors[1], _playground.errorCodes.SUITEPEA_ERROR);
 
             strictEqual(typeof descriptors[2], "object", "Result is a descriptor");
             deepEqual(descriptors[2], {}, "Result object descriptors[2] is empty");
@@ -1298,10 +1309,6 @@ if (0) {
     test("_playground.ps.ui.widgetTypes constants object", function () {
         ok(typeof _playground.ps.ui.widgetTypes === "object",
             "_playground.ps.ui.widgetTypes defined");
-        // CHANGE THIS VALUE WHEN ADDING OR REMOVING widgetTypes PROPERTIES!
-        var expectedSize = 7;
-        var actualSize = Object.getOwnPropertyNames(_playground.ps.ui.widgetTypes).length;
-        strictEqual(actualSize, expectedSize, "_playground.ps.ui.widgetTypes size");
         // constants
         ok(typeof _playground.ps.ui.widgetTypes.TOOLBAR === "number",
             "_playground.ps.ui.widgetTypes.TOOLBAR");
@@ -1337,10 +1344,6 @@ if (0) {
     test("_playground.ps.ui.pointerPropagationMode constants object", function () {
         ok(typeof _playground.ps.ui.pointerPropagationMode === "object",
             "_playground.ps.ui.pointerPropagationMode defined");
-        // CHANGE THIS VALUE WHEN ADDING OR REMOVING pointerPropagationMode PROPERTIES!
-        var expectedSize = 3;
-        var actualSize = Object.getOwnPropertyNames(_playground.ps.ui.pointerPropagationMode).length;
-        strictEqual(actualSize, expectedSize, "_playground.ps.ui.pointerPropagationMode size");
         // constants
         ok(typeof _playground.ps.ui.pointerPropagationMode.ALPHA_PROPAGATE === "number",
             "_playground.ps.ui.pointerPropagationMode.ALPHA_PROPAGATE");
@@ -1438,10 +1441,6 @@ if (0) {
         test("_playground.ps.ui.PolicyAction constants object", function () {
             ok(typeof _playground.ps.ui.PolicyAction === "object",
                 "_playground.ps.ui.PolicyAction defined");
-            // CHANGE THIS VALUE WHEN ADDING OR REMOVING PolicyAction PROPERTIES!
-            var expectedSize = 3;
-            var actualSize = Object.getOwnPropertyNames(_playground.ps.ui.PolicyAction).length;
-            strictEqual(actualSize, expectedSize, "_playground.ps.ui.PolicyAction size");
             // constants
             ok(typeof _playground.ps.ui.PolicyAction.ALPHA_PROPAGATE === "number",
                 "_playground.ps.ui.PolicyAction.ALPHA_PROPAGATE");
@@ -1458,10 +1457,6 @@ if (0) {
     test("_playground.ps.ui.keyboardPropagationMode constants object", function () {
         ok(typeof _playground.ps.ui.keyboardPropagationMode === "object",
             "_playground.ps.ui.keyboardPropagationMode defined");
-        // CHANGE THIS VALUE WHEN ADDING OR REMOVING keyboardPropagationMode PROPERTIES!
-        var expectedSize = 3;
-        var actualSize = Object.getOwnPropertyNames(_playground.ps.ui.keyboardPropagationMode).length;
-        strictEqual(actualSize, expectedSize, "_playground.ps.ui.keyboardPropagationMode size");
         // constants
         ok(typeof _playground.ps.ui.keyboardPropagationMode.FOCUS_PROPAGATE === "number",
             "_playground.ps.ui.keyboardPropagationMode.FOCUS_PROPAGATE");
@@ -1592,10 +1587,6 @@ if (0) {
     test("_playground.ps.ui.overscrollMode constants object", function () {
         ok(typeof _playground.ps.ui.overscrollMode === "object",
             "_playground.ps.ui.overscrollMode defined");
-        // CHANGE THIS VALUE WHEN ADDING OR REMOVING overscrollMode PROPERTIES!
-        var expectedSize = 3;
-        var actualSize = Object.getOwnPropertyNames(_playground.ps.ui.overscrollMode).length;
-        strictEqual(actualSize, expectedSize, "_playground.ps.ui.overscrollMode size");
         // constants
         ok(typeof _playground.ps.ui.overscrollMode.NORMAL_OVERSCROLL === "number",
             "_playground.ps.ui.overscrollMode.NORMAL_OVERSCROLL");
@@ -1749,7 +1740,7 @@ if (0) {
 
         ok(typeof _playground.ps.ui.getSuppressTargetPaths === "function",
              "_playground.ps.ui.getSuppressTargetPaths() function defined");
-        
+
         // Initial get of startValue
         _playground.ps.ui.getSuppressTargetPaths(function (err, startValue) {
             _validateNotifierResult(err);
@@ -1784,7 +1775,119 @@ if (0) {
             });
         });
     });
-    
+
+    /* Get/set the OverlayOffsets state
+     * getOverlayOffsets(), setOverlayOffsets() functional
+     * Validates: identify, call and callback args for get and set, value toggle.
+     * Does not assume what the initial value is, but sets it to the inverse, then
+     * back to the initial state.
+     */
+    asyncTest("_playground.ps.ui.setOverlayOffsets() get/set", function () {
+        expect(27);
+
+        ok(typeof _playground.ps.ui.getOverlayOffsets === "function",
+             "_playground.ps.ui.getOverlayOffsets() function defined");
+
+        ok(typeof _playground.ps.ui.setOverlayOffsets === "function",
+             "_playground.ps.ui.setOverlayOffsets() function defined");
+
+        var expOffsetAttrNames = ["left", "top", "right", "bottom"];
+        // Initial get of starting offsets
+        _playground.ps.ui.getOverlayOffsets(function (err, options) {
+            _validateNotifierResult(err);
+            strictEqual(typeof options, "object", "options is an object");
+            ok("offset" in options, "options should have an 'offset' attribute");
+            strictEqual(typeof options.offset, "object", "options 'offset' is an object");
+            var startOffsets = options.offset;
+            var startAttrs = Object.keys(options.offset);
+            strictEqual(startAttrs.length, 4, "offset should have 4 attributes");
+            // test that all expected attributes are present and have an appropriate
+            // type and value
+            for (var i = 0; i < expOffsetAttrNames.length; i++) {
+                var attr = expOffsetAttrNames[i];
+                ok(attr in startOffsets, "attribute '" + attr + "' in options.offset");
+                strictEqual(typeof startOffsets[attr], "number", "offset values are numbers");
+                ok(startOffsets[attr] >= 0, "offset values >= 0");
+            }
+            // Invert startValue state on set and compare to previousValue
+            var newOffsets = {"left": startOffsets.left + 10,
+                              "top": startOffsets.top + 20,
+                              "right": startOffsets.right + 30,
+                              "bottom": startOffsets.bottom + 40};
+            _playground.ps.ui.setOverlayOffsets({"offset": newOffsets}, function (err, prevValue) {
+                _validateNotifierResult(err);
+                deepEqual(prevValue.offset, startOffsets, "startOffsets and prevOffsets should be equivalent");
+                // get to confirm set
+                _playground.ps.ui.getOverlayOffsets(function (err, options) {
+                    _validateNotifierResult(err);
+                    deepEqual(options.offset, newOffsets, "callback offset and newOffsets should be equivalent");
+
+                    // set back to the initial state
+                    _playground.ps.ui.setOverlayOffsets({"offset": startOffsets}, function (err, prevValue) {
+                        _validateNotifierResult(err);
+                        deepEqual(prevValue.offset, newOffsets, "callback offset and newOffsets should be equivalent");
+
+                        // get to confirm set
+                        _playground.ps.ui.getOverlayOffsets(function (err, options) {
+                            _validateNotifierResult(err);
+                            deepEqual(options.offset, startOffsets, "callback offset and startOffsets should be equivalent");
+                            start();
+                        });
+                    });
+                });
+            });
+        });
+    });
+
+    /* Log a headlights event
+     * LogHeadlightsEvent() functional
+     * Validates: identify, call args log event.
+     */
+    asyncTest("_playground.ps.logHeadlightsEvent() functional", function () {
+        expect(2);
+
+        ok(typeof _playground.ps.logHeadlightsEvent === "function",
+             "_playground.ps.logHeadlightsEvent() function defined");
+
+        var options = {
+            category:      "playground",
+            subcategory:   "test",
+            event:         "execute headlights unit test",
+        };
+
+        // Log an Event
+        _playground.ps.logHeadlightsEvent(options, function (err) {
+            _validateNotifierResult(err);
+
+            start();
+        });
+    });
+
+    /* _playground.ps.ui.commandKind constants object
+     * Validates: defined, type, number of elements, their type, ref by name
+     */
+    test("_playground.ps.ui.commandKind constants object", function () {
+        ok(typeof _playground.ps.ui.commandKind === "object",
+            "_playground.ps.ui.commandKind defined");
+        // constants
+        ok(typeof _playground.ps.ui.commandKind.USER_DEFINED === "number",
+            "_playground.ps.ui.commandKind.USER_DEFINED");
+        ok(typeof _playground.ps.ui.commandKind.CUT === "number",
+            "_playground.ps.ui.commandKind.CUT");
+        ok(typeof _playground.ps.ui.commandKind.COPY === "number",
+            "_playground.ps.ui.commandKind.COPY");
+        ok(typeof _playground.ps.ui.commandKind.PASTE === "number",
+            "_playground.ps.ui.commandKind.PASTE");
+        ok(typeof _playground.ps.ui.commandKind.SELECT_ALL === "number",
+            "_playground.ps.ui.commandKind.SELECT_ALL");
+        ok(typeof _playground.ps.ui.commandKind.UNDO === "number",
+            "_playground.ps.ui.commandKind.UNDO");
+        ok(typeof _playground.ps.ui.commandKind.REDO === "number",
+            "_playground.ps.ui.commandKind.REDO");
+        ok(typeof _playground.ps.ui.commandKind.DELETE === "number",
+            "_playground.ps.ui.commandKind.DELETE");
+    });
+
     // --------------------- Menu tests ---------------------
 
     /* _playground.ps.ui.installMenu()
@@ -1819,10 +1922,6 @@ if (0) {
     test("_playground.os.eventKind constants object", function () {
         ok(typeof _playground.os.eventKind === "object",
             "_playground.os.eventKind defined");
-        // CHANGE THIS VALUE WHEN ADDING OR REMOVING eventKind PROPERTIES!
-        var expectedSize = 4;
-        var actualSize = Object.getOwnPropertyNames(_playground.os.eventKind).length;
-        strictEqual(actualSize, expectedSize, "_playground.os.eventKind size");
         // constants
         ok(typeof _playground.os.eventKind.LEFT_MOUSE_DOWN === "number",
             "_playground.os.eventKind.LEFT_MOUSE_DOWN");
@@ -1832,6 +1931,8 @@ if (0) {
             "_playground.os.eventKind.KEY_UP");
         ok(typeof _playground.os.eventKind.FLAGS_CHANGED === "number",
             "_playground.os.eventKind.FLAGS_CHANGED");
+        ok(typeof _playground.os.eventKind.MOUSE_WHEEL === "number",
+            "_playground.os.eventKind.MOUSE_WHEEL");
     });
 
     /* _playground.os.eventModifiers constants object
@@ -1840,10 +1941,6 @@ if (0) {
     test("_playground.os.eventModifiers constants object", function () {
         ok(typeof _playground.os.eventModifiers === "object",
             "_playground.os.eventModifiers defined");
-        // CHANGE THIS VALUE WHEN ADDING OR REMOVING eventModifiers PROPERTIES!
-        var expectedSize = 5;
-        var actualSize = Object.getOwnPropertyNames(_playground.os.eventModifiers).length;
-        strictEqual(actualSize, expectedSize, "_playground.os.eventModifiers size");
         // constants
         ok(typeof _playground.os.eventModifiers.NONE === "number",
             "_playground.os.eventModifiers.NONE");
@@ -1863,10 +1960,6 @@ if (0) {
     test("_playground.os.eventKeyCode constants object", function () {
         ok(typeof _playground.os.eventKeyCode === "object",
             "_playground.os.eventKeyCode defined");
-        // CHANGE THIS VALUE WHEN ADDING OR REMOVING eventKeyCode PROPERTIES!
-        var expectedSize = 30;
-        var actualSize = Object.getOwnPropertyNames(_playground.os.eventKeyCode).length;
-        strictEqual(actualSize, expectedSize, "_playground.os.eventKeyCode size");
         // constants
         ok(typeof _playground.os.eventKeyCode.NONE === "number",
             "_playground.os.eventKeyCode.NONE");
@@ -1937,10 +2030,6 @@ if (0) {
     test("_playground.os.notifierKind constants object", function () {
         ok(typeof _playground.os.notifierKind === "object",
             "_playground.os.notifierKind defined");
-        // CHANGE THIS VALUE WHEN ADDING OR REMOVING notifierKind PROPERTIES!
-        var expectedSize = 7;
-        var actualSize = Object.getOwnPropertyNames(_playground.os.notifierKind).length;
-        strictEqual(actualSize, expectedSize, "_playground.os.notifierKind size");
         // constants
         ok(typeof _playground.os.notifierKind.MOUSE_CAPTURE_LOST === "string",
             "_playground.os.notifierKind.MOUSE_CAPTURE_LOST");
@@ -1950,6 +2039,8 @@ if (0) {
             "_playground.os.notifierKind.KEYBOARDFOCUS_CHANGED");
         ok(typeof _playground.os.notifierKind.EXTERNAL_MOUSE_DOWN === "string",
             "_playground.os.notifierKind.EXTERNAL_MOUSE_DOWN");
+        ok(typeof _playground.os.notifierKind.EXTERNAL_MOUSE_WHEEL === "string",
+            "_playground.os.notifierKind.EXTERNAL_MOUSE_WHEEL");
         ok(typeof _playground.os.notifierKind.EXTERNAL_KEYEVENT === "string",
             "_playground.os.notifierKind.EXTERNAL_KEYEVENT");
         ok(typeof _playground.os.notifierKind.TOUCH === "string",
@@ -2071,12 +2162,6 @@ if (0) {
     });
 
 
-    // clipboard support currently only available for Mac
-    // the negative tests will still pass because their error conditions are detected
-    // before the actual interaction with the system clipboard takes place.
-    if (navigator.platform !== "Win32") {
-
-
     /* _playground.os.clipboard: write(), read() functional: simple string
      * Validates: All valid args, verifies the string set on write() is the same on read()
      *
@@ -2153,9 +2238,39 @@ if (0) {
         });
     });
 
+    /* _playground.os.clipboard: write(), read() functional: custom format with special and Unicode chars
+     * Validates: All valid args, verifies the string set on write() is the same on read()
+     */
+    asyncTest("_playground.os.clipboard: write(), read() functional: custom format", function () {
+        expect(7);
+        var inputString = "Some data";
+        var customFormat = "com.adobe.playground.lowlevel-test.format01";
 
-    } // if (navigator.platform !== "Win32")
+        var options = {
+            "format": customFormat,
+            "data": inputString
+        };
 
+        _playground.os.clipboard.write(options, function (err) {
+            _validateNotifierResult(err);
+            var options = {
+                "formats": [customFormat, "string"]
+            };
+            _playground.os.clipboard.read(options, function (err, info) {
+                _validateNotifierResult(err);
+                strictEqual(typeof info, "object", "read() info arg");
+                strictEqual(typeof info.format, "string",
+                      "read() info arg, format property type");
+                strictEqual(info.format, customFormat,
+                      "read() info arg, format property value");
+                strictEqual(typeof info.data, "string",
+                      "read() info arg, data property type");
+                strictEqual(info.data, inputString,
+                      "read() info arg, data property value");
+                start();
+            });
+        });
+    });
 
     /* _playground.os.clipboard: write() negative: undefined 'options' arg
      * Expect the callback notification but with an error
@@ -2690,6 +2805,71 @@ if (0) {
         }
     });
 
+    /* _playground.os.setTooltip()
+     * Validates: defined, type, functional: call and callback args
+     * See also: _playground.getPropertyValue(), setPropertyValue()
+     * which are used to control tooltip behavior by way of
+     * ui.tooltip.delay.*. Testing controls for those are/will be added
+     * to the Blackbox Test.
+     */
+    asyncTest("_playground.os.setTooltip(): defined, type, functional", function () {
+        expect(3);
+
+        ok(typeof _playground.os.setTooltip === "function",
+           "_playground.os.setTooltip() function defined");
+        var options = {"label": "The tooltip text"};
+        _playground.os.setTooltip(options, function (err) {
+            _validateNotifierResult(err);
+            // "reset" by omitting optional 'options' 'label' key
+            options = {};
+            _playground.os.setTooltip(options, function (err) {
+                _validateNotifierResult(err);
+                start();
+            });
+        });
+    });
+
+    /* _playground.os.setTooltip()
+     * Validates: functional: Unicode label
+     * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Grammar_and_types#Unicode
+     * Only visual validation in the BBTest will really validate Unicode usage
+     */
+    asyncTest("_playground.os.setTooltip(): functional: label with 'Copyright' Unicode char", function () {
+        expect(1);
+
+        var options = {"label": "\u00A9 Adobe Systems Incorporated"};
+        _playground.os.setTooltip(options, function (err) {
+            _validateNotifierResult(err);
+            start();
+        });
+    });
+
+    /* _playground.os.setTooltip()
+     * Validates: negative: Invalid/undefined 'label' value type
+     */
+    asyncTest("_playground.os.setTooltip(): negative: invalid/undefined 'label' value", function () {
+        expect(1);
+        var options = {"label": undefined};
+        _playground.os.setTooltip(options, function(err) {
+            _validateNotifierResultError(err, _playground.errorCodes.CONVERSION_ERROR);
+            start();
+        });
+    });
+
+    /* _playground.os.resetCursor()
+     * Validates: defined, type, functional: call and callback args
+     */
+    asyncTest("_playground.os.resetCursor() functional", function () {
+        expect(2);
+
+        ok(typeof _playground.os.resetCursor === "function",
+             "_playground.os.resetCursor() function defined");
+        var options = {}; // 'options' arg currently unused
+        _playground.os.resetCursor(options, function (err) {
+            _validateNotifierResult(err);
+            start();
+        });
+    });
 
     // END OF TESTS
     console.log("Adapter version",
