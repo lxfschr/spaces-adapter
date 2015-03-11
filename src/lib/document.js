@@ -127,20 +127,25 @@ define(function (require, exports) {
     /**
      * Close a document without saving
      * 
-     * @param {string} save Whether the document should be saved. "yes", "no"
-     *
+     * @param {number} documentID
+     * @param {string=} save Whether the document should be saved. "yes", "no"
      * @return {PlayObject}
      *
      * Preconditions:
      * The document should be saved previously and have fileReference path value for saving.
      */
-    var closeDocument = function (save) {
+    var closeDocument = function (documentID, save) {
         var desc = {
-            "saving": {
+            documentID: documentID
+        };
+
+        if (save) {
+            desc.saving = {
                 "enum": "yesNo",
                 "value": save
-            }
-        };
+            };
+        }
+
         return new PlayObject(
             "close",
             desc
