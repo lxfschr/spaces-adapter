@@ -27,10 +27,11 @@ define(function (require, exports) {
 
     var PlayObject = require("../playobject"),
         referenceBy = require("./reference").wrapper("document"),
-        unitsIn = require("./unit");
-
-    var assert = require("../util").assert,
-        referenceOf = require("./reference").refersTo;
+        referenceOf = require("./reference").refersTo,
+        unitsIn = require("./unit"),
+        assert = require("../util").assert,
+        _ = require("lodash");
+        
 
     /**
      * Open a document (psd, png, jpg, ai, gif)
@@ -452,6 +453,79 @@ define(function (require, exports) {
         return new PlayObject("set", descriptor);
     };
 
+    /**
+     * Build the base descriptor for guide visibility
+     *
+     * @private
+     * @param {string} guideType either "guidesVisibility" or "smartGuidesVisibility"
+     * @return {PlayObject}
+     */
+    var _buildGuidesDescriptor = function (guideType) {
+        return {
+            "null": {
+                "ref": [{
+                    "ref": "property",
+                    "property": guideType
+                }, {
+                    "ref": "document",
+                    "enum": "ordinal",
+                    "value": "targetEnum"
+                }]
+            }
+        };
+    };
+
+    /**
+     * Guide Visibility descriptors (regular and smart)
+     *
+     * @private
+     * @type {PlayObject}
+     */
+    var _guidesDescriptor = _buildGuidesDescriptor("guidesVisibility"),
+        _smartGuidesDescriptor = _buildGuidesDescriptor("smartGuidesVisibility");
+
+    /**
+     * Generate a PlayObject to get the visibility of Guides for the current document
+     * 
+     * @return {PlayObject}
+     */
+    var getGuidesVisibility = function () {
+        return new PlayObject("get", _guidesDescriptor);
+    };
+
+    /**
+     * Generate a PlayObject to get the visibility of Smart Guides for the current document
+     * 
+     * @return {PlayObject}
+     */
+    var getSmartGuidesVisibility = function () {
+        return new PlayObject("get", _smartGuidesDescriptor);
+    };
+
+    /**
+     * Generate a PlayObject to set the visibility of Guides for the current document
+     *
+     * @param {boolean} enabled
+     * @return {PlayObject}
+     */
+    var setGuidesVisibility = function (enabled) {
+        var setter = _.clone(_guidesDescriptor);
+        setter.to = enabled;
+        return new PlayObject("set", setter);
+    };
+
+    /**
+     * Generate a PlayObject to set the visibility of Smart Guides for the current document
+     *
+     * @param {boolean} enabled
+     * @return {PlayObject}
+     */
+    var setSmartGuidesVisibility = function (enabled) {
+        var setter = _.clone(_smartGuidesDescriptor);
+        setter.to = enabled;
+        return new PlayObject("set", setter);
+    };
+
     exports.referenceBy = referenceBy;
     
     exports.open = openDocument;
@@ -461,4 +535,8 @@ define(function (require, exports) {
     exports.create = createDocument;
     exports.resize = resizeDocument;
     exports.setTargetPathVisible = setTargetPathVisible;
+    exports.getGuidesVisibility = getGuidesVisibility;
+    exports.getSmartGuidesVisibility = getSmartGuidesVisibility;
+    exports.setGuidesVisibility = setGuidesVisibility;
+    exports.setSmartGuidesVisibility = setSmartGuidesVisibility;
 });
