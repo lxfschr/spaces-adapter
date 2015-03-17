@@ -25,11 +25,9 @@ define(function (require, exports) {
     "use strict";
     
     var PlayObject = require("../playobject"),
-        referenceLib = require("./reference"),
-        referenceBy = referenceLib.wrapper("artboardSection");
+        referenceLib = require("./reference");
 
-    var assert = require("../util").assert,
-        referenceOf = require("./reference").refersTo;
+    var assert = require("../util").assert;
         
     /**
      * Creates a new artboard at the given location
@@ -53,14 +51,14 @@ define(function (require, exports) {
     };
 
     /**
-     * Creates a new artboard at the given location
+     * Moves/resized the referenced artboard layer to a new bounding box
      *
      * @param {ActionDescriptor} ref - Artboard layer reference
      * @param {bottom: <number>, top: <number>, left: <number>, right: <number>} boundingBox
      * @return {PlayObject}
      */
     var transformArtboard = function (ref, boundingBox) {
-        assert(referenceOf(ref) === "layer", "transformArtboard requires a layer reference");
+        assert(referenceLib.refersTo(ref) === "layer", "transformArtboard requires a layer reference");
         return new PlayObject(
             "editArtboardEvent",
             {
@@ -85,6 +83,4 @@ define(function (require, exports) {
 
     exports.make = makeArtboard;
     exports.transform = transformArtboard;
-
-    exports.referenceBy = referenceBy;
 });
