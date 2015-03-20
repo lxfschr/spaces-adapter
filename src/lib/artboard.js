@@ -32,16 +32,23 @@ define(function (require, exports) {
     /**
      * Creates a new artboard at the given location
      *
+     * @param {ActionDescriptor} layerRef Reference object to layers that will be added to artboard
      * @param {bottom: <number>, top: <number>, left: <number>, right: <number>} boundingBox
      * @return {PlayObject}
      */
-    var makeArtboard = function (boundingBox) {
+    var makeArtboard = function (layerRef, boundingBox) {
+        if (boundingBox === undefined) {
+            boundingBox = layerRef;
+            layerRef = referenceLib.wrapper("layer").target;
+        }
+        
         return new PlayObject(
             "make",
             {
                 "null": {
-                    "ref": "artboardSection"
+                    "ref": "layerSection"
                 },
+                "from": layerRef,
                 "artboardRect": {
                     "obj": "classFloatRect",
                     "value": boundingBox
