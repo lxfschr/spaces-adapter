@@ -234,23 +234,23 @@ define(function (require, exports, module) {
 
     /**
      * Executes a low-level "play" call on the specified ActionDescriptor.
+     * 
+     * NOTE: play is now implemented internally with batchPlay, which has
+     * additional options for describing history states.
      *
      * @param {string} name Name of the ActionDescriptor command
-     * @param {Object=} descriptor JS Object representation of ActionDescriptor key/value pairs, defaults to {}
-     * @param {Object=} options options, defaults to "silent"
+     * @param {object=} descriptor JS Object representation of ActionDescriptor key/value pairs, defaults to {}
+     * @param {object=} options options, defaults to "silent"
      * @return {Promise.<object>} Resolves when the call is complete (Note: eventually, this will
      *     return the value resulting from the execution of the ActionDescriptor, if any).
      */
     Descriptor.prototype.play = function (name, descriptor, options) {
-        descriptor = descriptor || {};
-        options = options || {
-            interactionMode: this.interactionMode.SILENT
-        };
+        var commands = [{
+            name: name,
+            descriptor: descriptor || {}
+        }];
 
-        var playAsync = Promise.promisify(_playground.ps.descriptor.play,
-            _playground.ps.descriptor);
-
-        return playAsync(name, descriptor, options);
+        return this.batchPlay(commands, options).get(0);
     };
 
     /**
@@ -328,7 +328,7 @@ define(function (require, exports, module) {
      *
      * @param {Array.<PlayObject>} objects Array of PlayObjects to play
      * @param {{continueOnError: boolean=}=} options Options applied to the execution of the batchPlay
-     * @return {Promise.<Array.object>} Resolves with the list of ActionDescriptor results. 
+     * @return {Promise.<Array.<object>>} Resolves with the list of ActionDescriptor results. 
      */
     Descriptor.prototype.batchPlayObjects = function (objects, options) {
         var commands = objects.map(function (object) {
