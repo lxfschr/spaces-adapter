@@ -261,28 +261,14 @@ define(function (require, exports, module) {
      * @returns {Promise} Resolves to the result of the call
      */
     Descriptor.prototype.playObject = function (playObject, options) {
-        var command = playObject.command,
-            descriptor = _wrap(playObject.descriptor),
-            playOptions = playObject.options;
-
-        // merge playOptions into options
-        if (options === undefined) {
-            options = playOptions;
-        } else if (playOptions) {
-            Object.keys(playOptions).forEach(function (key) {
-                if (!options.hasOwnProperty(key)) {
-                    options[key] = playOptions[key];
-                }
-            });
-        }
-
-        return this.play(command, descriptor, options);
+        return this.batchPlayObjects([playObject], options).get(0);
     };
     
     /**
      * Executes a low-level "batchPlay" call on the specified ActionDescriptors.
      *
-     * @param {Array.<{name: string, descriptor: object}>} commands Array of ActionDescriptors to play
+     * @param {Array.<{name: string, descriptor: object, options: object=}>} commands Array of 
+     *  ActionDescriptors to play
      * @param {{continueOnError: boolean=}=} options Options applied to the execution of the batchPlay
      * @return {Promise.<Array.<object>>} Resolves with the list of ActionDescriptor results, or rejects
      *      with either an adapter error, or a single command error if not continueOnError mode. In
@@ -332,10 +318,16 @@ define(function (require, exports, module) {
      */
     Descriptor.prototype.batchPlayObjects = function (objects, options) {
         var commands = objects.map(function (object) {
-            return {
+            var command = {
                 name: object.command,
                 descriptor: _wrap(object.descriptor)
             };
+
+            if (object.hasOwnProperty("options")) {
+                command.options = object.options;
+            }
+
+            return command;
         });
 
         return this.batchPlay(commands, options);
