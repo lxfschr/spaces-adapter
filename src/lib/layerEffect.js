@@ -78,6 +78,31 @@ define(function (require, exports) {
         );
     };
     
+    var _extendedLayerEffectDescriptor = function (ref, layerEffectType, layerEffectValue) {
+
+        return new PlayObject(
+            "set",
+            {
+                "null": {
+                    "ref": [
+                        {
+                            ref: null,
+                            "property": layerEffectType
+                        },
+                        {
+                            "property": "layerEffects",
+                            "ref": "property"
+                        },
+                        ref
+                    ]
+                },
+                "to": layerEffectValue
+            },
+            {
+                useExtendedReference: true
+            }
+        );
+    };
     /**
      * Parse DropShadow JS properties and assign units to make them acceptable to PS 
      * 
@@ -174,9 +199,21 @@ define(function (require, exports) {
         return _layerEffectDescriptor(ref, "dropShadowMulti", descriptorArray, true);
     };
 
+    var setExtendedDropShadows = function (ref, propertyArray) {
+        assert(referenceOf(ref) === "layer", "setDropShadow is passed a non-layer reference");
+        
+        var descriptorArray = propertyArray.map(function (properties) {
+            return _dropShadowDescriptor(properties);
+        });
+
+        return _extendedLayerEffectDescriptor(ref, "dropShadowMulti", descriptorArray, true);
+    };
+
+
 
     exports.referenceBy = referenceBy;
 
     exports.setDropShadow = setDropShadow;
     exports.setDropShadows = setDropShadows;
+    exports.setExtendedDropShadows = setExtendedDropShadows;
 });
