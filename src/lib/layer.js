@@ -268,23 +268,30 @@ define(function (require, exports) {
     };
     
     /**
-     * @param {ActionDescriptor} ref - Reference of layer(s) to duplicate
-     * @param {string} name - If provided, renames the copy
+     * Duplicate a layer from one document into another.
      * 
+     * @param {object} fromRef Reference from which to duplicate
+     * @param {object} toRef Reference to which to duplicate
+     * @param {string=} name Name of the duplicated layer
      * @returns {PlayObject}
      */
-    var duplicate = function (ref, name) {
-        assert(referenceOf(ref) === "layer", "duplicate is passed a non-layer reference");
+    var duplicate = function (fromRef, toRef, name) {
+        assert(referenceOf(fromRef[0]) === "layer", "duplicate is passed a non-layer first-from reference");
+        assert(referenceOf(fromRef[1]) === "document", "duplicate is passed a non-layer second-from reference");
+        assert(referenceOf(toRef) === "document", "duplicate is passed a non-document to reference");
+
         var descriptor = {
-            "null": ref
+            "null": {
+                "ref": fromRef
+            },
+            "to": toRef
         };
-        if (name) {
-            descriptor[name] = name;
+
+        if (name !== undefined) {
+            descriptor.name = name;
         }
-        return new PlayObject(
-            "duplicate",
-            descriptor
-        );
+
+        return new PlayObject("duplicate", descriptor);
     };
     
     /**
