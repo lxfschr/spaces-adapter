@@ -78,6 +78,19 @@ define(function (require, exports) {
         );
     };
     
+    /**
+     * Generically build an PlayObject for a layerEffect which uses the useExtendedReference option
+     * The layerEffectValue parameter should be a fully constructed object that can be supplied to the "to.value"
+     * property of the descriptor.
+     *
+     * @private
+     * @param {ActionDescriptor} ref layer(s) reference
+     * @param {string} layerEffectType type of layerEffect (example: dropShadow)
+     * @param {object} layerEffectValue object that can be supplied for "to.value" in the descriptor
+     *
+     * @return {PlayObject}
+     */
+    
     var _extendedLayerEffectDescriptor = function (ref, layerEffectType, layerEffectValue) {
 
         return new PlayObject(
@@ -199,6 +212,15 @@ define(function (require, exports) {
         return _layerEffectDescriptor(ref, "dropShadowMulti", descriptorArray, true);
     };
 
+    /**
+     * Update multiple drop shadow layer effect properties for the given layer(s) without changing the 
+     * parent layer effect
+     *
+     * @param {ActionDescriptor} ref - Reference of layer(s) to update
+     * @param {Array.<object>} propertyArray Array of DropShadow properties 
+     *
+     * @return {PlayObject}
+     */
     var setExtendedDropShadows = function (ref, propertyArray) {
         assert(referenceOf(ref) === "layer", "setDropShadow is passed a non-layer reference");
         
