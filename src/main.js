@@ -37,7 +37,7 @@ define(function (require, exports) {
     var COMPATIBLE_PLUGIN_VERSION = {
         major: 0,
         minor: 1,
-        patch: 63
+        patch: 66
     };
 
     Object.defineProperties(exports, {
