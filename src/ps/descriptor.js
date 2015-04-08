@@ -165,9 +165,14 @@ define(function (require, exports, module) {
      *     - string of a class name
      *     - Object representation of ActionReference key/value pairs
      *     - An array of a combination of the above, which will get turned into the appropriate ActionReference
+     * @param {object=} options
      * @return {Promise.<?>} The value of the reference, dependent on reference type
      */
-    Descriptor.prototype.get = function (reference) {
+    Descriptor.prototype.get = function (reference, options) {
+        if (options === undefined) {
+            options = {};
+        }
+
         var wrappedReference = _wrap(reference),
             getAsync = Promise.promisify(_playground.ps.descriptor.get,
                 _playground.ps.descriptor);
@@ -178,14 +183,15 @@ define(function (require, exports, module) {
     /**
      * Retrieves a property of a reference
      *
-     * @param {String} reference The name of the reference
-     * @param {String} property The name of the property
+     * @param {string} reference The name of the reference
+     * @param {string} property The name of the property
+     * @param {object=} options
      * @return {Promise.<?>} The value of the property, dependent on reference type
      */
-    Descriptor.prototype.getProperty = function (reference, property) {
+    Descriptor.prototype.getProperty = function (reference, property, options) {
         var propertyReference = _makePropertyReference(reference, property);
 
-        return this.get(propertyReference)
+        return this.get(propertyReference, options)
             .then(function (obj) {
                 if (!obj || !obj.hasOwnProperty(property)) {
                     throw new Error("No such property: " + property);
