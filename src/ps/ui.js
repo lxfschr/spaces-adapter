@@ -379,12 +379,17 @@ define(function (require, exports, module) {
     // Install the menu notifier group handler
     _playground.setNotifier(_playground.notifierGroup.MENU, {}, ui._menuEventHandler);
 
-    // Install the interaction notifier group handler. For now, only listen to "options"
-    // and "context" events, but not "progress" or "error" events, because listening for
+    // Install the interaction notifier group handler. For now, listen to "options" and
+    // "context" and "error" events, but not "progress" events, because listening for
     // a particular class of events also suppresses the corresponding interaction dialog.
+    // In the case of "error" events, only an internally black-listed set of dialogs are
+    // suppresesed.
     var _interactionOpts = _playground.notifierOptions.interaction;
     _playground.setNotifier(_playground.notifierGroup.INTERACTION, {
-        notificationKind: _interactionOpts.OPTIONS + _interactionOpts.CONTEXT
+        notificationKind:
+            _interactionOpts.OPTIONS +
+            _interactionOpts.CONTEXT +
+            _interactionOpts.ERROR
     }, ui._interactionEventHandler);
 
     module.exports = ui;
