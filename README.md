@@ -1,4 +1,4 @@
-Playground JS Adapter
+Spaces JS Adapter
 =================
 
 Development Setup
@@ -6,7 +6,7 @@ Development Setup
 
 1. Install [Node and NPM](http://nodejs.org/)
 2. Install [Bower](http://bower.io/) using NPM: `$ [sudo] npm install -g bower`. (If you're inside a corporate firewall that disallows `git://` URLs, see the note below and act accordingly.)
-4. Clone this repo: `$ git clone https://github.com/adobe-photoshop/playground-adapter.git`
+4. Clone this repo: `$ git clone https://github.com/adobe-photoshop/spaces-adapter.git`
 5. From the root directory of your local copy of this repo, install the bower dependencies: `$ bower install`
 6. Optional: If you want to run tests and jshint from the command line:
    a. Install grunt-cli with `npm install -g grunt-cli`
@@ -25,19 +25,19 @@ Running Tests
 -------------
 
 1. To run the unit tests, open `test/index.html?section=unit` in a web browser. Or, install grunt (see optional development setup steps above) and run `grunt test`.
-2. To run the integration tests, open `test/index.html?section=all` inside Playground.
+2. To run the integration tests, open `test/index.html?section=all` inside Spaces.
 
-Trying out the `playground-example` example
+Trying out the `spaces-example` example
 -------------------------------------------
 
-1. Set up Playground, and then run Playground
+1. Set up Spaces, and then run Spaces
 2. Open the development console
-3. Redirect Playground to the root of this repo (with something like `window.location.href = "file:///Users/jbrandt/development/playground-api/index.html"`).
+3. Redirect Spaces to the root of this repo (with something like `window.location.href = "file:///Users/jbrandt/development/spaces-api/index.html"`).
 
 Coding Conventions
 ------------------
 
-All code must follow our [coding conventions](https://github.com/adobe-photoshop/playground-api/wiki/Coding-Conventions) and pass [JSHint](http://www.jshint.com/).
+All code must follow our [coding conventions](https://github.com/adobe-photoshop/spaces-api/wiki/Coding-Conventions) and pass [JSHint](http://www.jshint.com/).
 
 JSHint can be run on all files in the project by running `grunt jshint` (which is a subtask of `grunt test`). See the optional development setup steps for information on how to install grunt.
 

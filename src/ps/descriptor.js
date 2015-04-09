@@ -21,7 +21,7 @@
  * 
  */
 
-/* global _playground */
+/* global _spaces */
 
 define(function (require, exports, module) {
     "use strict";
@@ -169,8 +169,8 @@ define(function (require, exports, module) {
      */
     Descriptor.prototype.get = function (reference) {
         var wrappedReference = _wrap(reference),
-            getAsync = Promise.promisify(_playground.ps.descriptor.get,
-                _playground.ps.descriptor);
+            getAsync = Promise.promisify(_spaces.ps.descriptor.get,
+                _spaces.ps.descriptor);
 
         return getAsync(wrappedReference);
     };
@@ -230,7 +230,7 @@ define(function (require, exports, module) {
      * @const
      * @type {Object.<string: number>}
      */
-    Descriptor.prototype.interactionMode = _playground.ps.descriptor.interactionMode;
+    Descriptor.prototype.interactionMode = _spaces.ps.descriptor.interactionMode;
 
     /**
      * Executes a low-level "play" call on the specified ActionDescriptor.
@@ -281,8 +281,8 @@ define(function (require, exports, module) {
             options.interactionMode = this.interactionMode.SILENT;
         }
 
-        var batchPlayAsync = Promise.promisify(_playground.ps.descriptor.batchPlay,
-            _playground.ps.descriptor);
+        var batchPlayAsync = Promise.promisify(_spaces.ps.descriptor.batchPlay,
+            _spaces.ps.descriptor);
 
         return batchPlayAsync(commands, options)
             .then(function (response) {
@@ -458,7 +458,7 @@ define(function (require, exports, module) {
     var descriptor = new Descriptor();
 
     // bind native Photoshop event handler to our handler function
-    _playground.setNotifier(_playground.notifierGroup.PHOTOSHOP, {}, descriptor._psEventHandler);
+    _spaces.setNotifier(_spaces.notifierGroup.PHOTOSHOP, {}, descriptor._psEventHandler);
     
     module.exports = descriptor;
 });

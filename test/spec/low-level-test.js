@@ -2335,7 +2335,7 @@ if (0) {
 
     /* https://watsonexp.corp.adobe.com/#bug=3909817
      * No error is thrown when when a callback function reference with incorrect number of parameters
-     * is passed to a Playground API function (CLOSED/AS DESIGNED)
+     * is passed to a Spaces API function (CLOSED/AS DESIGNED)
      * We do absolutely no arg count validation for the API callback functions provided by the caller...
      */
 

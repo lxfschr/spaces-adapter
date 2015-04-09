@@ -49,7 +49,7 @@ define(function (require, exports) {
      * Open or create a document
      *
      * Examples:
-     * createText("Photoshop Playground",20,20);
+     * createText("Photoshop Spaces",20,20);
      */
     var createText = function (sourceRef, strTextKey, numClickPointH, numClickPointV) {
         assert(referenceOf(sourceRef) === "textLayer", "createText expects a textLayer reference");
