@@ -21,7 +21,7 @@
  * 
  */
 
-/* global _playground, console */
+/* global _spaces, console */
 
 define(function (require, exports, module) {
     "use strict";
@@ -33,17 +33,17 @@ define(function (require, exports, module) {
     /**
      * Promisified version of low-level os functions
      */
-    var _os = Promise.promisifyAll(_playground.os);
+    var _os = Promise.promisifyAll(_spaces.os);
 
     /**
      * Promisified version of low-level keyboard focus functions
      */
-    var _keyboardFocus = Promise.promisifyAll(_playground.os.keyboardFocus);
+    var _keyboardFocus = Promise.promisifyAll(_spaces.os.keyboardFocus);
 
     /**
      * Promisified version of low-level keyboard focus functions
      */
-    var _clipboard = Promise.promisifyAll(_playground.os.clipboard);
+    var _clipboard = Promise.promisifyAll(_spaces.os.clipboard);
 
     /**
      * The OS object provides helper methods for dealing with operating
@@ -208,7 +208,7 @@ define(function (require, exports, module) {
     var theOS = new OS();
 
     // bind native phtooshop event handler to our handler function
-    _playground.setNotifier(_playground.notifierGroup.OS, {}, theOS._eventHandler.bind(theOS));
+    _spaces.setNotifier(_spaces.notifierGroup.OS, {}, theOS._eventHandler.bind(theOS));
     
     module.exports = theOS;
 });

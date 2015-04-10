@@ -27,7 +27,7 @@ define(function (require, exports, module) {
     var Descriptor = require("./ps/descriptor");
 
     /**
-     * In Playground-adapter, all library functions return PlayObjects. 
+     * In Spaces-adapter, all library functions return PlayObjects. 
      * These PlayObjects can be called in Photoshop by passing them into 
      * ps/descriptor's playObject function.
      * 

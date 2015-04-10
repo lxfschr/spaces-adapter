@@ -21,7 +21,7 @@
  * 
  */
 
-/* global _playground */
+/* global _spaces */
 
 define(function (require, exports) {
     "use strict";
@@ -42,7 +42,7 @@ define(function (require, exports) {
 
     Object.defineProperties(exports, {
         /**
-         * Version of the Playground adapter plugin API.
+         * Version of the Spaces adapter plugin API.
          * Follows Semver 2.0.0 conventions: http://semver.org/spec/v2.0.0.html
          *
          * @const
@@ -50,7 +50,7 @@ define(function (require, exports) {
          */
         "version": {
             enumerable: true,
-            value: _playground.version
+            value: _spaces.version
         },
 
         /**
@@ -63,7 +63,7 @@ define(function (require, exports) {
          */
         "abort": {
             enumerable: true,
-            value: Promise.promisify(_playground.abort)
+            value: Promise.promisify(_spaces.abort)
         }
     });
 
@@ -110,7 +110,7 @@ define(function (require, exports) {
      *  minimum compatible plugin version.
      */
     var _assertPluginVersionIsCompatible = function () {
-        var pluginVersion = _playground.version;
+        var pluginVersion = _spaces.version;
 
         if (!_versionLessThanOrEqualTo(COMPATIBLE_PLUGIN_VERSION, pluginVersion)) {
             var message = "Plugin version " + _formatVersion(pluginVersion) +

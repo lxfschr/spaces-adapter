@@ -21,7 +21,7 @@
  * 
  */
 
-/* global _playground */
+/* global _spaces */
 
 define(function (require, exports, module) {
     "use strict";
@@ -33,7 +33,7 @@ define(function (require, exports, module) {
     /**
      * Promisified version of low-level keyboard focus functions
      */
-    var _ui = Promise.promisifyAll(_playground.ps.ui);
+    var _ui = Promise.promisifyAll(_spaces.ps.ui);
 
     /* jshint bitwise: false */
     /**
@@ -139,7 +139,7 @@ define(function (require, exports, module) {
      * @const
      * @type{object.<number>}
      */
-    UI.prototype.overscrollMode = _playground.ps.ui.overscrollMode;
+    UI.prototype.overscrollMode = _spaces.ps.ui.overscrollMode;
 
     /**
      * Get the current Photoshop overscroll mode.
@@ -219,20 +219,20 @@ define(function (require, exports, module) {
 
     /**
      * Pointer propagation modes - Used for the default mouse policy
-     * ALPHA_PROPAGATE: Default behavior, events will be sent to Playground
-     * if they're clicking on a Playground view
-     * ALWAYS_PROPAGATE: Playground will never get a pointer event
-     * NEVER_PROPAGATE: Playground consumes all pointer events
+     * ALPHA_PROPAGATE: Default behavior, events will be sent to Spaces
+     * if they're clicking on a Spaces view
+     * ALWAYS_PROPAGATE: Spaces will never get a pointer event
+     * NEVER_PROPAGATE: Spaces consumes all pointer events
      */
-    UI.prototype.pointerPropagationMode = _playground.ps.ui.pointerPropagationMode;
+    UI.prototype.pointerPropagationMode = _spaces.ps.ui.pointerPropagationMode;
 
     /**
      * Keyboard propagation modes - Used for the default keyboard policy
      * FOCUS_PROPAGATE: Default behavior, events will be sent to in focus element
-     * ALWAYS_PROPAGATE: Playground will never get a keyboard event
-     * NEVER_PROPAGATE: Playground consumes all keyboard events
+     * ALWAYS_PROPAGATE: Spaces will never get a keyboard event
+     * NEVER_PROPAGATE: Spaces consumes all keyboard events
      */
-    UI.prototype.keyboardPropagationMode = _playground.ps.ui.keyboardPropagationMode;
+    UI.prototype.keyboardPropagationMode = _spaces.ps.ui.keyboardPropagationMode;
 
     /**
      * Policy action modes - Used for custom policies
@@ -241,17 +241,17 @@ define(function (require, exports, module) {
      * ALWAYS_PROPAGATE
      * NEVER_PROPAGATE
      */
-    UI.prototype.policyAction = _playground.ps.ui.policyAction;
+    UI.prototype.policyAction = _spaces.ps.ui.policyAction;
 
     /**
      * Command kinds - Used for certain commands that are also used in
      * OS dialogs (like copy/paste), with USER_DEFINED as extra
      */
-    UI.prototype.commandKind = _playground.ps.ui.commandKind;
+    UI.prototype.commandKind = _spaces.ps.ui.commandKind;
 
     /**
      * Gets the mode of pointer propagation determining the rules of
-     * what mouse events will be trickled down to Playground layer.
+     * what mouse events will be trickled down to Spaces layer.
      * 
      * @return {Promise.<number>} Resolves to a value in pointerPropagationMode
      */
@@ -262,7 +262,7 @@ define(function (require, exports, module) {
     /**
      * Set the pointer propagation mode
      * 
-     * @param {number} mode What level of mouse events to pass to Playground
+     * @param {number} mode What level of mouse events to pass to Spaces
      *  possible values defined in UI.prototype.pointerPropagationMode
      * @return {Promise}
      */
@@ -272,7 +272,7 @@ define(function (require, exports, module) {
 
     /**
      * Gets the mode of keyboard propagation determining the rules of
-     * what keyboard events will be trickled down to Playground layer.
+     * what keyboard events will be trickled down to Spaces layer.
      * 
      * @return {Promise.<number>} Resolves to a value in keyboardPropagationMode
      */
@@ -283,7 +283,7 @@ define(function (require, exports, module) {
     /**
      * Set the keyboard propagation mode
      * 
-     * @param {number} mode What level of keyboard events to pass to Playground
+     * @param {number} mode What level of keyboard events to pass to Spaces
      *  possible values defined in UI.prototype.keyboardPropagationMode
      * @return {Promise}
      */
@@ -294,10 +294,10 @@ define(function (require, exports, module) {
     /**
      * Installs the given list of pointer event policies into Photoshop
      * Each policy is an object with this structure:
-     * {    eventKind: _playground.os.eventKind,
-     *      modifiers: _playground.os.eventModifiers,
-     *      keyCode: _playground.os.keyCode,
-     *      action: _playground.ps.ui.policyAction
+     * {    eventKind: _spaces.os.eventKind,
+     *      modifiers: _spaces.os.eventModifiers,
+     *      keyCode: _spaces.os.keyCode,
+     *      action: _spaces.ps.ui.policyAction
      * }
      *
      * @param {Array.<{eventKind: number, modifiers: number, keyCode: number, action: number}>} policyList
@@ -309,10 +309,10 @@ define(function (require, exports, module) {
     /**
      * Installs the given list of keyboard event policies into Photoshop
      * Each policy is an object with this structure:
-     * {    eventKind: _playground.os.eventKind,
-     *      modifiers: _playground.os.eventModifiers,
-     *      keyCode: _playground.os.keyCode,
-     *      action: _playground.ps.ui.policyAction
+     * {    eventKind: _spaces.os.eventKind,
+     *      modifiers: _spaces.os.eventModifiers,
+     *      keyCode: _spaces.os.keyCode,
+     *      action: _spaces.ps.ui.policyAction
      * }
      *
      * @param {Array.<{eventKind: number, modifiers: number, keyCode: number, action: number}>} policyList
@@ -377,15 +377,15 @@ define(function (require, exports, module) {
     var ui = new UI();
 
     // Install the menu notifier group handler
-    _playground.setNotifier(_playground.notifierGroup.MENU, {}, ui._menuEventHandler);
+    _spaces.setNotifier(_spaces.notifierGroup.MENU, {}, ui._menuEventHandler);
 
     // Install the interaction notifier group handler. For now, listen to "options" and
     // "context" and "error" events, but not "progress" events, because listening for
     // a particular class of events also suppresses the corresponding interaction dialog.
     // In the case of "error" events, only an internally black-listed set of dialogs are
     // suppresesed.
-    var _interactionOpts = _playground.notifierOptions.interaction;
-    _playground.setNotifier(_playground.notifierGroup.INTERACTION, {
+    var _interactionOpts = _spaces.notifierOptions.interaction;
+    _spaces.setNotifier(_spaces.notifierGroup.INTERACTION, {
         notificationKind:
             _interactionOpts.OPTIONS +
             _interactionOpts.CONTEXT +

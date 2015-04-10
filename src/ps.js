@@ -21,7 +21,7 @@
  * 
  */
 
-/* global _playground */
+/* global _spaces */
 
 define(function (require, exports) {
     "use strict";
@@ -30,9 +30,9 @@ define(function (require, exports) {
 
     /**
      * @private
-     * Promisified version of _playground.ps functions.
+     * Promisified version of _spaces.ps functions.
      */
-    var _ps = Promise.promisifyAll(_playground.ps);
+    var _ps = Promise.promisifyAll(_spaces.ps);
 
     
     /**
