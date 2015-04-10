@@ -256,7 +256,7 @@ define(function (require, exports) {
     };
 
     /**
-     * Update multiple drop shadow layer effect properties for the given layer(s) without changing the 
+     * Update multiple inner shadow layer effect properties for the given layer(s) without changing the 
      * parent layer effect
      *
      * @param {ActionDescriptor} ref - Reference of layer(s) to update
@@ -274,6 +274,15 @@ define(function (require, exports) {
         return _extendedLayerEffectDescriptor(ref, "innerShadowMulti", descriptorArray, true);
     };
 
+    /**
+     * Update the given type of layer effect properties for the given layer(s) 
+     *
+     * @param {string} type - type of layer effect. currently "dropShadow" or "innerShadow"
+     * @param {ActionDescriptor} ref - Reference of layer(s) to update
+     * @param {Array.<object>} propertyArray Array of InnerShadow properties 
+     *
+     * @return {PlayObject}
+     */
     var setLayerEffect = function (type, ref, propertyArray) {
         if (type === "innerShadow") {
             return _setInnerShadows(ref, propertyArray);
@@ -282,6 +291,16 @@ define(function (require, exports) {
         }
     };
 
+    /**
+     * Update the given type of layer effect properties for the given layer(s) without changing the 
+     * parent layer effect
+     *
+     * @param {string} type - type of layer effect. currently "dropShadow" or "innerShadow"
+     * @param {ActionDescriptor} ref - Reference of layer(s) to update
+     * @param {Array.<object>} propertyArray Array of InnerShadow properties 
+     *
+     * @return {PlayObject}
+     */
     var setExtendedLayerEffect = function (type, ref, propertyArray) {
         if (type === "innerShadow") {
             return _setExtendedInnerShadows(ref, propertyArray);
