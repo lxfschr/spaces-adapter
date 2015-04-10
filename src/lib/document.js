@@ -390,6 +390,27 @@ define(function (require, exports) {
     };
 
     /**
+     * Create a document using a simple preset string identifier
+     *
+     * @param {string} presetName identifier of the preset
+     * @return {PlayObject}
+     */
+    var createWithPreset = function (presetName) {
+        var desc = {
+                "new": {
+                    "obj": "document",
+                    "value": {
+                        preset: presetName
+                    }
+                }
+            };
+        return new PlayObject(
+            "make",
+            desc
+        );
+    };
+
+    /**
      * Resizes the canvas of current document
      * 
      * @param {Unit} width Width in units
@@ -531,6 +552,7 @@ define(function (require, exports) {
     exports.save = saveDocument;
     exports.select = selectDocument;
     exports.create = createDocument;
+    exports.createWithPreset = createWithPreset;
     exports.resize = resizeDocument;
     exports.setTargetPathVisible = setTargetPathVisible;
     exports.getGuidesVisibility = getGuidesVisibility;
