@@ -177,7 +177,7 @@ define(function (require, exports, module) {
             getAsync = Promise.promisify(_playground.ps.descriptor.get,
                 _playground.ps.descriptor);
 
-        return getAsync(wrappedReference);
+        return getAsync(wrappedReference, options);
     };
 
     /**
