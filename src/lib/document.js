@@ -415,12 +415,14 @@ define(function (require, exports) {
      * 
      * @param {Unit} width Width in units
      * @param {Unit} height Height in units
-     * @extension {string} option to stretch the canvas from, default center
+     * @param {string} horizontalExtension option to stretch the canvas horizontally, default center
+     * @param {string} verticalExtension option to strecth canvas vertically, default center
      *
      * @returns {PlayObject}
      */
-    var resizeDocument = function (width, height, extension) {
-        extension = extension || "center";
+    var resizeDocument = function (width, height, horizontalExtension, verticalExtension) {
+        horizontalExtension = horizontalExtension || "center";
+        verticalExtension = verticalExtension || "center";
 
         return new PlayObject(
             "canvasSize",
@@ -433,11 +435,11 @@ define(function (require, exports) {
                 "width": width,
                 "horizontal": {
                     "enum": "horizontalLocation",
-                    "value": extension
+                    "value": horizontalExtension
                 },
                 "vertical": {
                     "enum": "verticalLocation",
-                    "value": extension
+                    "value": verticalExtension
                 }
             }
         );
