@@ -35,9 +35,9 @@ define(function (require, exports) {
      * @type {{major: number=, minor: number=, patch: number=}}
      */
     var COMPATIBLE_PLUGIN_VERSION = {
-        major: 0,
-        minor: 1,
-        patch: 66
+        major: 1,
+        minor: 0,
+        patch: 0
     };
 
     Object.defineProperties(exports, {
