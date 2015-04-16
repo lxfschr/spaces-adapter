@@ -29,6 +29,11 @@ define(function (require, exports) {
     var Promise = require("bluebird");
 
     /**
+     * Promisified version of _spaces.openURLInDefaultBrowser.
+     */
+    var _openURLInDefaultBrowserAsync = Promise.promisify(_spaces.openURLInDefaultBrowser);
+
+    /**
      * The minimum-compatible plugin version number. 
      *
      * @const
@@ -120,6 +125,18 @@ define(function (require, exports) {
             throw new Error(message);
         }
     };
+
+    /**
+     * Opens the given URL in the user's default browser.
+     *
+     * @param {string} url The URL to open in the user's default browser.
+     * @return {Promise}
+     */
+    var openURLInDefaultBrowser = function (url) {
+        return _openURLInDefaultBrowserAsync(url);
+    };
+
+    exports.openURLInDefaultBrowser = openURLInDefaultBrowser;
 
     // Assert plugin compatibility at load time
     _assertPluginVersionIsCompatible();
