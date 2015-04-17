@@ -44,7 +44,9 @@ define(function (require, exports) {
      */
     var endModalToolState = function (commit, options) {
         commit = commit || false;
-        options = options || {};
+        options = options || {
+            invalidateMenus: true
+        };
         
         return _ps.endModalToolStateAsync(commit)
             .then(function () {
