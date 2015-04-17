@@ -39,12 +39,19 @@ define(function (require, exports) {
      * Commit or cancel the current modal tool edit state.
      *
      * @param {boolean=} commit Commits if true; cancels otherwise
+     * @param {options=} options
      * @return {Promise} Resolves once the modal state has ended
      */
-    var endModalToolState = function (commit) {
+    var endModalToolState = function (commit, options) {
         commit = commit || false;
+        options = options || {
+            invalidateMenus: true
+        };
         
-        return _ps.endModalToolStateAsync(commit);
+        return _ps.endModalToolStateAsync(commit)
+            .then(function () {
+                return _ps.processQueuedCommandsAsync(options);
+            });
     };
 
     /**
