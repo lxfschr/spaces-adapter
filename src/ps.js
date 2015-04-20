@@ -65,6 +65,29 @@ define(function (require, exports) {
         return _ps.performMenuCommandAsync(commandID);
     };
 
+    /**
+     * Log an analytics event using the Adobe Headlights API.
+     * 
+     * NOTE: This is an Adobe-private API that must not be used by third-party
+     * developers!
+     *
+     * @private
+     * @param {string} category
+     * @param {string} subcategory
+     * @param {string} event
+     * @return {Promise}
+     */
+    var logHeadlightsEvent = function (category, subcategory, event) {
+        var options = {
+            category: category,
+            subcategory: subcategory,
+            event: event
+        };
+
+        return _ps.logHeadlightsEventAsync(options);
+    };
+
     exports.endModalToolState = endModalToolState;
     exports.performMenuCommand = performMenuCommand;
+    exports.logHeadlightsEvent = logHeadlightsEvent;
 });
