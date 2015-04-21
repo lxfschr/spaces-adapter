@@ -117,6 +117,20 @@ define(function (require, exports) {
         );
     };
     /**
+     * Helper Function to set blend mode correctly. We should have a blend mode object in the future
+     *
+     * @param {string} mode the blend mode
+     *
+     * @return{object} the PS firnedly blend Mode object
+     */
+    var _blendMode = function (mode) {
+        return {
+            enum: "blendMode",
+            value: mode
+        };
+    };
+
+    /**
      * Parse Shadow JS properties and assign units to make them acceptable to PS 
      * 
      * The expected format of the properties object is like:
@@ -153,6 +167,9 @@ define(function (require, exports) {
         }
         if (_.isNumber(properties.distance)) {
             layerEffectPsProperties.distance = inUnits.pixels(properties.distance);
+        }
+        if (_.isString(properties.blendMode)) {
+            layerEffectPsProperties.mode = _blendMode(properties.blendMode);
         }
         return layerEffectPsProperties;
     };
