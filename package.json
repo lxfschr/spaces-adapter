@@ -1,6 +1,7 @@
 {
   "name": "spaces-adapter",
   "description": "JS middleware layer for Spaces",
+  "version": "0.5.0",
   "scripts": {
     "test": "grunt test"
   },
