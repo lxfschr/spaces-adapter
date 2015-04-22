@@ -120,8 +120,7 @@ define(function (require, exports) {
      * Helper Function to set blend mode correctly. We should have a blend mode object in the future
      *
      * @param {string} mode the blend mode
-     *
-     * @return{object} the PS firnedly blend Mode object
+     * @return {object} the PS friendly blend mode object
      */
     var _blendMode = function (mode) {
         return {
