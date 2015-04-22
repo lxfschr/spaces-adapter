@@ -19,5 +19,9 @@
     "grunt-contrib-qunit": "^0.5.2",
     "grunt-jscs": "^0.7.1",
     "jscs-trailing-whitespace-in-source": "0.0.1"
+  },
+  "dependencies": {
+    "bluebird": "^2.9.24",
+    "lodash": "^3.7.0"
   }
 }
