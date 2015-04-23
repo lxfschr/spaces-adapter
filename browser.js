@@ -5096,7 +5096,7 @@ function isUndefined(arg) {
 },{}]},{},[4])(4)
 });                    ;if (typeof window !== 'undefined' && window !== null) {                               window.P = window.Promise;                                                     } else if (typeof self !== 'undefined' && self !== null) {                             self.P = self.Promise;                                                         }
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":11}],2:[function(require,module,exports){
+},{"_process":12}],2:[function(require,module,exports){
 /**
  * EventEmitter v3.1.4
  * https://github.com/Wolfy87/EventEmitter
@@ -5383,11 +5383,11 @@ function isUndefined(arg) {
 },{}],3:[function(require,module,exports){
 exports.main = require("./main");
 exports.os = require("./os");
-exports.ps = require("./ps.js");
+exports.ps = require("./ps");
 exports.util = require("./util");
 exports.PlayObject = require("./playObject");
 
-},{"./main":4,"./os":5,"./playObject":6,"./ps.js":7,"./util":9}],4:[function(require,module,exports){
+},{"./main":4,"./os":5,"./playObject":6,"./ps":8,"./util":10}],4:[function(require,module,exports){
 'use strict';
 var Promise = require('bluebird');
 var _openURLInDefaultBrowserAsync = Promise.promisify(_spaces.openURLInDefaultBrowser);
@@ -5496,7 +5496,7 @@ OS.prototype.resetCursor = function (options) {
 var theOS = new OS();
 _spaces.setNotifier(_spaces.notifierGroup.OS, {}, theOS._eventHandler.bind(theOS));
 module.exports = theOS;
-},{"./util":9,"bluebird":1,"eventEmitter":2}],6:[function(require,module,exports){
+},{"./util":10,"bluebird":1,"eventEmitter":2}],6:[function(require,module,exports){
 'use strict';
 var Descriptor = require('./ps/descriptor');
 var PlayObject = function (command, descriptor, options) {
@@ -5513,32 +5513,7 @@ PlayObject.prototype.command = null;
 PlayObject.prototype.descriptor = null;
 PlayObject.prototype.options = null;
 module.exports = PlayObject;
-},{"./ps/descriptor":8}],7:[function(require,module,exports){
-'use strict';
-var Promise = require('bluebird');
-var _ps = Promise.promisifyAll(_spaces.ps);
-var endModalToolState = function (commit, options) {
-    commit = commit || false;
-    options = options || { invalidateMenus: true };
-    return _ps.endModalToolStateAsync(commit).then(function () {
-        return _ps.processQueuedCommandsAsync(options);
-    });
-};
-var performMenuCommand = function (commandID) {
-    return _ps.performMenuCommandAsync(commandID);
-};
-var logHeadlightsEvent = function (category, subcategory, event) {
-    var options = {
-            category: category,
-            subcategory: subcategory,
-            event: event
-        };
-    return _ps.logHeadlightsEventAsync(options);
-};
-exports.endModalToolState = endModalToolState;
-exports.performMenuCommand = performMenuCommand;
-exports.logHeadlightsEvent = logHeadlightsEvent;
-},{"bluebird":1}],8:[function(require,module,exports){
+},{"./ps/descriptor":7}],7:[function(require,module,exports){
 'use strict';
 var EventEmitter = require('eventEmitter').EventEmitter, util = require('../util'), Promise = require('bluebird');
 var Descriptor = function () {
@@ -5733,14 +5708,151 @@ Descriptor.prototype.batchGetProperty = function (references, property, options)
 var descriptor = new Descriptor();
 _spaces.setNotifier(_spaces.notifierGroup.PHOTOSHOP, {}, descriptor._psEventHandler);
 module.exports = descriptor;
-},{"../util":9,"bluebird":1,"eventEmitter":2}],9:[function(require,module,exports){
+},{"../util":10,"bluebird":1,"eventEmitter":2}],8:[function(require,module,exports){
+'use strict';
+var Promise = require('bluebird');
+var _ps = Promise.promisifyAll(_spaces.ps);
+var endModalToolState = function (commit, options) {
+    commit = commit || false;
+    options = options || { invalidateMenus: true };
+    return _ps.endModalToolStateAsync(commit).then(function () {
+        return _ps.processQueuedCommandsAsync(options);
+    });
+};
+var performMenuCommand = function (commandID) {
+    return _ps.performMenuCommandAsync(commandID);
+};
+var logHeadlightsEvent = function (category, subcategory, event) {
+    var options = {
+            category: category,
+            subcategory: subcategory,
+            event: event
+        };
+    return _ps.logHeadlightsEventAsync(options);
+};
+exports.endModalToolState = endModalToolState;
+exports.performMenuCommand = performMenuCommand;
+exports.logHeadlightsEvent = logHeadlightsEvent;
+exports.ui = require('./ui');
+exports.descriptor = require('./descriptor');
+},{"./descriptor":7,"./ui":9,"bluebird":1}],9:[function(require,module,exports){
+'use strict';
+var EventEmitter = require('eventEmitter').EventEmitter, util = require('../util'), Promise = require('bluebird');
+var _ui = Promise.promisifyAll(_spaces.ps.ui);
+var ALL_NONWINDOW_WIDGETS_BITMASK = _ui.widgetTypes.CONTROLBAR | _ui.widgetTypes.DOCUMENT_TABS | _ui.widgetTypes.PALETTE | _ui.widgetTypes.TOOLBAR;
+var UI = function () {
+    EventEmitter.call(this);
+    this._menuEventHandler = this._menuEventHandler.bind(this);
+    this._interactionEventHandler = this._interactionEventHandler.bind(this);
+};
+util.inherits(UI, EventEmitter);
+UI.prototype._menuEventHandler = function (err, menuCommand, info) {
+    if (err) {
+        this.emit('error', 'Failed to handle menu event: ' + err);
+        return;
+    }
+    this.emit('menu', {
+        command: menuCommand,
+        info: info
+    });
+};
+UI.prototype._interactionEventHandler = function (err, type, info) {
+    if (err) {
+        this.emit('error', 'Failed to handle interaction event: ' + err);
+        return;
+    }
+    var eventKind;
+    switch (type) {
+    case 'progress':
+        eventKind = 'interactionProgress';
+        break;
+    case 'error':
+        eventKind = 'interactionError';
+        break;
+    case 'options':
+        eventKind = 'interactionOptions';
+        break;
+    case 'context':
+        eventKind = 'interactionContext';
+        break;
+    case 'user':
+        eventKind = 'interactionUser';
+        break;
+    default:
+        return;
+    }
+    this.emit(eventKind, { info: info });
+};
+UI.prototype.overscrollMode = _spaces.ps.ui.overscrollMode;
+UI.prototype.getOverscrollMode = function () {
+    return _ui.getOverscrollModeAsync();
+};
+UI.prototype.setOverscrollMode = function (mode) {
+    var options = { mode: mode };
+    return _ui.setOverscrollModeAsync(options);
+};
+UI.prototype.getSuppressScrollbars = function () {
+    return _ui.getSuppressScrollbarsAsync();
+};
+UI.prototype.setSuppressScrollbars = function (suppress) {
+    return _ui.setSuppressScrollbarsAsync(suppress);
+};
+UI.prototype.getSuppressTargetPaths = function () {
+    return _ui.getSuppressTargetPathsAsync();
+};
+UI.prototype.setSuppressTargetPaths = function (suppress) {
+    return _ui.setSuppressTargetPathsAsync(suppress);
+};
+UI.prototype.setClassicChromeVisibility = function (visible) {
+    return this.setSuppressScrollbars(!visible).then(function () {
+        _ui.setWidgetTypeVisibilityAsync(ALL_NONWINDOW_WIDGETS_BITMASK, visible);
+    });
+};
+UI.prototype.pointerPropagationMode = _spaces.ps.ui.pointerPropagationMode;
+UI.prototype.keyboardPropagationMode = _spaces.ps.ui.keyboardPropagationMode;
+UI.prototype.policyAction = _spaces.ps.ui.policyAction;
+UI.prototype.commandKind = _spaces.ps.ui.commandKind;
+UI.prototype.getPointerPropagationMode = function () {
+    return _ui.getPointerPropagationModeAsync();
+};
+UI.prototype.setPointerPropagationMode = function (mode) {
+    return _ui.setPointerPropagationModeAsync(mode);
+};
+UI.prototype.getKeyboardPropagationMode = function () {
+    return _ui.getKeyboardPropagationModeAsync();
+};
+UI.prototype.setKeyboardPropagationMode = function (mode) {
+    return _ui.setKeyboardPropagationModeAsync(mode);
+};
+UI.prototype.setPointerEventPropagationPolicy = function (policyList) {
+    return _ui.setPointerEventPropagationPolicyAsync({ policyList: policyList });
+};
+UI.prototype.setKeyboardEventPropagationPolicy = function (policyList) {
+    return _ui.setKeyboardEventPropagationPolicyAsync({ policyList: policyList });
+};
+UI.prototype.installMenu = function (options, description) {
+    if (description === undefined) {
+        description = options;
+        options = {};
+    }
+    return _ui.installMenuAsync(options, description);
+};
+UI.prototype.setOverlayOffsets = function (offset) {
+    return _ui.setOverlayOffsetsAsync({ offset: offset });
+};
+var ui = new UI();
+_spaces.setNotifier(_spaces.notifierGroup.MENU, {}, ui._menuEventHandler);
+var _interactionOpts = _spaces.notifierOptions.interaction;
+_spaces.setNotifier(_spaces.notifierGroup.INTERACTION, { notificationKind: _interactionOpts.OPTIONS + _interactionOpts.CONTEXT + _interactionOpts.ERROR }, ui._interactionEventHandler);
+module.exports = ui;
+},{"../util":10,"bluebird":1,"eventEmitter":2}],10:[function(require,module,exports){
 'use strict';
 var assert = function (expression, message) {
     console.assert(expression, message);
 };
 exports.inherits = require('util').inherits;
 exports.assert = assert;
-},{"util":13}],10:[function(require,module,exports){
+},{"util":14}],11:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -5765,7 +5877,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -5825,14 +5937,14 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -6422,4 +6534,4 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":12,"_process":11,"inherits":10}]},{},[3]);
+},{"./support/isBuffer":13,"_process":12,"inherits":11}]},{},[3]);
