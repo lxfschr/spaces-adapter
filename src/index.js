@@ -1,3 +1,4 @@
+exports.lib = require("./lib");
 exports.main = require("./main");
 exports.os = require("./os");
 exports.ps = require("./ps");
