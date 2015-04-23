@@ -17561,196 +17561,404 @@ exports.util = require("./util");
 exports.PlayObject = require("./playObject");
 
 },{"./lib":12,"./main":23,"./os":24,"./playObject":25,"./ps":28,"./util":30}],5:[function(require,module,exports){
-'use strict';
-var PlayObject = require('../playobject'), referenceLib = require('./reference');
-var assert = require('../util').assert;
+/*
+ * Copyright (c) 2014 Adobe Systems Incorporated. All rights reserved.
+ *  
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"), 
+ * to deal in the Software without restriction, including without limitation 
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+ * and/or sell copies of the Software, and to permit persons to whom the 
+ * Software is furnished to do so, subject to the following conditions:
+ *  
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *  
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
+ * DEALINGS IN THE SOFTWARE.
+ * 
+ */
+
+"use strict";
+
+var PlayObject = require("../playobject"),
+    referenceLib = require("./reference");
+
+var assert = require("../util").assert;
+    
+/**
+ * Creates a new artboard at the given location
+ *
+ * @param {ActionDescriptor} layerRef Reference object to layers that will be added to artboard
+ * @param {bottom: <number>, top: <number>, left: <number>, right: <number>} boundingBox
+ * @return {PlayObject}
+ */
 var makeArtboard = function (layerRef, boundingBox) {
     if (boundingBox === undefined) {
         boundingBox = layerRef;
-        layerRef = referenceLib.wrapper('layer').target;
+        layerRef = referenceLib.wrapper("layer").target;
     }
-    return new PlayObject('make', {
-        'null': { 'ref': 'layerSection' },
-        'from': layerRef,
-        'artboardRect': {
-            'obj': 'classFloatRect',
-            'value': boundingBox
+    
+    return new PlayObject(
+        "make",
+        {
+            "null": {
+                "ref": "layerSection"
+            },
+            "from": layerRef,
+            "artboardRect": {
+                "obj": "classFloatRect",
+                "value": boundingBox
+            }
         }
-    });
+    );
 };
+
+/**
+ * Moves/resized the referenced artboard layer to a new bounding box
+ *
+ * @param {ActionDescriptor} ref - Artboard layer reference
+ * @param {bottom: <number>, top: <number>, left: <number>, right: <number>} boundingBox
+ * @return {PlayObject}
+ */
 var transformArtboard = function (ref, boundingBox) {
-    assert(referenceLib.refersTo(ref) === 'layer', 'transformArtboard requires a layer reference');
-    return new PlayObject('editArtboardEvent', {
-        'null': ref,
-        'artboard': {
-            'obj': 'artboard',
-            'value': {
-                'artboardCanvasResize': {
-                    'enum': 'artboardCanvasResize',
-                    'value': 'artboardCanvasResizeExpand'
-                },
-                'artboardEnabled': true,
-                'artboardRect': {
-                    'obj': 'classFloatRect',
-                    'value': boundingBox
+    assert(referenceLib.refersTo(ref) === "layer", "transformArtboard requires a layer reference");
+    return new PlayObject(
+        "editArtboardEvent",
+        {
+            "null": ref,
+            "artboard": {
+                "obj": "artboard",
+                "value": {
+                    "artboardCanvasResize": {
+                        "enum": "artboardCanvasResize",
+                        "value": "artboardCanvasResizeExpand"
+                    },
+                    "artboardEnabled": true,
+                    "artboardRect": {
+                        "obj": "classFloatRect",
+                        "value": boundingBox
+                    }
                 }
             }
         }
-    });
+    );
 };
+
 exports.make = makeArtboard;
 exports.transform = transformArtboard;
+
+
 },{"../playobject":26,"../util":30,"./reference":17}],6:[function(require,module,exports){
-'use strict';
-var PlayObject = require('../playobject'), referenceBy = require('./reference').wrapper('brushes'), inUnits = require('./unit');
-var setBrushTip = function (diameter, hardness, angle, roundness, spacing) {
-    return new PlayObject('set', {
-        'null': referenceBy.current,
-        'to': {
-            'obj': 'computedBrush',
-            'value': {
-                'diameter': inUnits.pixels(diameter),
-                'hardness': inUnits.percent(hardness || 100),
-                'angle': inUnits.angle(angle || 0),
-                'roundness': inUnits.percent(roundness || 100),
-                'spacing': inUnits.percent(spacing || 1)
+/*
+ * Copyright (c) 2014 Adobe Systems Incorporated. All rights reserved.
+ *  
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"), 
+ * to deal in the Software without restriction, including without limitation 
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+ * and/or sell copies of the Software, and to permit persons to whom the 
+ * Software is furnished to do so, subject to the following conditions:
+ *  
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *  
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
+ * DEALINGS IN THE SOFTWARE.
+ * 
+ */
+
+"use strict";
+
+var PlayObject = require("../playobject"),
+    referenceBy = require("./reference").wrapper("brushes"),
+    inUnits = require("./unit");
+
+/**
+ * Sets the current brush tip to given parameters
+ *
+ * @param {number} diameter
+ * @param {number} hardness
+ * @param {number} angle
+ * @param {number} roundness
+ * @param {number} spacing
+ *
+ * @returns {PlayObject}
+ */
+var setBrushTip = function (diameter, hardness, angle, roundness, spacing)
+{
+    return new PlayObject(
+        "set",
+        {
+            "null": referenceBy.current,
+            "to": {
+                "obj": "computedBrush",
+                "value": {
+                    "diameter": inUnits.pixels(diameter),
+                    "hardness": inUnits.percent(hardness || 100),
+                    "angle": inUnits.angle(angle || 0),
+                    "roundness": inUnits.percent(roundness || 100),
+                    "spacing": inUnits.percent(spacing || 1)
+                }
             }
         }
-    });
+    );
 };
+
 exports.setBrushTip = setBrushTip;
+
+
 },{"../playobject":26,"./reference":17,"./unit":22}],7:[function(require,module,exports){
-'use strict';
-var PlayObject = require('../playobject');
-var colorObject = function (rgb) {
-    var r, g, b;
-    if (Array.isArray(rgb)) {
-        r = rgb[0];
-        g = rgb[1];
-        b = rgb[2];
-    } else if (typeof rgb === 'object') {
-        if (rgb.hasOwnProperty('obj') && rgb.hasOwnProperty('value')) {
-            return rgb;
-        } else if (rgb.hasOwnProperty('grain')) {
-            r = rgb.red;
-            g = rgb.grain;
-            b = rgb.blue;
-        } else if (rgb.hasOwnProperty('_r')) {
-            r = rgb._r;
-            g = rgb._g;
-            b = rgb._b;
-        } else {
-            r = rgb.r;
-            g = rgb.g;
-            b = rgb.b;
+/*
+ * Copyright (c) 2014 Adobe Systems Incorporated. All rights reserved.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ *
+ */
+ 
+ /*jshint bitwise: false*/
+
+    "use strict";
+    
+    var PlayObject = require("../playobject");
+        
+    /**
+     * Converts the given color to Photoshop acceptable color object
+     *
+     * @param {number|Array<number>|Object} rgb - Input color
+     *
+     * @returns {ActionDescriptor} RGBColor object for Photoshop
+     */
+    var colorObject = function (rgb) {
+        var r, g, b;
+        
+        if (Array.isArray(rgb)) {
+            r = rgb[0];
+            g = rgb[1];
+            b = rgb[2];
+        } else if (typeof rgb === "object") {
+            if (rgb.hasOwnProperty("obj") && rgb.hasOwnProperty("value")) {
+                return rgb; //Identity, as we don't need to change it
+            } else if (rgb.hasOwnProperty("grain")) {
+                r = rgb.red;
+                g = rgb.grain;
+                b = rgb.blue;
+            } else if (rgb.hasOwnProperty("_r")) {
+                r = rgb._r;
+                g = rgb._g;
+                b = rgb._b;
+            } else {
+                r = rgb.r;
+                g = rgb.g;
+                b = rgb.b;
+            }
+        } else if (typeof rgb === "number") {
+            r = (rgb >> 16) & 255;
+            g = (rgb >> 8) & 255;
+            b = rgb & 255;
         }
-    } else if (typeof rgb === 'number') {
-        r = rgb >> 16 & 255;
-        g = rgb >> 8 & 255;
-        b = rgb & 255;
-    }
-    var color = {
-            'red': r,
-            'green': g,
-            'blue': b
+
+        var color = {
+            "red": r,
+            "green": g,
+            "blue": b
         };
-    return {
-        obj: 'RGBColor',
-        value: color
+        
+        return {
+            obj: "RGBColor",
+            value: color
+        };
     };
-};
-var setForegroundColor = function (rgb) {
-    return new PlayObject('set', {
-        'null': {
-            'ref': 'color',
-            'property': 'foregroundColor'
-        },
-        'to': colorObject(rgb)
-    });
-};
-var setBackgroundColor = function (rgb) {
-    return new PlayObject('set', {
-        'null': {
-            'ref': 'color',
-            'property': 'backgroundColor'
-        },
-        'to': colorObject(rgb)
-    });
-};
-exports.colorObject = colorObject;
-exports.setForegroundColor = setForegroundColor;
-exports.setBackgroundColor = setBackgroundColor;
+    
+    /**
+     * Set foreground color
+     *
+     * @param {array} rgb Acceptable form of color, see colorObject
+     *
+     * @returns {PlayObject}
+     */
+    var setForegroundColor = function (rgb) {
+        return new PlayObject(
+            "set",
+            {
+                "null": {
+                    "ref": "color",
+                    "property": "foregroundColor"
+                },
+                "to": colorObject(rgb)
+            }
+        );
+    };
+
+    /**
+     * Set background color
+     *
+     * @param {array} rgb Acceptable form of color, see colorObject
+     *
+     * @returns {PlayObject}
+     */
+    var setBackgroundColor = function (rgb) {
+        return new PlayObject(
+            "set",
+            {
+                "null": {
+                    "ref": "color",
+                    "property": "backgroundColor"
+                },
+                "to": colorObject(rgb)
+            }
+        );
+    };
+
+    exports.colorObject = colorObject;
+    exports.setForegroundColor = setForegroundColor;
+    exports.setBackgroundColor = setBackgroundColor;
+
+
 },{"../playobject":26}],8:[function(require,module,exports){
-'use strict';
-var PlayObject = require('../playobject'), referenceBy = require('./reference').wrapper('contentLayer'), unitsIn = require('./unit'), shape = require('./shape');
-var assert = require('../util').assert, referenceOf = require('./reference').refersTo;
-var alignmentTypes = Object.defineProperties({}, {
+/*
+ * Copyright (c) 2014 Adobe Systems Incorporated. All rights reserved.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ *
+ */
+
+    "use strict";
+
+    var PlayObject = require("../playobject"),
+        referenceBy = require("./reference").wrapper("contentLayer"),
+        unitsIn = require("./unit"),
+        shape = require("./shape");
+
+    var assert = require("../util").assert,
+        referenceOf = require("./reference").refersTo;
+
+    /**
+     * Stroke alignment possible values
+     */
+    var alignmentTypes = Object.defineProperties({}, {
         OUTSIDE: {
-            value: 'strokeStyleAlignOutside',
+            value: "strokeStyleAlignOutside",
             writeable: false,
             enumerable: true
         },
         CENTER: {
-            value: 'strokeStyleAlignCenter',
+            value: "strokeStyleAlignCenter",
             writeable: false,
             enumerable: true
         },
         INSIDE: {
-            value: 'strokeStyleAlignInside',
+            value: "strokeStyleAlignInside",
             writeable: false,
             enumerable: true
         }
     });
-var _strokeCap = {
-        square: 'strokeStyleSquareCap',
-        round: 'strokeStyleRoundCap',
-        butt: 'strokeStyleButtCap'
+    
+    /**
+     * Stroke cap possible values
+     */
+    var _strokeCap = {
+        square: "strokeStyleSquareCap",
+        round: "strokeStyleRoundCap",
+        butt: "strokeStyleButtCap"
     };
-var _strokeCorner = {
-        miter: 'strokeStyleMiterJoin',
-        round: 'strokeStyleRoundJoin',
-        bevel: 'strokeStyleBevelJoin'
+    
+    /**
+     * Stroke Corner possible values
+     */
+    var _strokeCorner = {
+        miter: "strokeStyleMiterJoin",
+        round: "strokeStyleRoundJoin",
+        bevel: "strokeStyleBevelJoin"
     };
-var _patternName = {
-        pBubbles: [
-            'b7334da0-122f-11d4-8bb5-e27e45023b5f',
-            '$$$/Presets/Patterns/Patterns_pat/Bubbles=Bubbles'
-        ],
-        pTieDye: [
-            '1b29876b-58b7-11d4-b895-a898787104c1',
-            '$$$/Presets/Patterns/Patterns_pat/TieDye=Tie Dye'
-        ],
-        pLaidhorizontal: [
-            '52a93427-f5d6-1172-a989-8dc82a43aa51',
-            '$$$/Presets/Patterns/Patterns_pat/Laidhorizontal=Laid-horizontal'
-        ],
-        pFineGrain: [
-            'c02fddff-f05a-1172-9a0f-f7bad69dd4b0',
-            '$$$/Presets/Patterns/Patterns_pat/FineGrain=Fine Grain'
-        ],
-        pGrayGranite: [
-            'f293c3d4-57f7-1177-b70c-a0459fa92660',
-            '$$$/Presets/Patterns/Patterns_pat/GrayGranite=Gray Granite'
-        ]
+
+    /**
+     * Pattern Name values
+     */
+    var _patternName = {
+        pBubbles: ["b7334da0-122f-11d4-8bb5-e27e45023b5f",
+        "$$$/Presets/Patterns/Patterns_pat/Bubbles=Bubbles"],
+        pTieDye: ["1b29876b-58b7-11d4-b895-a898787104c1",
+        "$$$/Presets/Patterns/Patterns_pat/TieDye=Tie Dye"],
+        pLaidhorizontal: ["52a93427-f5d6-1172-a989-8dc82a43aa51",
+        "$$$/Presets/Patterns/Patterns_pat/Laidhorizontal=Laid-horizontal"],
+        pFineGrain: ["c02fddff-f05a-1172-9a0f-f7bad69dd4b0",
+        "$$$/Presets/Patterns/Patterns_pat/FineGrain=Fine Grain"],
+        pGrayGranite: ["f293c3d4-57f7-1177-b70c-a0459fa92660",
+        "$$$/Presets/Patterns/Patterns_pat/GrayGranite=Gray Granite"]
     };
-var contentTypes = Object.defineProperties({}, {
+
+    /**
+     * Constant values for types of strokes and fills
+     * @type {Object.<string, string>}
+     */
+    var contentTypes = Object.defineProperties({}, {
         SOLID_COLOR: {
-            value: 'solidColor',
+            value: "solidColor",
             writeable: false,
             enumerable: true
         },
         GRADIENT: {
-            value: 'gradient',
+            value: "gradient",
             writeable: false,
             enumerable: true
         },
         PATTERN: {
-            value: 'pattern',
+            value: "pattern",
             writeable: false,
             enumerable: true
         }
     });
-var originTypes = Object.defineProperties({}, {
+
+    /**
+     * Shape origin types
+     * 
+     * @const
+     * @type {Object.<string, number>}
+     */
+    var originTypes = Object.defineProperties({}, {
         ORIGIN_UNDEFINED: {
             value: -1,
             enumerable: true,
@@ -17792,464 +18000,842 @@ var originTypes = Object.defineProperties({}, {
             writeable: false
         }
     });
-var setStrokeAlignment = function (sourceRef, alignment) {
-    assert(referenceOf(sourceRef) === 'contentLayer', 'setStrokeAlignment is passed a non-layer reference');
-    return new PlayObject('set', {
-        'null': sourceRef,
-        'to': {
-            'obj': 'shapeStyle',
-            'value': {
-                'strokeStyle': {
-                    'obj': 'strokeStyle',
-                    'value': {
-                        'strokeEnabled': true,
-                        'strokeStyleLineAlignment': {
-                            'enum': 'strokeStyleLineAlignment',
-                            'value': alignmentTypes[alignment]
-                        },
-                        'strokeStyleVersion': 2
+
+
+    /**
+     * @param {ActionDescriptor} sourceRef Reference to layer(s) to edit
+     * @param {string} alignment The stroke alignment. "outside", "center", or "inside"
+     *
+     * @return {PlayObject}
+     */
+    var setStrokeAlignment = function (sourceRef, alignment) {
+        assert(referenceOf(sourceRef) === "contentLayer", "setStrokeAlignment is passed a non-layer reference");
+        return new PlayObject(
+            "set",
+            {
+                "null": sourceRef,
+                "to": {
+                    "obj": "shapeStyle",
+                    "value": {
+                        "strokeStyle": {
+                            "obj": "strokeStyle",
+                            "value": {
+                                "strokeEnabled": true,
+                                "strokeStyleLineAlignment": {
+                                    "enum": "strokeStyleLineAlignment",
+                                    "value": alignmentTypes[alignment]
+                                },
+                                "strokeStyleVersion": 2
+                            }
+                        }
                     }
                 }
             }
-        }
-    });
-};
-var setStrokeCap = function (sourceRef, cap) {
-    assert(referenceOf(sourceRef) === 'contentLayer', 'setStrokeCap is passed a non-layer reference');
-    return new PlayObject('set', {
-        'null': sourceRef,
-        'to': {
-            'obj': 'shapeStyle',
-            'value': {
-                'strokeStyle': {
-                    'obj': 'strokeStyle',
-                    'value': {
-                        'strokeEnabled': true,
-                        'strokeStyleLineCapType': {
-                            'enum': 'strokeStyleLineCapType',
-                            'value': _strokeCap[cap]
-                        },
-                        'strokeStyleVersion': 2
+        );
+    };
+
+
+
+    /**
+     * @param {ActionDescriptor} sourceRef Reference to layer(s) to edit
+     * @param {string} cap The stroke path cap. "square", "round", or "butt"
+     *
+     * @return {PlayObject}
+     */
+    var setStrokeCap = function (sourceRef, cap) {
+        assert(referenceOf(sourceRef) === "contentLayer", "setStrokeCap is passed a non-layer reference");
+        return new PlayObject(
+            "set",
+            {
+                "null": sourceRef,
+                "to": {
+                    "obj": "shapeStyle",
+                    "value": {
+                        "strokeStyle": {
+                            "obj": "strokeStyle",
+                            "value": {
+                                "strokeEnabled": true,
+                                "strokeStyleLineCapType": {
+                                    "enum": "strokeStyleLineCapType",
+                                    "value": _strokeCap[cap]
+                                },
+                                "strokeStyleVersion": 2
+                            }
+                        }
                     }
                 }
             }
-        }
-    });
-};
-var setStrokeCorner = function (sourceRef, corner) {
-    assert(referenceOf(sourceRef) === 'contentLayer', 'setStrokeCorner is passed a non-layer reference');
-    return new PlayObject('set', {
-        'null': sourceRef,
-        'to': {
-            'obj': 'shapeStyle',
-            'value': {
-                'strokeStyle': {
-                    'obj': 'strokeStyle',
-                    'value': {
-                        'strokeEnabled': true,
-                        'strokeStyleLineJoinType': {
-                            'enum': 'strokeStyleLineJoinType',
-                            'value': _strokeCorner[corner]
-                        },
-                        'strokeStyleVersion': 2
+        );
+    };
+    
+    /**
+     * @param {ActionDescriptor} sourceRef Reference to layer(s) to edit
+     * @param {string} corner The stroke corner. "miter", "round", or "bevel"
+     *
+     * @return {PlayObject}
+     */
+    var setStrokeCorner = function (sourceRef, corner) {
+        assert(referenceOf(sourceRef) === "contentLayer", "setStrokeCorner is passed a non-layer reference");
+        return new PlayObject (
+            "set",
+            {
+                "null": sourceRef,
+                "to": {
+                    "obj": "shapeStyle",
+                    "value": {
+                        "strokeStyle": {
+                            "obj": "strokeStyle",
+                            "value": {
+                                "strokeEnabled": true,
+                                "strokeStyleLineJoinType": {
+                                    "enum": "strokeStyleLineJoinType",
+                                    "value": _strokeCorner[corner]
+                                },
+                                "strokeStyleVersion": 2
+                            }
+                        }
                     }
                 }
             }
-        }
-    });
-};
-var setStrokeOpacity = function (sourceRef, opacity) {
-    assert(referenceOf(sourceRef) === 'contentLayer', 'setStrokeOpacity is passed a non-layer reference');
-    var descriptor = {
-            'null': sourceRef,
-            'to': {
-                'obj': 'shapeStyle',
-                'value': {
-                    'strokeStyle': {
-                        'obj': 'strokeStyle',
-                        'value': {
-                            'strokeEnabled': true,
-                            'strokeStyleOpacity': unitsIn.percent(opacity),
-                            'strokeStyleVersion': 2
+        );
+    };
+
+    /**
+     * Set shape stroke opacity
+     * This currently sets all selected layers
+     *
+     * @param {ActionDescriptor} sourceRef Reference to layer(s) to edit
+     * @param {number} opacity opacity as a percentage [0,100]
+     *
+     * @return {PlayObject}
+     */
+    var setStrokeOpacity = function (sourceRef, opacity) {
+        assert(referenceOf(sourceRef) === "contentLayer", "setStrokeOpacity is passed a non-layer reference");
+        var descriptor = {
+            "null": sourceRef,
+            "to": {
+                "obj": "shapeStyle",
+                "value": {
+                    "strokeStyle": {
+                        "obj": "strokeStyle",
+                        "value": {
+                            "strokeEnabled": true,
+                            "strokeStyleOpacity": unitsIn.percent(opacity),
+                            "strokeStyleVersion": 2
                         }
                     }
                 }
             }
         };
-    return new PlayObject('set', descriptor);
-};
-var setShapeFillTypeSolidColor = function (sourceRef, rgb) {
-    assert(referenceOf(sourceRef) === 'contentLayer', 'setShapeFillTypeSolidColor is passed a non-layer reference');
-    if (rgb === null) {
-        return _setShapeFillTypeNoColor(sourceRef);
-    }
-    return new PlayObject('set', {
-        'null': sourceRef,
-        'to': {
-            'obj': 'shapeStyle',
-            'value': {
-                'fillContents': shape.fillContentsObject('solidColorLayer', rgb),
-                'strokeStyle': shape.shapeFillObject(true)
-            }
+        return new PlayObject("set", descriptor);
+    };
+
+
+    /**
+     * Set shape fill to solid color with RGB color
+     *
+     * @param {ActionDescriptor} sourceRef Reference to layer(s) to edit
+     * @param {array | number | object } rgb The array of RGB color [red,green,blue] for shape fill color. 0 to 255
+     *
+     * @return {PlayObject}
+     *
+     * Preconditions:
+     * Select a layer
+     *
+     * Examples:
+     * var myColor = [100,200,150];
+     * raw.contentLayer.setShapeFillTypeSolidColor(myColor);
+     *
+     * raw.contentLayer.setShapeFillTypeSolidColor([100,200,150]);
+     */
+    var setShapeFillTypeSolidColor = function (sourceRef, rgb) {
+        assert(referenceOf(sourceRef) === "contentLayer", "setShapeFillTypeSolidColor is passed a non-layer reference");
+        if (rgb === null) {
+            return _setShapeFillTypeNoColor(sourceRef);
         }
-    });
-};
-var setStrokeFillTypeSolidColor = function (sourceRef, rgba) {
-    assert(referenceOf(sourceRef) === 'contentLayer', 'setStrokeFillTypeSolidColor is passed a non-layer reference');
-    if (rgba === null) {
-        return _setStrokeFillTypeNoColor(sourceRef);
-    }
-    var descriptor = {
-            'null': sourceRef,
-            'to': {
-                'obj': 'shapeStyle',
-                'value': {
-                    'strokeStyle': {
-                        'obj': 'strokeStyle',
-                        'value': {
-                            'strokeEnabled': true,
-                            'strokeStyleContent': shape.fillContentsObject('solidColorLayer', rgba),
-                            'strokeStyleVersion': 2
+        return new PlayObject(
+            "set",
+            {
+                "null": sourceRef,
+                "to": {
+                    "obj": "shapeStyle",
+                    "value": {
+                        "fillContents": shape.fillContentsObject("solidColorLayer", rgb),
+                        "strokeStyle": shape.shapeFillObject(true)
+                    }
+                }
+            }
+        );
+    };
+
+    /**
+     * Set shape stroke fill to solid color with RGB color
+     * Also sets opacity if provided as an alpha property "a" of the rgba object parameter
+     *
+     * @param {ActionDescriptor} sourceRef Reference to layer(s) to edit
+     * @param {{r: !number, g: !number, b: !number, a: ?number}} rgba color in standard rgba object format
+     *
+     * @return {PlayObject}
+     *
+     * Preconditions:
+     * Select a layer
+     *
+     * Examples:
+     * var myColor = {r: 100, g: 250, b: 25, a: 0.6},
+     *     layerRef = contentLayer.referenceBy.current;
+     *     
+     *     strokeObj = contentLayer.setStrokeFillTypeSolidColor(layerRef, myColor);
+     */
+    var setStrokeFillTypeSolidColor = function (sourceRef, rgba) {
+        assert(referenceOf(sourceRef) === "contentLayer",
+            "setStrokeFillTypeSolidColor is passed a non-layer reference");
+        if (rgba === null) {
+            return _setStrokeFillTypeNoColor(sourceRef);
+        }
+        var descriptor = {
+            "null": sourceRef,
+            "to": {
+                "obj": "shapeStyle",
+                "value": {
+                    "strokeStyle": {
+                        "obj": "strokeStyle",
+                        "value": {
+                            "strokeEnabled": true,
+                            "strokeStyleContent": shape.fillContentsObject("solidColorLayer", rgba),
+                            "strokeStyleVersion": 2
                         }
                     }
                 }
             }
         };
-    if (rgba.hasOwnProperty('a')) {
-        descriptor.to.value.strokeStyle.value.strokeStyleOpacity = unitsIn.percent(rgba.a * 100);
-    }
-    return new PlayObject('set', descriptor);
-};
-var _setShapeFillTypeNoColor = function (sourceRef) {
-    return new PlayObject('set', {
-        'null': sourceRef,
-        'to': {
-            'obj': 'shapeStyle',
-            'value': { 'strokeStyle': shape.shapeFillObject(false) }
+        if (rgba.hasOwnProperty("a")) {
+            descriptor.to.value.strokeStyle.value.strokeStyleOpacity = unitsIn.percent(rgba.a * 100);
         }
-    });
-};
-var _setStrokeFillTypeNoColor = function (sourceRef) {
-    return new PlayObject('set', {
-        'null': sourceRef,
-        'to': {
-            'obj': 'shapeStyle',
-            'value': { 'strokeStyle': shape.shapeStrokeObject(false) }
-        }
-    });
-};
-var setShapeStrokeWidth = function (sourceRef, strokeWidth) {
-    assert(referenceOf(sourceRef) === 'contentLayer', 'setShapeStrokeWidth is passed a non-layer reference');
-    return new PlayObject('set', {
-        'null': sourceRef,
-        'to': {
-            'obj': 'shapeStyle',
-            'value': {
-                'strokeStyle': {
-                    'obj': 'strokeStyle',
-                    'value': {
-                        'strokeEnabled': true,
-                        'strokeStyleLineWidth': unitsIn.pixels(strokeWidth),
-                        'strokeStyleVersion': 2
+        return new PlayObject("set", descriptor);
+    };
+
+    /**
+     * Set shape fill with no color
+     *
+     * @param {ActionDescriptor} sourceRef Reference to layer(s) to edit
+     *
+     * @return {PlayObject}
+     *
+     * Preconditions:
+     * Select a layer
+     *
+     * Examples:
+     * raw.contentLayer.setShapeFillTypeNoColor();
+     */
+    var _setShapeFillTypeNoColor = function (sourceRef) {
+        return new PlayObject(
+            "set",
+            {
+                "null": sourceRef,
+                "to": {
+                    "obj": "shapeStyle",
+                    "value": {
+                        "strokeStyle": shape.shapeFillObject(false)
                     }
                 }
             }
-        }
-    });
-};
-var setStrokeFillTypePattern = function (sourceRef, fillTypePatternName, scaleVal) {
-    assert(referenceOf(sourceRef) === 'contentLayer', 'setStrokeFillTypePattern is passed a non-layer reference');
-    return new PlayObject('set', {
-        'null': sourceRef,
-        'to': {
-            'obj': 'shapeStyle',
-            'value': {
-                'strokeStyle': {
-                    'obj': 'strokeStyle',
-                    'value': {
-                        'strokeEnabled': true,
-                        'strokeStyleContent': {
-                            'obj': 'patternLayer',
-                            'value': {
-                                'align': true,
-                                'pattern': {
-                                    'obj': 'pattern',
-                                    'value': {
-                                        'ID': _patternName[fillTypePatternName][0],
-                                        'name': _patternName[fillTypePatternName][1]
-                                    }
-                                },
-                                'phase': {
-                                    'obj': 'paint',
-                                    'value': {
-                                        'horizontal': 0,
-                                        'vertical': 0
-                                    }
-                                },
-                                'scale': unitsIn.percent(scaleVal)
-                            }
-                        },
-                        'strokeStyleVersion': 2
+        );
+    };
+
+    /**
+     * Set shape stroke with no color
+     *
+     * @param {ActionDescriptor} sourceRef Reference to layer(s) to edit
+     *
+     * @return {PlayObject}
+     *
+     * Preconditions:
+     * Select a layer
+     *
+     * Examples:
+     * raw.contentLayer.setStrokeFillTypeNoColor();
+     */
+    var _setStrokeFillTypeNoColor = function (sourceRef) {
+        return new PlayObject(
+            "set",
+            {
+                "null": sourceRef,
+                "to": {
+                    "obj": "shapeStyle",
+                    "value": {
+                        "strokeStyle": shape.shapeStrokeObject(false)
                     }
                 }
             }
-        }
-    });
-};
-var setShapeFillTypePattern = function (sourceRef, fillTypePatternName, scaleVal) {
-    assert(referenceOf(sourceRef) === 'contentLayer', 'setShapeFillTypePattern is passed a non-layer reference');
-    return new PlayObject('set', {
-        'null': sourceRef,
-        'to': {
-            'obj': 'shapeStyle',
-            'value': {
-                'fillContents': {
-                    'obj': 'patternLayer',
-                    'value': {
-                        'align': true,
-                        'pattern': {
-                            'obj': 'pattern',
-                            'value': {
-                                'ID': _patternName[fillTypePatternName][0],
-                                'name': _patternName[fillTypePatternName][1]
+        );
+    };
+
+    /**
+     * Set shape stroke width
+     *
+     * @param {ActionDescriptor} sourceRef Reference to layer(s) to edit
+     * @param {number} strokeWidth The width of shape stroke. For pt, 0.00 to 288.00
+     *
+     * @return {PlayObject}
+     *
+     * Preconditions:
+     * Select a layer
+     *
+     * Examples:
+     * raw.contentLayer.setShapeStrokeWidth(10);
+     */
+    var setShapeStrokeWidth = function (sourceRef, strokeWidth) {
+        assert(referenceOf(sourceRef) === "contentLayer", "setShapeStrokeWidth is passed a non-layer reference");
+        return new PlayObject(
+            "set",
+            {
+                "null": sourceRef,
+                "to": {
+                    "obj": "shapeStyle",
+                    "value": {
+                        "strokeStyle": {
+                            "obj": "strokeStyle",
+                            "value": {
+                                "strokeEnabled": true,
+                                "strokeStyleLineWidth": unitsIn.pixels(strokeWidth),
+                                "strokeStyleVersion": 2
+                            }
+                        }
+                    }
+                }
+            }
+        );
+    };
+
+    /**
+     * Set shape stroke fill with pattern
+     *
+     * @param {ActionDescriptor} sourceRef Reference to layer(s) to edit
+     * @param {string} fillTypePatternName The name of the pattern. 
+     *      "pBubbles", "pTieDye", "pLaidhorizontal", "pFineGrain", or "pGrayGranite"
+     * @param {integer} scaleVal The scale of pattern. 0 to 1000
+     *
+     * @return {PlayObject}
+     *
+     * Preconditions:
+     * Select a layer
+     *
+     * Examples:
+     * raw.contentLayer.setStrokeFillTypePattern("pBubbles", 100);
+     */
+    var setStrokeFillTypePattern = function (sourceRef, fillTypePatternName, scaleVal) {
+        assert(referenceOf(sourceRef) === "contentLayer", "setStrokeFillTypePattern is passed a non-layer reference");
+        return new PlayObject(
+            "set",
+            {
+                "null": sourceRef,
+                "to": {
+                    "obj": "shapeStyle",
+                    "value": {
+                        "strokeStyle": {
+                            "obj": "strokeStyle",
+                            "value": {
+                                "strokeEnabled": true,
+                                "strokeStyleContent": {
+                                    "obj": "patternLayer",
+                                    "value": {
+                                        "align": true,
+                                        "pattern": {
+                                            "obj": "pattern",
+                                            "value": {
+                                                "ID": _patternName[fillTypePatternName][0],
+                                                "name": _patternName[fillTypePatternName][1]
+                                            }
+                                        },
+                                        "phase": {
+                                            "obj": "paint",
+                                            "value": {
+                                                "horizontal": 0,
+                                                "vertical": 0
+                                            }
+                                        },
+                                        "scale": unitsIn.percent(scaleVal)
+                                    }
+                                },
+                                "strokeStyleVersion": 2
+                            }
+                        }
+                    }
+                }
+            }
+        );
+    };
+
+    /**
+     * Set shape fill with pattern
+     *
+     * @param {ActionDescriptor} sourceRef Reference to layer(s) to edit
+     * @param {string} fillTypePatternName The name of the pattern. 
+     *      "pBubbles", "pTieDye", "pLaidhorizontal", "pFineGrain", or "pGrayGranite"
+     * @param {integer} scaleVal The scale of pattern. 0 to 1000
+     *
+     * @return {PlayObject}
+     *
+     * Preconditions:
+     * Select a layer
+     *
+     * Examples:
+     * raw.contentLayer.setShapeFillTypePattern("pBubbles", 100);
+     */
+    var setShapeFillTypePattern = function (sourceRef, fillTypePatternName, scaleVal) {
+        assert(referenceOf(sourceRef) === "contentLayer", "setShapeFillTypePattern is passed a non-layer reference");
+        return new PlayObject(
+            "set",
+            {
+                "null": sourceRef,
+                "to": {
+                    "obj": "shapeStyle",
+                    "value": {
+                        "fillContents": {
+                            "obj": "patternLayer",
+                            "value": {
+                                "align": true,
+                                "pattern": {
+                                    "obj": "pattern",
+                                    "value": {
+                                        "ID": _patternName[fillTypePatternName][0],
+                                        "name": _patternName[fillTypePatternName][1]
+                                    }
+                                },
+                                "phase": {
+                                    "obj": "paint",
+                                    "value": {
+                                        "horizontal": 0,
+                                        "vertical": 0
+                                    }
+                                },
+                                "scale": unitsIn.percent(scaleVal)
                             }
                         },
-                        'phase': {
-                            'obj': 'paint',
-                            'value': {
-                                'horizontal': 0,
-                                'vertical': 0
+                        "strokeStyle": shape.shapeFillStrokeStyle(true)
+                    }
+                }
+            }
+        );
+    };
+
+    /**
+     * Remove Stroke Style (AGMStrokeStyle) completely from the provided content layers
+     * This has the effect of removing a shape's stroke
+     * Note: this may have unexpected results on shapes without a fill
+     *
+     * @param {ActionDescriptor} sourceRef Reference to layer(s) to edit
+     * @return {PlayObject}
+     */
+    var deleteShapeStyle = function (sourceRef) {
+        assert(referenceOf(sourceRef) === "contentLayer", "deleteShapeStyle is passed a non-layer reference");
+        return new PlayObject(
+            "set",
+            {
+                "null": sourceRef,
+                to: {
+                    "obj": "deleteShapeStyle",
+                    "value": {}
+                }
+            }
+        );
+    };
+
+    /**
+     * Move shape
+     *
+     * @param {ActionDescriptor} sourceRef Reference to layer(s) to edit
+     * @param {number} hVal The number of horizontal.
+     * @param {number} vVal The number of vertical.
+     *
+     * @return {PlayObject}
+     *
+     * Preconditions:
+     * Select a layer
+     *
+     * Examples:
+     * raw.contentLayer.moveShape(20,20);
+     */
+    var moveShape = function (sourceRef, hVal, vVal) {
+        assert(referenceOf(sourceRef) === "contentLayer", "moveShape is passed a non-layer reference");
+        return new PlayObject(
+            "set",
+            {
+                "null": sourceRef,
+                "to": {
+                    "obj": "offset",
+                    "value": {
+                        "horizontal": unitsIn.distance(hVal),
+                        "vertical": unitsIn.distance(vVal)
+                    }
+                }
+            }
+        );
+    };
+
+    /**
+     * Create a shape (Rectangle, Rounded Rectangle, Ellipse)
+     *
+     * @param {ActionDescriptor} sourceRef Reference to layer(s) to edit
+     * @param {boolean} fillEnabledVal Whether the fill shape is enabled. 
+     *      true for Solic Color or Pattern, false for No Color
+     * @param {string} fillContentShape The type of shape content. 
+     *      "solidColorLayer" for Solic Color, "patternLayer" for Pattern
+     * @param {array} fillContentShapeVal The array of RGB color [red,green,blue]
+     *      for shape fill color. 0 to 255
+     * @param {boolean} strokeEnabledVal Whether the fill stroke is enabled.
+     *      true for Solic Color or Pattern, false for No Color
+     * @param {string} fillContentStroke "solidColorLayer" for Solid Color, 
+     *      "patternLayer" for Pattern
+     * @param {array} fillContentStrokeVal The array of RGB color [red,green,blue] 
+     *      for shape stroke color. 0 to 255
+     * @param {string} strokeAlignment The stroke alignment options. "outside",
+     *      "inside", or "center"
+     * @param {string} cap The path cap options. "square", "round", or "butt"
+     * @param {string} corner The stroke corner options. "miter", "round", or "bevel"
+     * @param {number} strokeWidth The width of shape stroke. For pt, 0.00 to 288.00
+     * @param {string} typeShape The type of shape to create. "rectangle" for
+     *      Rectangle or Rounded Rectangle, "ellipse" for Ellipse
+     * @param {array} shapeVal The array of pixelsUnit values.
+                      rectangle for [top,bottom,left,right,topleft,topright,bottomleft,bottomright],
+     *                ellipse for [top,bottom,left,right]
+     * y,x
+     *
+     * @return {PlayObject}
+     *
+     * Preconditions
+     * Open or create a document.
+     *
+     * Examples:
+     * raw.contentLayer.createShape(true,"patternLayer","pBubbles",true,"solidColorLayer",[0,100,200],
+     * outside","butt","miter",10,"rectangle",[300,500,250,600,-1,-1,-1,-1]);
+     *
+     * raw.contentLayer.createShape(true,"solidColorLayer",[255,150,200],true,"solidColorLayer",[0,100,200],
+     * outside","butt","miter",10,"rectangle",[300,500,250,600,10,10,10,10]);
+     *
+     * raw.contentLayer.createShape(false,"solidColorLayer",[255,150,200],true,"patternLayer","pBubbles",
+     * outside","butt","miter",10,"ellipse",[250,100,400,100]);
+     */
+    var createShape = function (sourceRef, fillEnabledVal, fillContentShape, fillContentShapeVal,
+            strokeEnabledVal, fillContentStroke, fillContentStrokeVal, strokeAlignment,
+            cap, corner, strokeWidth, typeShape, shapeVal) {
+        
+        assert(referenceOf(sourceRef) === "contentLayer", "createShape is passed a non-layer reference");
+        
+        var patternLayerName;
+        if (fillContentShape === "patternLayer") {
+            patternLayerName = fillContentShapeVal;
+            fillContentShapeVal = [_patternName[patternLayerName][0], _patternName[patternLayerName][1]];
+        }
+        if (fillContentStroke === "patternLayer") {
+            patternLayerName = fillContentStrokeVal;
+            fillContentStrokeVal = [_patternName[patternLayerName][0], _patternName[patternLayerName][1]];
+        }
+
+        return new PlayObject(
+            "make",
+            {
+                "null": sourceRef,
+                "using": {
+                    "obj": "contentLayer",
+                    "value": {
+                        "shape": shape.shapeObj(typeShape, shapeVal),
+                        "strokeStyle": {
+                            "obj": "strokeStyle",
+                            "value": {
+                                "fillEnabled": fillEnabledVal,
+                                "strokeEnabled": strokeEnabledVal,
+                                "strokeStyleBlendMode": {
+                                    "enum": "blendMode",
+                                    "value": "normal"
+                                },
+                                "strokeStyleContent": shape.fillContentsObject(fillContentStroke, fillContentStrokeVal),
+                                "strokeStyleLineAlignment": {
+                                    "enum": "strokeStyleLineAlignment",
+                                    "value": alignmentTypes[strokeAlignment]
+                                },
+                                "strokeStyleLineCapType": {
+                                    "enum": "strokeStyleLineCapType",
+                                    "value": _strokeCap[cap]
+                                },
+                                "strokeStyleLineDashOffset": unitsIn.points(0),
+                                "strokeStyleLineDashSet": [],
+                                "strokeStyleLineJoinType": {
+                                    "enum": "strokeStyleLineJoinType",
+                                    "value": _strokeCorner[corner]
+                                },
+                                "strokeStyleLineWidth": unitsIn.points(strokeWidth),
+                                "strokeStyleMiterLimit": 100,
+                                "strokeStyleOpacity": unitsIn.percent(100),
+                                "strokeStyleResolution": 72,
+                                "strokeStyleScaleLock": false,
+                                "strokeStyleStrokeAdjust": false,
+                                "strokeStyleVersion": 2
                             }
                         },
-                        'scale': unitsIn.percent(scaleVal)
+                        "type": shape.fillContentsObject(fillContentShape, fillContentShapeVal)
                     }
-                },
-                'strokeStyle': shape.shapeFillStrokeStyle(true)
+                }
             }
-        }
-    });
-};
-var deleteShapeStyle = function (sourceRef) {
-    assert(referenceOf(sourceRef) === 'contentLayer', 'deleteShapeStyle is passed a non-layer reference');
-    return new PlayObject('set', {
-        'null': sourceRef,
-        to: {
-            'obj': 'deleteShapeStyle',
-            'value': {}
-        }
-    });
-};
-var moveShape = function (sourceRef, hVal, vVal) {
-    assert(referenceOf(sourceRef) === 'contentLayer', 'moveShape is passed a non-layer reference');
-    return new PlayObject('set', {
-        'null': sourceRef,
-        'to': {
-            'obj': 'offset',
-            'value': {
-                'horizontal': unitsIn.distance(hVal),
-                'vertical': unitsIn.distance(vVal)
-            }
-        }
-    });
-};
-var createShape = function (sourceRef, fillEnabledVal, fillContentShape, fillContentShapeVal, strokeEnabledVal, fillContentStroke, fillContentStrokeVal, strokeAlignment, cap, corner, strokeWidth, typeShape, shapeVal) {
-    assert(referenceOf(sourceRef) === 'contentLayer', 'createShape is passed a non-layer reference');
-    var patternLayerName;
-    if (fillContentShape === 'patternLayer') {
-        patternLayerName = fillContentShapeVal;
-        fillContentShapeVal = [
-            _patternName[patternLayerName][0],
-            _patternName[patternLayerName][1]
-        ];
-    }
-    if (fillContentStroke === 'patternLayer') {
-        patternLayerName = fillContentStrokeVal;
-        fillContentStrokeVal = [
-            _patternName[patternLayerName][0],
-            _patternName[patternLayerName][1]
-        ];
-    }
-    return new PlayObject('make', {
-        'null': sourceRef,
-        'using': {
-            'obj': 'contentLayer',
-            'value': {
-                'shape': shape.shapeObj(typeShape, shapeVal),
-                'strokeStyle': {
-                    'obj': 'strokeStyle',
-                    'value': {
-                        'fillEnabled': fillEnabledVal,
-                        'strokeEnabled': strokeEnabledVal,
-                        'strokeStyleBlendMode': {
-                            'enum': 'blendMode',
-                            'value': 'normal'
-                        },
-                        'strokeStyleContent': shape.fillContentsObject(fillContentStroke, fillContentStrokeVal),
-                        'strokeStyleLineAlignment': {
-                            'enum': 'strokeStyleLineAlignment',
-                            'value': alignmentTypes[strokeAlignment]
-                        },
-                        'strokeStyleLineCapType': {
-                            'enum': 'strokeStyleLineCapType',
-                            'value': _strokeCap[cap]
-                        },
-                        'strokeStyleLineDashOffset': unitsIn.points(0),
-                        'strokeStyleLineDashSet': [],
-                        'strokeStyleLineJoinType': {
-                            'enum': 'strokeStyleLineJoinType',
-                            'value': _strokeCorner[corner]
-                        },
-                        'strokeStyleLineWidth': unitsIn.points(strokeWidth),
-                        'strokeStyleMiterLimit': 100,
-                        'strokeStyleOpacity': unitsIn.percent(100),
-                        'strokeStyleResolution': 72,
-                        'strokeStyleScaleLock': false,
-                        'strokeStyleStrokeAdjust': false,
-                        'strokeStyleVersion': 2
-                    }
-                },
-                'type': shape.fillContentsObject(fillContentShape, fillContentShapeVal)
-            }
-        }
-    });
-};
-var setRadius = function (topLeft, topRight, bottomRight, bottomLeft) {
-    topRight = topRight || topLeft;
-    bottomRight = bottomRight || topLeft;
-    bottomLeft = bottomLeft || topLeft;
-    return new PlayObject('changePathDetails', {
-        'keyActionChangeAllCorners': true,
-        'keyOriginRRectRadii': {
-            'obj': 'radii',
-            'value': {
-                'topLeft': {
-                    'unit': 'pixelsUnit',
-                    'value': topLeft
-                },
-                'topRight': {
-                    'unit': 'pixelsUnit',
-                    'value': topRight
-                },
-                'bottomLeft': {
-                    'unit': 'pixelsUnit',
-                    'value': bottomLeft
-                },
-                'bottomRight': {
-                    'unit': 'pixelsUnit',
-                    'value': bottomRight
-                },
-                'unitValueQuadVersion': 1
-            }
-        },
-        'keyOriginType': originTypes.ORIGIN_RECT
-    });
-};
-exports.referenceBy = referenceBy;
-exports.contentTypes = contentTypes;
-exports.alignmentTypes = alignmentTypes;
-exports.originTypes = originTypes;
-exports.setStrokeAlignment = setStrokeAlignment;
-exports.setStrokeCap = setStrokeCap;
-exports.setStrokeCorner = setStrokeCorner;
-exports.setStrokeOpacity = setStrokeOpacity;
-exports.setShapeFillTypeSolidColor = setShapeFillTypeSolidColor;
-exports.setStrokeFillTypeSolidColor = setStrokeFillTypeSolidColor;
-exports.setShapeStrokeWidth = setShapeStrokeWidth;
-exports.setStrokeFillTypePattern = setStrokeFillTypePattern;
-exports.setShapeFillTypePattern = setShapeFillTypePattern;
-exports.deleteShapeStyle = deleteShapeStyle;
-exports.moveShape = moveShape;
-exports.createShape = createShape;
-exports.setRadius = setRadius;
+        );
+    };
+
+    /**
+     * Set the border radius of a rectangle layer.
+     *
+     * @param {number} topLeft
+     * @param {?number} topRight 
+     * @param {?number} bottomRight
+     * @param {?number} bottomLeft
+     * @return {PlayObject}
+     */
+    var setRadius = function (topLeft, topRight, bottomRight, bottomLeft) {
+        topRight = topRight || topLeft;
+        bottomRight = bottomRight || topLeft;
+        bottomLeft = bottomLeft || topLeft;
+
+        return new PlayObject("changePathDetails", {
+            "keyActionChangeAllCorners": true,
+            "keyOriginRRectRadii": {
+                "obj": "radii",
+                "value": {
+                    "topLeft": {
+                        "unit": "pixelsUnit",
+                        "value": topLeft
+                    },
+                    "topRight": {
+                        "unit": "pixelsUnit",
+                        "value": topRight
+                    },
+                    "bottomLeft": {
+                        "unit": "pixelsUnit",
+                        "value": bottomLeft
+                    },
+                    "bottomRight": {
+                        "unit": "pixelsUnit",
+                        "value": bottomRight
+                    },
+                    "unitValueQuadVersion": 1
+                }
+            },
+            "keyOriginType": originTypes.ORIGIN_RECT
+        });
+    };
+    
+    exports.referenceBy = referenceBy;
+    exports.contentTypes = contentTypes;
+    exports.alignmentTypes = alignmentTypes;
+    exports.originTypes = originTypes;
+
+    exports.setStrokeAlignment = setStrokeAlignment;
+    exports.setStrokeCap = setStrokeCap;
+    exports.setStrokeCorner = setStrokeCorner;
+    exports.setStrokeOpacity = setStrokeOpacity;
+    exports.setShapeFillTypeSolidColor = setShapeFillTypeSolidColor;
+    exports.setStrokeFillTypeSolidColor = setStrokeFillTypeSolidColor;
+    exports.setShapeStrokeWidth = setShapeStrokeWidth;
+    exports.setStrokeFillTypePattern = setStrokeFillTypePattern;
+    exports.setShapeFillTypePattern = setShapeFillTypePattern;
+    exports.deleteShapeStyle = deleteShapeStyle;
+    exports.moveShape = moveShape;
+    exports.createShape = createShape;
+    exports.setRadius = setRadius;
+
+
 },{"../playobject":26,"../util":30,"./reference":17,"./shape":19,"./unit":22}],9:[function(require,module,exports){
-'use strict';
-var PlayObject = require('../playobject'), referenceBy = require('./reference').wrapper('document'), referenceOf = require('./reference').refersTo, unitsIn = require('./unit'), assert = require('../util').assert, _ = require('lodash');
+/*
+* Copyright (c) 2014 Adobe Systems Incorporated. All rights reserved.
+*  
+* Permission is hereby granted, free of charge, to any person obtaining a
+* copy of this software and associated documentation files (the "Software"), 
+* to deal in the Software without restriction, including without limitation 
+* the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+* and/or sell copies of the Software, and to permit persons to whom the 
+* Software is furnished to do so, subject to the following conditions:
+*  
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*  
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
+* DEALINGS IN THE SOFTWARE.
+* 
+*/
+
+
+"use strict";
+
+var PlayObject = require("../playobject"),
+    referenceBy = require("./reference").wrapper("document"),
+    referenceOf = require("./reference").refersTo,
+    unitsIn = require("./unit"),
+    assert = require("../util").assert,
+    _ = require("lodash");
+    
+
+/**
+ * Open a document (psd, png, jpg, ai, gif)
+ * 
+ * @param {ActionDescriptor} sourceRef document reference
+ * @param {string} settings.pdfSelection "page" or "image"
+ * @param {number} settings.pageNumber The number of the page
+ * @param {boolean} settings.suppressWarnings true or false
+ * @param {string} settings.name The name of the Document.
+ * @param {number} settings.bitDepth The bit depth. 8 or 16
+ * @param {string} settings.box Box to crop to. See openDocument.cropTo vals 
+ * @param {boolean} settings.bAntiAlias true or false
+ * @param {boolean} settings.bConstrainProportions true or false
+ * @param {number} settings.width The width of the image size.
+ * @param {number} settings.height The height of the image size
+ * @param {string} settings.colorSpace The color space of the image mode.  See openDocument.mode vals
+ * @param {number} settings.resolution The resolution value
+ *
+ * @return {PlayObject}
+ *
+ */
 var openDocument = function (sourceRef, settings) {
     var params = {
-            pdfSelection: settings.pdfSelection || 'page',
-            pageNumber: settings.pageNumber || 1,
-            suppressWarnings: settings.suppressWarnings || false,
-            name: settings.name || sourceRef.name,
-            bitDepth: settings.bitDepth || 8,
-            box: settings.box || 'boundingBox',
-            bAntiAlias: settings.bAntiAlias || true,
-            bConstrainProportions: settings.bConstrainProportions || true,
-            width: settings.width || sourceRef.width,
-            height: settings.height || sourceRef.height,
-            colorSpace: settings.colorSpace || 'RGBColorMode',
-            resolution: settings.resolution
-        }, fileType, strIndex = sourceRef.path.lastIndexOf('.');
+            pdfSelection:       settings.pdfSelection || "page",
+            pageNumber:         settings.pageNumber || 1,
+            suppressWarnings:   settings.suppressWarnings || false,
+            name:               settings.name || sourceRef.name,
+            bitDepth:           settings.bitDepth || 8,
+            box:                settings.box || "boundingBox",
+            bAntiAlias:         settings.bAntiAlias || true,
+            bConstrainProportions:      settings.bConstrainProportions || true,
+            width:              settings.width || sourceRef.width,
+            height:             settings.height || sourceRef.height,
+            colorSpace:         settings.colorSpace || "RGBColorMode",
+            resolution:         settings.resolution
+        },
+        fileType,
+        strIndex = sourceRef.path.lastIndexOf(".");
     if (strIndex !== -1) {
         strIndex++;
         fileType = sourceRef.path.substring(strIndex);
     }
-    var desc = { 'null': sourceRef };
-    if (fileType === 'ai') {
-        desc.as.obj = 'PDFGenericFormat';
+    var desc = {
+        "null": sourceRef
+    };
+    if (fileType === "ai") {
+        desc.as.obj = "PDFGenericFormat";
         desc.as.value.selection = {
-            'enum': 'pdfSelection',
-            'value': params.pdfSelection
+            "enum": "pdfSelection",
+            "value": params.pdfSelection
         };
         desc.as.value.suppressWarnings = params.suppressWarnings;
         desc.as.value.pageNumber = params.pageNumber;
-        if (params.pdfSelection === 'page') {
-            desc.as.value = {
-                'antiAlias': params.bAntiAlias,
-                'constrainProportions': params.bConstrainProportions,
-                'crop': {
-                    'enum': 'cropTo',
-                    'value': openDocument.cropTo[params.box]
+        if (params.pdfSelection === "page") {
+            desc.as.value =  {
+                "antiAlias": params.bAntiAlias,
+                "constrainProportions": params.bConstrainProportions,
+                "crop": {
+                    "enum": "cropTo",
+                    "value": openDocument.cropTo[params.box]
                 },
-                'depth': params.bitDepth,
-                'width': unitsIn.pixels(params.width),
-                'height': unitsIn.pixels(params.height),
-                'mode': {
-                    'enum': 'colorSpace',
-                    'value': openDocument.mode[params.colorSpace]
+                "depth": params.bitDepth,
+                "width": unitsIn.pixels(params.width),
+                "height": unitsIn.pixels(params.height),
+                "mode": {
+                    "enum": "colorSpace",
+                    "value": openDocument.mode[params.colorSpace]
                 },
-                'name': params.name,
-                'resolution': unitsIn.density(params.resolution)
+                "name": params.name,
+                "resolution": unitsIn.density(params.resolution)
             };
         }
     }
-    return new PlayObject('open', desc);
+    return new PlayObject(
+        "open",
+        desc
+    );
 };
 openDocument.cropTo = {
-    bounding: 'boundingBox',
-    media: 'mediaBox',
-    crop: 'cropBox',
-    bleed: 'bleedBox',
-    trim: 'trimBox',
-    art: 'artBox'
+    bounding: "boundingBox",
+    media: "mediaBox",
+    crop: "cropBox",
+    bleed: "bleedBox",
+    trim: "trimBox",
+    art: "artBox"
 };
 openDocument.mode = {
-    rgb: 'RGBColorMode',
-    gray: 'grayscaleMode',
-    cmyk: 'CMYKColorMode',
-    lab: 'labColorMode'
+    rgb: "RGBColorMode",
+    gray: "grayscaleMode",
+    cmyk: "CMYKColorMode",
+    lab: "labColorMode"
 };
+
+/**
+ * Close a document without saving
+ * 
+ * @param {number} documentID
+ * @param {string=} save Whether the document should be saved. "yes", "no"
+ * @return {PlayObject}
+ *
+ * Preconditions:
+ * The document should be saved previously and have fileReference path value for saving.
+ */
 var closeDocument = function (documentID, save) {
-    var desc = { documentID: documentID };
+    var desc = {
+        documentID: documentID
+    };
+
     if (save) {
         desc.saving = {
-            'enum': 'yesNo',
-            'value': save
+            "enum": "yesNo",
+            "value": save
         };
     }
-    return new PlayObject('close', desc);
+
+    return new PlayObject(
+        "close",
+        desc
+    );
 };
+
+/**
+ * Save a document
+ * 
+ * @param {string} path The full path to save a file.
+ * @param {!Object} settings An object with params
+ * @param {string} settings.gifColorPalette GIF color palette. See saveDocument.gifColorPalette
+ * @param {string} settings.gifForcedColors GIF forced color. See saveDocument.gifForcedColors
+ * @param {boolean} settings.gitTransparency GIF Transparency
+ * @param {string} settings.gifRowOrder GIF Format Option.  normal or interlaced
+ * @param {number} settings.jpgExtendedQuality JPG Quality. 0 to 10
+ * @param {string} settings.jpgFormatOptions JPG Format Option. standard, optimized, or progressive
+ * @param {number} settings.jpgProgressiveScans The number of Scans. 3 to 5
+ * @param {number} settings.pngCompression PNG compression. none or smallest
+ * @param {number} settings.pngInterlace PNG interlace. none or interlaced
+
+ * @param {boolean} settings.embedProfiles Whether embed color profile
+ * 
+ * @return {PlayObject}
+ */
 var saveDocument = function (path, settings) {
-    var strIndex = path.lastIndexOf('.'), pathIndex = path.lastIndexOf('/'), fileType, fileName, filePath, desc, saveAs = {}, saveTo = {}, params = {
-            gifColorPalette: settings.gifColorPalette || 'exact',
-            gifRowOrder: settings.gifRowOrder || 'normal',
-            gifForcedColors: settings.gifForcedColors || 'blackAndWhite',
-            gitTransparency: settings.gitTransparency || true,
-            jpgExtendedQuality: settings.jpgExtendedQuality || 8,
-            jpgFormatOptions: settings.jpgFormatOptions || 'standard',
+    var strIndex = path.lastIndexOf("."),
+        pathIndex = path.lastIndexOf("/"),
+        fileType,
+        fileName,
+        filePath,
+        desc,
+        saveAs = {},
+        saveTo = {},
+        params = {
+            gifColorPalette:     settings.gifColorPalette || "exact",
+            gifRowOrder:         settings.gifRowOrder || "normal",
+            gifForcedColors:     settings.gifForcedColors || "blackAndWhite",
+            gitTransparency:     settings.gitTransparency || true,
+            jpgExtendedQuality:  settings.jpgExtendedQuality || 8,
+            jpgFormatOptions:    settings.jpgFormatOptions || "standard",
             jpgProgressiveScans: settings.jpgProgressiveScans || 3,
-            pngCompression: settings.pngCompression,
-            pngInterlace: settings.pngInterlace,
-            embedProfiles: settings.embedProfiles || false
+            pngCompression:      settings.pngCompression,
+            pngInterlace:        settings.pngInterlace,
+            embedProfiles:       settings.embedProfiles || false
         };
     if (strIndex !== -1) {
         strIndex++;
@@ -18259,213 +18845,354 @@ var saveDocument = function (path, settings) {
         pathIndex++;
         fileName = path.substring(pathIndex);
     }
-    filePath = path.replace(fileName, '');
-    if (fileType === 'gif') {
+    filePath = path.replace(fileName, "");
+
+    if (fileType === "gif") {
         saveAs = {
-            'obj': 'GIFFormat',
-            'value': { 'interfaceIconFrameDimmed': saveDocument.gifRowOrder[params.gifRowOrder] }
-        };
-        saveTo = {
-            'obj': 'indexedColorMode',
-            'value': {
-                'palette': {
-                    'enum': 'colorPalette',
-                    'value': saveDocument.gifColorPalette[params.gifColorPalette]
-                },
-                'forcedColors': {
-                    'enum': 'forcedColors',
-                    'value': saveDocument.gifForcedColors[params.gifForcedColors]
-                },
-                'transparency': params.gitTransparency
+            "obj": "GIFFormat",
+            "value": {
+                "interfaceIconFrameDimmed": saveDocument.gifRowOrder[params.gifRowOrder]
             }
         };
-    } else if (fileType === 'psd') {
-        saveAs = {
-            'obj': 'photoshop35Format',
-            'value': {}
+        saveTo = {
+            "obj": "indexedColorMode",
+            "value": {
+                "palette": {
+                    "enum": "colorPalette",
+                    "value": saveDocument.gifColorPalette[params.gifColorPalette]
+                },
+                "forcedColors": {
+                    "enum": "forcedColors",
+                    "value": saveDocument.gifForcedColors[params.gifForcedColors]
+                },
+                "transparency": params.gitTransparency
+            }
         };
-    } else if (fileType === 'jpg') {
+    } else if (fileType === "psd") {
         saveAs = {
-            'obj': 'JPEG',
-            'value': {
-                'extendedQuality': params.jpgExtendedQuality,
-                'matteColor': {
-                    'enum': 'matteColor',
-                    'value': 'none'
+            "obj": "photoshop35Format",
+            "value": {}
+        };
+    } else if (fileType === "jpg") {
+        saveAs = {
+            "obj": "JPEG",
+            "value": {
+                "extendedQuality": params.jpgExtendedQuality,
+                "matteColor": {
+                    "enum": "matteColor",
+                    "value": "none"
                 }
             }
         };
-    } else if (fileType === 'png') {
+    } else if (fileType === "png") {
         saveAs = {
-            'obj': 'PNGFormat',
-            'value': {
-                'PNGInterlaceType': {
-                    'enum': 'PNGInterlaceType',
-                    'value': saveDocument.pngInterlace[params.pngInterlace]
+            "obj": "PNGFormat",
+            "value": {
+                "PNGInterlaceType": {
+                    "enum": "PNGInterlaceType",
+                    "value": saveDocument.pngInterlace[params.pngInterlace]
                 },
-                'compression': saveDocument.pngCompression[params.pngCompression]
+                "compression": saveDocument.pngCompression[params.pngCompression]
             }
         };
     }
     desc = {
-        'as': saveAs,
-        'in': { 'path': path }
+        "as": saveAs,
+        "in": {
+            "path": path
+        }
     };
-    if (fileType === 'gif') {
+    if (fileType === "gif") {
         desc.to = saveTo;
         desc.copy = true;
     } else {
         desc.embedProfiles = params.embedProfiles;
     }
-    return new PlayObject('make', desc);
+    return new PlayObject(
+        "make",
+        desc
+    );
 };
 saveDocument.pngCompression = {
     none: 0,
     smallest: 9
 };
 saveDocument.pngInterlace = {
-    none: 'PNGInterlaceNone',
-    interlaced: 'PNGInterlaceAdam7'
+    none: "PNGInterlaceNone",
+    interlaced: "PNGInterlaceAdam7"
 };
 saveDocument.gifColorPalette = {
-    exact: 'exact',
-    mac: 'macintoshSystem',
-    window: 'windowsSystem',
-    web: 'web',
-    localPerceptual: 'perceptual',
-    localSelective: 'selective',
-    localAdaptive: 'adaptive',
-    previous: 'previous'
+    exact: "exact",
+    mac: "macintoshSystem",
+    window: "windowsSystem",
+    web: "web",
+    localPerceptual: "perceptual",
+    localSelective: "selective",
+    localAdaptive: "adaptive",
+    previous: "previous"
 };
 saveDocument.gifRowOrder = {
     normal: false,
     interlaced: true
 };
 saveDocument.gifForcedColors = {
-    none: 'none',
-    blackAndWhite: 'blackAndWhite',
-    primaries: 'primaries',
-    web: 'web'
+    none: "none",
+    blackAndWhite: "blackAndWhite",
+    primaries: "primaries",
+    web: "web"
 };
+
+/**
+ * Select a document
+ * 
+ * @param {ActionDescriptor} sourceRef document reference
+ *
+ * @return {PlayObject}
+ *
+ */
 var selectDocument = function (sourceRef) {
-    assert(referenceOf(sourceRef) === 'document', 'selectDocument is passed a non-document reference');
-    var desc = { 'null': sourceRef };
-    return new PlayObject('select', desc);
-};
-referenceBy.path = function (path) {
-    return { descriptor: { 'null': path } };
-};
-var createDocument = function (settings) {
-    var params = {
-            width: settings.width || 7,
-            height: settings.width || 5,
-            resolution: settings.resolution || 72,
-            fill: settings.fill || 'white',
-            colorMode: settings.colorMode || 'RGBColorMode',
-            depth: settings.depth || 8,
-            colorProfile: settings.colorProfile || 'none',
-            pixelAspectRatio: settings.pixelAspectRatio || 1
-        };
-    var newObj = {
-            'obj': 'document',
-            'value': {
-                'width': unitsIn.distance(params.width),
-                'height': unitsIn.distance(params.height),
-                'resolution': unitsIn.density(params.resolution),
-                'fill': {
-                    'enum': 'fill',
-                    'value': params.fill
-                },
-                'mode': { 'class': params.colorMode },
-                'depth': params.depth,
-                'profile': params.colorProfile,
-                'pixelScaleFactor': params.pixelAspectRatio
-            }
-        };
-    var desc = { 'new': newObj };
-    return new PlayObject('make', desc);
-};
-var createWithPreset = function (presetName) {
+    assert(referenceOf(sourceRef) === "document", "selectDocument is passed a non-document reference");
+    
     var desc = {
-            'new': {
-                'obj': 'document',
-                'value': { preset: presetName }
-            }
-        };
-    return new PlayObject('make', desc);
+        "null": sourceRef
+    };
+    return new PlayObject(
+        "select",
+        desc
+    );
 };
-var resizeDocument = function (width, height, horizontalExtension, verticalExtension) {
-    horizontalExtension = horizontalExtension || 'center';
-    verticalExtension = verticalExtension || 'center';
-    return new PlayObject('canvasSize', {
-        'canvasExtensionColorType': {
-            'enum': 'canvasExtensionColorType',
-            'value': 'backgroundColor'
-        },
-        'height': height,
-        'width': width,
-        'horizontal': {
-            'enum': 'horizontalLocation',
-            'value': horizontalExtension
-        },
-        'vertical': {
-            'enum': 'verticalLocation',
-            'value': verticalExtension
-        }
-    });
-};
-var setTargetPathVisible = function (sourceRef, enabled) {
-    assert(referenceOf(sourceRef) === 'document', 'setTargetPathVisible is passed a non-document reference');
-    var reference = {
-            'ref': [
-                {
-                    'ref': 'property',
-                    'property': 'targetPathVisibility'
-                },
-                sourceRef
-            ]
-        };
-    var descriptor = {
-            null: reference,
-            to: enabled
-        };
-    return new PlayObject('set', descriptor);
-};
-var _buildGuidesDescriptor = function (guideType) {
+
+/**
+ * Return a document path to be used for opening or saving a document.
+ * 
+ * @param {string} path document path
+ *
+ * @return {PlayObject}
+ *
+ */
+referenceBy.path = function (path) {
     return {
-        'null': {
-            'ref': [
-                {
-                    'ref': 'property',
-                    'property': guideType
-                },
-                {
-                    'ref': 'document',
-                    'enum': 'ordinal',
-                    'value': 'targetEnum'
-                }
-            ]
+        descriptor: {
+            "null": path
         }
     };
 };
-var _guidesDescriptor = _buildGuidesDescriptor('guidesVisibility'), _smartGuidesDescriptor = _buildGuidesDescriptor('smartGuidesVisibility');
+
+/**
+ * Create a document
+ * 
+ * @param {number} settings.width The document width.
+ * @param {number} settings.height The document height.
+ * @param {number} settings.resolution The document resolution.
+ * @param {string} settings.fill The document fill. "white", "backgroundColor", "transparency"
+ * @param {string} settings.colorMode The document color mode. "RGBColorMode", "bitmapMode", "grayscaleMode" 
+                    "CMYKColorMode", "labColorMode"
+ * @param {number} settings.depth The color mode depth
+ * @param {string} settings.colorProfile The document color profile. "sRGB IEC61966-2.1", "Adobe RGB (1998)",
+ *  default: "none"
+ * @param {string} settings.pixelAspectRatio The document pixel aspect ratio. 
+ *
+ * @return {PlayObject}
+ *
+ */
+var createDocument = function (settings) {
+    var params = {
+            width:      settings.width || 7,
+            height:     settings.width || 5,
+            resolution: settings.resolution || 72,
+            fill:       settings.fill || "white",
+            colorMode:  settings.colorMode || "RGBColorMode",
+            depth:      settings.depth || 8,
+            colorProfile:    settings.colorProfile || "none",
+            pixelAspectRatio:  settings.pixelAspectRatio || 1
+        };
+    var newObj = {
+        "obj": "document",
+        "value": {
+            "width": unitsIn.distance(params.width),
+            "height": unitsIn.distance(params.height),
+            "resolution": unitsIn.density(params.resolution),
+            "fill": {
+                "enum": "fill",
+                "value": params.fill
+            },
+            "mode": {
+                "class": params.colorMode
+            },
+            "depth": params.depth,
+            "profile": params.colorProfile,
+            "pixelScaleFactor": params.pixelAspectRatio
+        }
+    };
+    var desc = {
+        "new": newObj
+    };
+    return new PlayObject(
+        "make",
+        desc
+    );
+};
+
+/**
+ * Create a document using a simple preset string identifier
+ *
+ * @param {string} presetName identifier of the preset
+ * @return {PlayObject}
+ */
+var createWithPreset = function (presetName) {
+    var desc = {
+            "new": {
+                "obj": "document",
+                "value": {
+                    preset: presetName
+                }
+            }
+        };
+    return new PlayObject(
+        "make",
+        desc
+    );
+};
+
+/**
+ * Resizes the canvas of current document
+ * 
+ * @param {Unit} width Width in units
+ * @param {Unit} height Height in units
+ * @param {string} horizontalExtension option to stretch the canvas horizontally, default center
+ * @param {string} verticalExtension option to strecth canvas vertically, default center
+ *
+ * @returns {PlayObject}
+ */
+var resizeDocument = function (width, height, horizontalExtension, verticalExtension) {
+    horizontalExtension = horizontalExtension || "center";
+    verticalExtension = verticalExtension || "center";
+
+    return new PlayObject(
+        "canvasSize",
+        {
+            "canvasExtensionColorType": {
+                "enum": "canvasExtensionColorType",
+                "value": "backgroundColor"
+            },
+            "height": height,
+            "width": width,
+            "horizontal": {
+                "enum": "horizontalLocation",
+                "value": horizontalExtension
+            },
+            "vertical": {
+                "enum": "verticalLocation",
+                "value": verticalExtension
+            }
+        }
+    );
+};
+
+/**
+ * Set the Target Path property of the document. This is available in
+ * the classic UI menu as View > Extras..Show > Target Path
+ * 
+ * @param {object} sourceRef
+ * @param {boolean} enabled
+ * @return {PlayObject}
+ */
+var setTargetPathVisible = function (sourceRef, enabled) {
+    assert(referenceOf(sourceRef) === "document", "setTargetPathVisible is passed a non-document reference");
+
+    var reference = {
+        "ref": [
+            {
+                "ref": "property",
+                "property": "targetPathVisibility"
+            },
+            sourceRef
+        ]
+    };
+
+    var descriptor = {
+        null: reference,
+        to: enabled
+    };
+
+    return new PlayObject("set", descriptor);
+};
+
+/**
+ * Build the base descriptor for guide visibility
+ *
+ * @private
+ * @param {string} guideType either "guidesVisibility" or "smartGuidesVisibility"
+ * @return {PlayObject}
+ */
+var _buildGuidesDescriptor = function (guideType) {
+    return {
+        "null": {
+            "ref": [{
+                "ref": "property",
+                "property": guideType
+            }, {
+                "ref": "document",
+                "enum": "ordinal",
+                "value": "targetEnum"
+            }]
+        }
+    };
+};
+
+/**
+ * Guide Visibility descriptors (regular and smart)
+ *
+ * @private
+ * @type {PlayObject}
+ */
+var _guidesDescriptor = _buildGuidesDescriptor("guidesVisibility"),
+    _smartGuidesDescriptor = _buildGuidesDescriptor("smartGuidesVisibility");
+
+/**
+ * Generate a PlayObject to get the visibility of Guides for the current document
+ * 
+ * @return {PlayObject}
+ */
 var getGuidesVisibility = function () {
-    return new PlayObject('get', _guidesDescriptor);
+    return new PlayObject("get", _guidesDescriptor);
 };
+
+/**
+ * Generate a PlayObject to get the visibility of Smart Guides for the current document
+ * 
+ * @return {PlayObject}
+ */
 var getSmartGuidesVisibility = function () {
-    return new PlayObject('get', _smartGuidesDescriptor);
+    return new PlayObject("get", _smartGuidesDescriptor);
 };
+
+/**
+ * Generate a PlayObject to set the visibility of Guides for the current document
+ *
+ * @param {boolean} enabled
+ * @return {PlayObject}
+ */
 var setGuidesVisibility = function (enabled) {
     var setter = _.clone(_guidesDescriptor);
     setter.to = enabled;
-    return new PlayObject('set', setter);
+    return new PlayObject("set", setter);
 };
+
+/**
+ * Generate a PlayObject to set the visibility of Smart Guides for the current document
+ *
+ * @param {boolean} enabled
+ * @return {PlayObject}
+ */
 var setSmartGuidesVisibility = function (enabled) {
     var setter = _.clone(_smartGuidesDescriptor);
     setter.to = enabled;
-    return new PlayObject('set', setter);
+    return new PlayObject("set", setter);
 };
+
 exports.referenceBy = referenceBy;
+
 exports.open = openDocument;
 exports.close = closeDocument;
 exports.save = saveDocument;
@@ -18478,74 +19205,232 @@ exports.getGuidesVisibility = getGuidesVisibility;
 exports.getSmartGuidesVisibility = getSmartGuidesVisibility;
 exports.setGuidesVisibility = setGuidesVisibility;
 exports.setSmartGuidesVisibility = setSmartGuidesVisibility;
+
 },{"../playobject":26,"../util":30,"./reference":17,"./unit":22,"lodash":2}],10:[function(require,module,exports){
-'use strict';
-var PlayObject = require('../playobject'), unitsIn = require('./unit');
-var assert = require('../util').assert, referenceOf = require('./reference').refersTo;
+/*
+* Copyright (c) 2014 Adobe Systems Incorporated. All rights reserved.
+*  
+* Permission is hereby granted, free of charge, to any person obtaining a
+* copy of this software and associated documentation files (the "Software"), 
+* to deal in the Software without restriction, including without limitation 
+* the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+* and/or sell copies of the Software, and to permit persons to whom the 
+* Software is furnished to do so, subject to the following conditions:
+*  
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*  
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
+* DEALINGS IN THE SOFTWARE.
+* 
+*/
+
+
+"use strict";
+
+var PlayObject = require("../playobject"),
+    unitsIn = require("./unit");
+
+var assert = require("../util").assert,
+    referenceOf = require("./reference").refersTo;
+
+/**
+ * @param {ActionDescriptor} sourceRef Guide reference
+ *
+ * @return {PlayObject}
+ *
+ * Preconditions:
+ * Have guide(s) in the active document.
+ */
 var getGuide = function (sourceRef) {
-    assert(referenceOf(sourceRef) === 'guide', 'getGuide is passed a non-guide reference');
-    return new PlayObject('get', { 'null': sourceRef });
+    assert(referenceOf(sourceRef) === "guide", "getGuide is passed a non-guide reference");
+    return new PlayObject(
+        "get",
+        {
+            "null": sourceRef
+        }
+    );
 };
+
+/**
+ * Create a new guide
+ *
+ * @param {string} orientation The orientation of guide. "horizontal", "vertical"
+ * @param {string} unit Units for position of guide
+ * @param {number} position The position of guide.
+ *      -300000.000 px to 300000.000 px
+ *      -4166.667 in to 4166.667 in
+ *      -10583.333 cm to 10583.333 cm
+ *      -105833.333 mm to 105833.333 mm
+ *      -300000.000 pt to 300000.000 pt
+ *      -25000.000 pica to 25000.000 pica
+ *      -50000.000 % to 50000.000 %
+ *
+ * @return {PlayObject}
+ *
+ * Preconditions:
+ * Create or open a document.
+ */
 var createGuide = function (orientation, unit, position) {
-    return new PlayObject('make', {
-        'new': {
-            'obj': 'guide',
-            'value': {
-                'orientation': {
-                    'enum': 'orientation',
-                    'value': orientation
-                },
-                'position': unitsIn[unit](position)
+    return new PlayObject(
+        "make",
+        {
+            "new": {
+                "obj": "guide",
+                "value": {
+                    "orientation": {
+                        "enum": "orientation",
+                        "value": orientation
+                    },
+                    "position": unitsIn[unit](position)
+                }
             }
         }
-    });
+    );
 };
+
+/**
+ * Delete guide(s)
+ * 
+ * @param {ActionDescriptor} sourceRef guide reference
+ * 
+ * @return {PlayObject}
+ * 
+ * Preconditions:
+ * Create or open a document for deleting all guides.
+ * Have guide(s) in the active document to delete by guide index.
+ */
 var deleteGuide = function (sourceRef) {
-    return new PlayObject('delete', { 'null': sourceRef });
+    return new PlayObject(
+        "delete",
+        {
+            "null": sourceRef
+        }
+    );
 };
+
+/**
+ * Get the count of guide(s)
+ *
+ * @param {ActionDescriptor} sourceRef Document reference
+ * 
+ * @return {PlayObject}
+ *
+ * Preconditions:
+ * Create or open a document.
+ */
 var getGuideCount = function (sourceRef) {
-    return new PlayObject('getProperty', {
-        'null': sourceRef,
-        'property': 'count'
-    });
+    return new PlayObject(
+        "getProperty",
+        {
+            "null": sourceRef,
+            "property": "count"
+        }
+    );
 };
+
+
+
 exports.getGuide = getGuide;
 exports.createGuide = createGuide;
 exports.deleteGuide = deleteGuide;
 exports.getGuideCount = getGuideCount;
+
+
 },{"../playobject":26,"../util":30,"./reference":17,"./unit":22}],11:[function(require,module,exports){
-'use strict';
-var PlayObject = require('../playobject');
+/*
+* Copyright (c) 2014 Adobe Systems Incorporated. All rights reserved.
+*  
+* Permission is hereby granted, free of charge, to any person obtaining a
+* copy of this software and associated documentation files (the "Software"), 
+* to deal in the Software without restriction, including without limitation 
+* the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+* and/or sell copies of the Software, and to permit persons to whom the 
+* Software is furnished to do so, subject to the following conditions:
+*  
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*  
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
+* DEALINGS IN THE SOFTWARE.
+* 
+*/
+
+
+"use strict";
+
+var PlayObject = require("../playobject");
+    
+/**
+ * Will return layer IDs under the given point of the active document
+ * The point is (x,y) where (0,0) is the top left of the document and 
+ * x is horizontal vs y is vertical
+ * 
+ * @param {number} px X coordinate - horizontal
+ * @param {number} py Y coordinate - vertical
+ * @return {PlayObject}
+ *
+ */
 var layerIDsAtPoint = function (px, py) {
-    return new PlayObject('hitTest', {
-        'x': px,
-        'y': py
-    });
+    return new PlayObject(
+        "hitTest",
+        {
+            "x": px,
+            "y": py
+        }
+    );
 };
+
+/**
+ * Will return the color data under the given pixels
+ * using current Eye dropper tool settings
+ * colorSampler is available when sampleData is true
+ *
+ * @param {number} px X coordinate - horizontal
+ * @param {[type]} py Y coordinate - vertical
+ *
+ * @return {{sampleData: <boolean>, colorSampler: <object>}} [description]
+ */
 var colorSampleAtPoint = function (px, py) {
-    return new PlayObject('colorSampler', {
-        'null': {
-            'ref': 'document',
-            'enum': 'ordinal',
-            'value': 'targetEnum'
-        },
-        'samplePoint': {
-            'obj': 'samplePoint',
-            'value': {
-                'horizontal': {
-                    'unit': 'distanceUnit',
-                    'value': px
-                },
-                'vertical': {
-                    'unit': 'distanceUnit',
-                    'value': py
+    return new PlayObject(
+        "colorSampler",
+        {
+            "null": {
+                "ref": "document",
+                "enum": "ordinal",
+                "value": "targetEnum"
+            },
+            "samplePoint": {
+                "obj": "samplePoint",
+                "value": {
+                    "horizontal": {
+                        "unit": "distanceUnit",
+                        "value": px
+                    },
+                    "vertical": {
+                        "unit": "distanceUnit",
+                        "value": py
+                    }
                 }
             }
         }
-    });
+    );
 };
+
 exports.layerIDsAtPoint = layerIDsAtPoint;
 exports.colorSampleAtPoint = colorSampleAtPoint;
+
+
 },{"../playobject":26}],12:[function(require,module,exports){
 exports.artboard = require("./artboard");
 exports.brushes = require("./brushes");
@@ -18566,341 +19451,656 @@ exports.tool = require("./tool");
 exports.unit = require("./unit");
 
 },{"./artboard":5,"./brushes":6,"./color":7,"./contentLayer":8,"./document":9,"./guide":10,"./hitTest":11,"./layer":13,"./layerEffect":14,"./path":15,"./photoshopEvent":16,"./reference":17,"./ruler":18,"./shape":19,"./textLayer":20,"./tool":21,"./unit":22}],13:[function(require,module,exports){
-'use strict';
-var PlayObject = require('../playobject'), referenceLib = require('./reference'), referenceBy = referenceLib.wrapper('layer'), inUnits = require('./unit');
-var assert = require('../util').assert, referenceOf = require('./reference').refersTo;
+/*
+* Copyright (c) 2014 Adobe Systems Incorporated. All rights reserved.
+*  
+* Permission is hereby granted, free of charge, to any person obtaining a
+* copy of this software and associated documentation files (the "Software"), 
+* to deal in the Software without restriction, including without limitation 
+* the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+* and/or sell copies of the Software, and to permit persons to whom the 
+* Software is furnished to do so, subject to the following conditions:
+*  
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*  
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
+* DEALINGS IN THE SOFTWARE.
+* 
+*/
+
+"use strict";
+
+var PlayObject = require("../playobject"),
+    referenceLib = require("./reference"),
+    referenceBy = referenceLib.wrapper("layer"),
+    inUnits = require("./unit");
+
+var assert = require("../util").assert,
+    referenceOf = require("./reference").refersTo;
+    
+/**
+ * Possible layer kind values
+ * @const
+ */
 var layerKinds = Object.defineProperties({}, {
-        'ANY': {
-            writeable: false,
-            enumerable: true,
-            value: 0
-        },
-        PIXEL: {
-            writeable: false,
-            enumerable: true,
-            value: 1
-        },
-        ADJUSTMENT: {
-            writeable: false,
-            enumerable: true,
-            value: 2
-        },
-        TEXT: {
-            writeable: false,
-            enumerable: true,
-            value: 3
-        },
-        VECTOR: {
-            writeable: false,
-            enumerable: true,
-            value: 4
-        },
-        SMARTOBJECT: {
-            writeable: false,
-            enumerable: true,
-            value: 5
-        },
-        VIDEO: {
-            writeable: false,
-            enumerable: true,
-            value: 6
-        },
-        GROUP: {
-            writeable: false,
-            enumerable: true,
-            value: 7
-        },
-        '3D': {
-            writeable: false,
-            enumerable: true,
-            value: 8
-        },
-        GRADIENT: {
-            writeable: false,
-            enumerable: true,
-            value: 9
-        },
-        PATTERN: {
-            writeable: false,
-            enumerable: true,
-            value: 10
-        },
-        SOLIDCOLOR: {
-            writeable: false,
-            enumerable: true,
-            value: 11
-        },
-        BACKGROUND: {
-            writeable: false,
-            enumerable: true,
-            value: 12
-        },
-        GROUPEND: {
-            writeable: false,
-            enumerable: true,
-            value: 13
-        }
-    });
+    "ANY": {
+        writeable: false,
+        enumerable: true,
+        value:  0
+    },
+    PIXEL: {
+        writeable: false,
+        enumerable: true,
+        value:  1
+    },
+    ADJUSTMENT: {
+        writeable: false,
+        enumerable: true,
+        value:  2
+    },
+    TEXT: {
+        writeable: false,
+        enumerable: true,
+        value:  3
+    },
+    VECTOR: {
+        writeable: false,
+        enumerable: true,
+        value:  4
+    },
+    SMARTOBJECT: {
+        writeable: false,
+        enumerable: true,
+        value:  5
+    },
+    VIDEO: {
+        writeable: false,
+        enumerable: true,
+        value:  6
+    },
+    GROUP: {
+        writeable: false,
+        enumerable: true,
+        value:  7
+    },
+    "3D": {
+        writeable: false,
+        enumerable: true,
+        value:  8
+    },
+    GRADIENT: {
+        writeable: false,
+        enumerable: true,
+        value:  9
+    },
+    PATTERN: {
+        writeable: false,
+        enumerable: true,
+        value:  10
+    },
+    SOLIDCOLOR: {
+        writeable: false,
+        enumerable: true,
+        value:  11
+    },
+    BACKGROUND: {
+        writeable: false,
+        enumerable: true,
+        value:  12
+    },
+    GROUPEND: {
+        writeable: false,
+        enumerable: true,
+        value:  13
+    }
+});
+
+
+/**
+ * Moves the source layer to right before target reference 
+ * (usually done by id)
+ * 
+ * @param {ActionDescriptor} sourceRef - Layer reference to move
+ * @param {ActionDescriptor} targetRef - Target layer that layers are being
+ *  moved next to
+ * @returns {PlayObject}
+ */
 var reorder = function (sourceRef, targetRef) {
-    assert(referenceOf(sourceRef) === 'layer', 'reorder is passed a non-layer reference');
-    return new PlayObject('move', {
-        'adjustment': false,
-        'null': sourceRef,
-        'to': targetRef,
-        'version': 5
-    });
+    assert(referenceOf(sourceRef) === "layer", "reorder is passed a non-layer reference");
+    return new PlayObject(
+        "move",
+        {
+            "adjustment": false,
+            "null": sourceRef,
+            "to": targetRef,
+            "version": 5
+        }
+    );
 };
+
+/**
+ * Changes alignment of the given layers
+ *
+ * @param {ActionDescriptor} sourceRef - Reference of layers to align
+ * @param {string} alignment - Alignment value, refer to align.vals
+ *  moved next to
+ * @returns {PlayObject}
+ */
 var align = function (sourceRef, alignment) {
-    assert(referenceOf(sourceRef) === 'layer', 'align is passed a non-layer reference');
-    return new PlayObject('align', {
-        'null': sourceRef,
-        'using': {
-            'enum': 'alignDistributeSelector',
-            'value': align.vals[alignment]
+    assert(referenceOf(sourceRef) === "layer", "align is passed a non-layer reference");
+    return new PlayObject(
+        "align",
+        {
+            "null": sourceRef,
+            "using": {
+                "enum": "alignDistributeSelector",
+                "value": align.vals[alignment]
+            }
         }
-    });
+    );
 };
+
 align.vals = {
-    left: 'ADSLefts',
-    right: 'ADSRights',
-    horizontally: 'ADSCentersH',
-    center: 'ADSCentersH',
-    hCenter: 'ADSCentersH',
-    middle: 'ADSCentersV',
-    vCenter: 'ADSCentersV',
-    vertically: 'ADSCentersV',
-    top: 'ADSTops',
-    bottom: 'ADSBottoms'
+    left: "ADSLefts",
+    right: "ADSRights",
+
+    horizontally: "ADSCentersH",
+    center: "ADSCentersH",
+    hCenter: "ADSCentersH",
+
+    middle: "ADSCentersV",
+    vCenter: "ADSCentersV",
+    vertically: "ADSCentersV",
+
+    top: "ADSTops",
+    bottom: "ADSBottoms"
 };
+
+/**
+ * Distribute given layers
+ * 
+ * @param {ActionDescriptor} sourceRef - Reference of layers to distribute
+ * @param {string} alignment - Distribution spec
+ *
+ * @returns {PlayObject}
+ */
 var distribute = function (sourceRef, alignment) {
-    assert(referenceOf(sourceRef) === 'layer', 'distribute is passed a non-layer reference');
-    return new PlayObject('distort', {
-        'null': sourceRef,
-        'using': {
-            'enum': 'alignDistributeSelector',
-            'value': align.vals[alignment]
+    assert(referenceOf(sourceRef) === "layer", "distribute is passed a non-layer reference");
+    return new PlayObject(
+        "distort",
+        {
+            "null": sourceRef,
+            "using": {
+                "enum": "alignDistributeSelector",
+                "value": align.vals[alignment]
+            }
         }
-    });
+    );
 };
+
+/**
+ * @param {ActionDescriptor} ref - Reference of layer(s) to select
+ * @param {bool} makeVisible - Flag to hide/show the layer
+ * @param {string} modifier - Whether to select, add to selection, remove, or add upto
+ * 
+ * @returns {PlayObject}
+ */
 var select = function (ref, makeVisible, modifier) {
-    modifier = modifier || 'select';
+    modifier = modifier || "select";
     makeVisible = makeVisible || false;
-    assert(referenceOf(ref) === 'layer', 'select is passed a non-layer reference');
-    return new PlayObject('select', {
-        'null': ref,
-        'makeVisible': makeVisible,
-        'selectionModifier': {
-            enum: 'selectionModifierType',
-            value: select.vals[modifier]
+    
+    assert(referenceOf(ref) === "layer", "select is passed a non-layer reference");
+    return new PlayObject(
+        "select",
+        {
+            "null": ref,
+            "makeVisible": makeVisible,
+            "selectionModifier": {
+                enum: "selectionModifierType",
+                value: select.vals[modifier]
+            }
         }
-    });
+    );
 };
 select.vals = {
-    select: '0',
-    deselect: 'removeFromSelection',
-    add: 'addToSelection',
-    addUpTo: 'addToSelectionContinuous'
+    select: "0",
+    deselect: "removeFromSelection",
+    add: "addToSelection",
+    addUpTo: "addToSelectionContinuous"
 };
+
+/**
+ * Deselect all layers
+ *
+ * @returns {PlayObject}
+ */
 var deselectAll = function () {
-    return new PlayObject('selectNoLayers', { 'null': referenceBy.target });
+    return new PlayObject(
+        "selectNoLayers",
+        {
+            "null": referenceBy.target
+        }
+    );
 };
+
+/**
+ * @param {ActionDescriptor} ref - Reference of layer(s) to hide
+ * 
+ * @returns {PlayObject}
+ */
 var hide = function (ref) {
-    assert(referenceOf(ref) === 'layer', 'hide is passed a non-layer reference');
-    return new PlayObject('hide', { 'null': ref });
+    assert(referenceOf(ref) === "layer", "hide is passed a non-layer reference");
+    return new PlayObject(
+        "hide",
+        {
+            "null": ref
+        }
+    );
 };
+
+/**
+ * @param {ActionDescriptor} ref - Reference of layer(s) to show
+ * 
+ * @returns {PlayObject}
+ */
 var show = function (ref) {
-    assert(referenceOf(ref) === 'layer', 'show is passed a non-layer reference');
-    return new PlayObject('show', { 'null': ref });
+    assert(referenceOf(ref) === "layer", "show is passed a non-layer reference");
+    return new PlayObject(
+        "show",
+        {
+            "null": ref
+        }
+    );
 };
+
+/**
+ * Duplicate a layer from one document into another.
+ * 
+ * @param {object} fromRef Reference from which to duplicate
+ * @param {object} toRef Reference to which to duplicate
+ * @param {string=} name Name of the duplicated layer
+ * @returns {PlayObject}
+ */
 var duplicate = function (fromRef, toRef, name) {
-    assert(referenceOf(fromRef[0]) === 'layer', 'duplicate is passed a non-layer first-from reference');
-    assert(referenceOf(fromRef[1]) === 'document', 'duplicate is passed a non-layer second-from reference');
-    assert(referenceOf(toRef) === 'document', 'duplicate is passed a non-document to reference');
+    assert(referenceOf(fromRef[0]) === "layer", "duplicate is passed a non-layer first-from reference");
+    assert(referenceOf(fromRef[1]) === "document", "duplicate is passed a non-layer second-from reference");
+    assert(referenceOf(toRef) === "document", "duplicate is passed a non-document to reference");
+
     var descriptor = {
-            'null': { 'ref': fromRef },
-            'to': toRef
-        };
+        "null": {
+            "ref": fromRef
+        },
+        "to": toRef
+    };
+
     if (name !== undefined) {
         descriptor.name = name;
     }
-    return new PlayObject('duplicate', descriptor);
+
+    return new PlayObject("duplicate", descriptor);
 };
+
+/**
+ * @param {ActionDescriptor} ref - Reference of layer(s) to flip
+ * @param {string} orientation - Which way to flip
+ * 
+ * @returns {PlayObject}
+ */
 var flip = function (ref, orientation) {
-    assert(referenceOf(ref) === 'layer', 'flip is passed a non-layer reference');
-    return new PlayObject('flip', {
-        'null': ref,
-        'axis': {
-            enum: 'orientation',
-            value: orientation
-        }
-    });
-};
-var setPosition = function (ref, _x, _y) {
-    assert(referenceOf(ref) === 'layer', 'setPosition is passed a non-layer reference');
-    return new PlayObject('transform', {
-        'null': ref,
-        'snapToDocBounds': true,
-        'relative': false,
-        'position': {
-            'obj': 'position',
-            'value': {
-                'horizontal': inUnits.pixels(_x),
-                'vertical': inUnits.pixels(_y)
+    assert(referenceOf(ref) === "layer", "flip is passed a non-layer reference");
+    return new PlayObject(
+        "flip",
+        {
+            "null": ref,
+            "axis": {
+                enum: "orientation",
+                value: orientation
             }
         }
-    });
+    );
 };
+
+/**
+ * @param {ActionDescriptor} ref Refernece of layer(s) to set position
+ * @param {Unit} _x Left side to set in Units
+ * @param {Unit} _y Top side to set in Units
+ *
+ * @returns {PlayObject} [description]
+ */
+var setPosition = function (ref, _x, _y) {
+    assert(referenceOf(ref) === "layer", "setPosition is passed a non-layer reference");
+    return new PlayObject(
+        "transform",
+        {
+            "null": ref,
+            "snapToDocBounds": true,
+            "relative": false,
+            "position": {
+                "obj": "position",
+                "value": {
+                    "horizontal": inUnits.pixels(_x),
+                    "vertical": inUnits.pixels(_y)
+                }
+            }
+        }
+    );
+};
+
+/**
+ * @param {ActionDescriptor} ref - Reference of layer(s) to set size
+ * @param {Unit} _w - Width to set in Units
+ * @param {Unit} _h - Height to set in Units
+ * @param {boolean} relative Whether to set the size from center, or top-left corner of selection
+ * @param {Unit} _x Left of the bounds, if relative is false, this has to be provided
+ * @param {Unit} _y Top of the bounds, if relative is false, this has to be provided
+ *
+ * If relative is false, Photoshop will resize the layers from top left, but push them to top left of document
+ * 
+ * @returns {PlayObject}
+ */
 var setSize = function (ref, _w, _h, relative, _x, _y) {
-    assert(referenceOf(ref) === 'layer', 'setHeight is passed a non-layer reference');
+    assert(referenceOf(ref) === "layer", "setHeight is passed a non-layer reference");
     var sizeDescriptor = {
-            'null': ref,
-            'snapToDocBounds': true
+            "null": ref,
+            "snapToDocBounds": true
         };
+
     if (_w) {
         sizeDescriptor.width = inUnits.pixels(_w);
     }
+
     if (_h) {
         sizeDescriptor.height = inUnits.pixels(_h);
     }
+
+    // Relative is true by default in Photoshop
     if (relative !== undefined && !relative) {
         sizeDescriptor.relative = false;
-        assert(_x !== undefined && _y !== undefined, 'Calling setSize with absolute flag with no x,y provided');
+
+        assert(_x !== undefined && _y !== undefined,
+            "Calling setSize with absolute flag with no x,y provided");
+
         sizeDescriptor.position = {
-            'obj': 'position',
-            'value': {
-                'horizontal': inUnits.pixels(_x),
-                'vertical': inUnits.pixels(_y)
+            "obj": "position",
+            "value": {
+                "horizontal": inUnits.pixels(_x),
+                "vertical": inUnits.pixels(_y)
             }
         };
     } else {
         sizeDescriptor.relative = true;
     }
-    return new PlayObject('transform', sizeDescriptor);
+
+    return new PlayObject(
+        "transform",
+        sizeDescriptor
+    );
 };
+
+/**
+ * Rotates the given layers angle degrees, rotation in Photoshop is stateless
+ * so rotate(x) + rotate(y) = rotate(x+y)
+ * @param {ActionDescriptor} ref - Reference of layer(s) to rotate
+ * @param {number} angle - Angle of rotation
+ * 
+ * @returns {PlayObject}
+ */
 var rotate = function (ref, angle) {
-    assert(referenceOf(ref) === 'layer', 'rotate is passed a non-layer reference');
-    return new PlayObject('transform', {
-        'null': ref,
-        'snapToDocBounds': true,
-        'angle': inUnits.angle(angle)
-    });
+    assert(referenceOf(ref) === "layer", "rotate is passed a non-layer reference");
+    return new PlayObject(
+        "transform",
+        {
+            "null": ref,
+            "snapToDocBounds": true,
+            "angle": inUnits.angle(angle)
+        }
+    );
 };
+
+/**
+ * @param {ActionDescriptor} ref - Reference of layer(s) to set opacity
+ * @param {number} opacity - Opacity in percentage
+ * 
+ * @returns {PlayObject}
+ */
 var setOpacity = function (ref, opacity) {
-    assert(referenceOf(ref) === 'layer', 'setOpacity is passed a non-layer reference');
-    return new PlayObject('set', {
-        'null': ref,
-        'to': {
-            'obj': 'to',
-            'value': { 'opacity': inUnits.percent(opacity) }
+    assert(referenceOf(ref) === "layer", "setOpacity is passed a non-layer reference");
+    return new PlayObject(
+        "set",
+        {
+            "null": ref,
+            "to": {
+                "obj": "to",
+                "value": {
+                    "opacity": inUnits.percent(opacity)
+                }
+            }
         }
-    });
+    );
 };
+
+/**
+ * @param {ActionDescriptor} ref - Reference of layer(s) to set fill opacity
+ * @param {number} opacity - Fill opacity in percentage
+ * 
+ * @returns {PlayObject}
+ */
 var setFillOpacity = function (ref, opacity) {
-    assert(referenceOf(ref) === 'layer', 'setFillOpacity is passed a non-layer reference');
-    return new PlayObject('set', {
-        'null': ref,
-        'to': {
-            'obj': 'to',
-            'value': { 'fillOpacity': inUnits.percent(opacity) }
+    assert(referenceOf(ref) === "layer", "setFillOpacity is passed a non-layer reference");
+    return new PlayObject(
+        "set",
+        {
+            "null": ref,
+            "to": {
+                "obj": "to",
+                "value": {
+                    "fillOpacity": inUnits.percent(opacity)
+                }
+            }
         }
-    });
+    );
 };
+
+/**
+ * @param {ActionDescriptor} ref - Reference of layer(s) to set blend mode
+ * @param {string} mode - Blend mode
+ * 
+ * @returns {PlayObject}
+ */
 var setBlendMode = function (ref, mode) {
-    assert(referenceOf(ref) === 'layer', 'setBlendMode is passed a non-layer reference');
-    return new PlayObject('set', {
-        'null': ref,
-        'to': {
-            'obj': 'layer',
-            'value': {
-                'mode': {
-                    'enum': 'blendMode',
-                    'value': mode
+    assert(referenceOf(ref) === "layer", "setBlendMode is passed a non-layer reference");
+    return new PlayObject(
+        "set",
+        {
+            "null": ref,
+            "to": {
+                "obj": "layer",
+                "value": {
+                    "mode": {
+                        "enum": "blendMode",
+                        "value": mode
+                    }
                 }
             }
         }
-    });
+    );
 };
+
+/**
+ * Sets the proportional scaling property of a layer descriptor.
+ *
+ * @param {ActionDescriptor} ref Reference of layer(s) to set blend mode
+ * @param {boolean} proportion Proptional scaling flag
+ * @return {PlayObject}
+ */
 var setProportionalScaling = function (ref, proportion) {
-    assert(referenceOf(ref) === 'layer', 'setProportionalScaling is passed a non-layer reference');
-    return new PlayObject('set', {
-        'null': ref,
-        'to': {
-            'obj': 'layer',
-            'value': { 'proportionalScaling': proportion }
+    assert(referenceOf(ref) === "layer", "setProportionalScaling is passed a non-layer reference");
+    return new PlayObject(
+        "set",
+        {
+            "null": ref,
+            "to": {
+                "obj": "layer",
+                "value": {
+                    "proportionalScaling": proportion
+                }
+            }
+            
         }
-    });
+    );
 };
+
+
+
+/**
+ * FIXME: Only works with current document!
+ * SIDE EFFECT: Creates a brand new layer with a new ID and name
+ * 
+ * @param {number} id Background layer id
+ * 
+ * @return {PlayObject}
+ */
 var unlockBackgroundLayer = function (id) {
-    return new PlayObject('set', {
-        'layerID': id,
-        'null': {
-            'property': 'background',
-            'ref': 'layer'
-        },
-        'to': {
-            'obj': 'layer',
-            'value': {
-                'mode': {
-                    'enum': 'blendMode',
-                    'value': 'normal'
-                },
-                'opacity': {
-                    'unit': 'percentUnit',
-                    'value': 100
+    return new PlayObject(
+        "set",
+        {
+            "layerID": id,
+            "null": {
+                "property": "background",
+                "ref": "layer"
+            },
+            "to": {
+                "obj": "layer",
+                "value": {
+                    "mode": {
+                        "enum": "blendMode",
+                        "value": "normal"
+                    },
+                    "opacity": {
+                        "unit": "percentUnit",
+                        "value": 100
+                    }
                 }
             }
         }
-    });
+    );
 };
-var deleteLayer = function (ref) {
-    assert(referenceOf(ref) === 'layer', 'deleteLayer is passed a non-layer reference');
-    return new PlayObject('delete', { 'null': ref });
+
+/**
+ * @param {ActionDescriptor} ref - Reference of layer(s) to delete
+ * 
+ * @returns {PlayObject}
+ */
+var deleteLayer =  function (ref) {
+    assert(referenceOf(ref) === "layer", "deleteLayer is passed a non-layer reference");
+    return new PlayObject(
+        "delete",
+        {
+            "null": ref
+        }
+    );
 };
+
+/**
+ * @param {ActionDescriptor} ref - Reference of layer to rename
+ * @param {string} name - What to rename the layer to
+ *
+ * @returns {PlayObject}
+ */
 var renameLayer = function (ref, name) {
-    assert(referenceOf(ref) === 'layer', 'renameLayer is passed a non-layer reference');
-    return new PlayObject('set', {
-        'null': ref,
-        'to': {
-            'obj': 'layer',
-            'value': { 'name': name }
-        }
-    });
-};
-var groupSelectedLayers = function () {
-    return new PlayObject('make', {
-        'from': referenceBy.target,
-        'null': { 'ref': 'layerSection' }
-    });
-};
-var setLocking = function (ref, lock) {
-    assert(referenceOf(ref) === 'layer', 'setLocking is passed a non-layer reference');
-    var lockObject = lock ? { 'protectAll': true } : { 'protectNone': true };
-    return new PlayObject('applyLocking', {
-        'null': ref,
-        'group': true,
-        'layerLocking': {
-            'obj': 'layerLocking',
-            'value': lockObject
-        }
-    });
-};
-var translate = function (ref, _x, _y) {
-    assert(referenceOf(ref) === 'layer', 'translate is passed a non-layer reference');
-    var x = _x || 0, y = _y || 0;
-    return new PlayObject('transform', {
-        'null': ref,
-        'snapToDocBounds': true,
-        'position': {
-            'obj': 'position',
-            'value': {
-                'horizontal': inUnits.pixels(x),
-                'vertical': inUnits.pixels(y)
+    assert(referenceOf(ref) === "layer", "renameLayer is passed a non-layer reference");
+    return new PlayObject(
+        "set",
+        {
+            "null": ref,
+            "to": {
+                "obj": "layer",
+                "value": {
+                    "name": name
+                }
             }
         }
-    });
+    );
 };
+
+/**
+ *
+ * @returns {PlayObject}
+ */
+var groupSelectedLayers = function () {
+    return new PlayObject(
+        "make",
+        {
+            "from": referenceBy.target,
+            "null": {
+                "ref": "layerSection"
+            }
+        }
+    );
+};
+
+/** 
+ * @param {ActionDescriptor} ref - Reference of layer(s) to change lock
+ * @param {boolean} lock - Flag for locking
+ *
+ * @returns {PlayObject}
+ */
+var setLocking = function (ref, lock) {
+    assert(referenceOf(ref) === "layer", "setLocking is passed a non-layer reference");
+    var lockObject = lock ? {"protectAll": true} : {"protectNone": true};
+    return new PlayObject(
+        "applyLocking",
+        {
+            "null": ref,
+            "group": true,
+            "layerLocking": {
+                "obj": "layerLocking",
+                "value": lockObject
+            }
+        }
+    );
+};
+
+/**
+ * @param {ActionDescriptor} ref - Reference of layer(s) to translate
+ * @param {Unit} _x Horizontal offset in Units
+ * @param {Unit} _y Vertical offset in Units
+ *
+ * @returns {PlayObject}
+ */
+var translate = function (ref, _x, _y) {
+    assert(referenceOf(ref) === "layer", "translate is passed a non-layer reference");
+    var x = _x || 0,
+        y = _y || 0;
+
+    return new PlayObject(
+        "transform",
+        {
+            "null": ref,
+            "snapToDocBounds": true,
+            "position": {
+                "obj": "position",
+                "value": {
+                    "horizontal": inUnits.pixels(x),
+                    "vertical": inUnits.pixels(y)
+                }
+            }
+        }
+    );
+};
+
+// Left overs:
+// _offsetCommand
+
 exports.referenceBy = referenceBy;
 exports.layerKinds = layerKinds;
+
 exports.reorder = reorder;
 exports.align = align;
 exports.distribute = distribute;
@@ -18923,12 +20123,58 @@ exports.groupSelected = groupSelectedLayers;
 exports.setLocking = setLocking;
 exports.translate = translate;
 exports.unlockBackground = unlockBackgroundLayer;
+
 },{"../playobject":26,"../util":30,"./reference":17,"./unit":22}],14:[function(require,module,exports){
-'use strict';
-var _ = require('lodash');
-var PlayObject = require('../playobject'), referenceBy = require('./reference').wrapper('layer'), referenceOf = require('./reference').refersTo, inUnits = require('./unit'), color = require('./color'), assert = require('../util').assert;
+/*
+* Copyright (c) 2014 Adobe Systems Incorporated. All rights reserved.
+*
+* Permission is hereby granted, free of charge, to any person obtaining a
+* copy of this software and associated documentation files (the "Software"),
+* to deal in the Software without restriction, including without limitation
+* the rights to use, copy, modify, merge, publish, distribute, sublicense,
+* and/or sell copies of the Software, and to permit persons to whom the
+* Software is furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+* DEALINGS IN THE SOFTWARE.
+*
+*/
+
+"use strict";
+
+var _ = require("lodash");
+
+var PlayObject = require("../playobject"),
+    referenceBy = require("./reference").wrapper("layer"),
+    referenceOf = require("./reference").refersTo,
+    inUnits = require("./unit"),
+    color = require("./color"),
+    assert = require("../util").assert;
+
+/**
+ * Generically build a PlayObject for a layerEffect
+ * The layerEffectValue parameter should be a fully constructed object that can be supplied to the "to.value"
+ * property of the descriptor.
+ *
+ * @private
+ * @param {ActionDescriptor} ref layer(s) reference
+ * @param {string} layerEffectType type of layerEffect (example: dropShadow)
+ * @param {object} layerEffectValue object that can be supplied for "to.value" in the descriptor
+ * @param {boolean=} multi value that allows function to return the Multi Layer Effect friendly descriptor 
+ *
+ * @return {PlayObject}
+ */
 var _layerEffectDescriptor = function (ref, layerEffectType, layerEffectValue, multi) {
     var val = {};
+
     if (multi) {
         val[layerEffectType] = layerEffectValue;
     } else {
@@ -18937,51 +20183,98 @@ var _layerEffectDescriptor = function (ref, layerEffectType, layerEffectValue, m
             value: layerEffectValue
         };
     }
-    return new PlayObject('set', {
-        'null': {
-            'ref': [
-                {
-                    'property': 'layerEffects',
-                    'ref': 'property'
-                },
-                ref
-            ]
-        },
-        'to': {
-            'obj': 'layerEffects',
-            'value': val
+
+    return new PlayObject(
+        "set",
+        {
+            "null": {
+                "ref": [
+                    {
+                        "property": "layerEffects",
+                        "ref": "property"
+                    },
+                    ref
+                ]
+            },
+            "to": {
+                "obj": "layerEffects",
+                "value": val
+            }
         }
-    });
+    );
 };
+
+/**
+ * Generically build an PlayObject for a layerEffect which uses the useExtendedReference option
+ * The layerEffectValue parameter should be a fully constructed object that can be supplied to the "to.value"
+ * property of the descriptor.
+ *
+ * @private
+ * @param {ActionDescriptor} ref layer(s) reference
+ * @param {string} layerEffectType type of layerEffect (example: dropShadow)
+ * @param {object} layerEffectValue object that can be supplied for "to.value" in the descriptor
+ *
+ * @return {PlayObject}
+ */
+
 var _extendedLayerEffectDescriptor = function (ref, layerEffectType, layerEffectValue) {
-    return new PlayObject('set', {
-        'null': {
-            'ref': [
-                {
-                    ref: null,
-                    'property': layerEffectType
-                },
-                {
-                    'property': 'layerEffects',
-                    'ref': 'property'
-                },
-                ref
-            ]
+
+    return new PlayObject(
+        "set",
+        {
+            "null": {
+                "ref": [
+                    {
+                        ref: null,
+                        "property": layerEffectType
+                    },
+                    {
+                        "property": "layerEffects",
+                        "ref": "property"
+                    },
+                    ref
+                ]
+            },
+            "to": layerEffectValue
         },
-        'to': layerEffectValue
-    }, { useExtendedReference: true });
+        {
+            useExtendedReference: true
+        }
+    );
 };
+/**
+ * Helper Function to set blend mode correctly. We should have a blend mode object in the future
+ *
+ * @param {string} mode the blend mode
+ * @return {object} the PS friendly blend mode object
+ */
 var _blendMode = function (mode) {
     return {
-        enum: 'blendMode',
+        enum: "blendMode",
         value: mode
     };
 };
+
+/**
+ * Parse Shadow JS properties and assign units to make them acceptable to PS 
+ * 
+ * The expected format of the properties object is like:
+ * {enabled: true, color: {r: 255, g: 0, b: 0}, blur: 20}
+ * Distance/positions values in pixels
+ * Angles in degrees
+ * Opacity percentage [0,100]
+ * 
+ * @private
+ * @param {object} properties intermediate object format using Photoshop names, but without units
+ *
+ * @return {object} PS friendly Properties 
+ */
 var _shadowProperties = function (properties) {
     var layerEffectPsProperties = {
-            enabled: properties.enabled === undefined ? true : properties.enabled,
-            useGlobalAngle: properties.useGlobalAngle === undefined ? true : properties.useGlobalAngle
-        };
+        enabled: properties.enabled === undefined ? true : properties.enabled,
+        useGlobalAngle: properties.useGlobalAngle === undefined ? true : properties.useGlobalAngle
+    };
+
     if (_.isObject(properties.color)) {
         layerEffectPsProperties.color = color.colorObject(properties.color);
     }
@@ -19005,122 +20298,320 @@ var _shadowProperties = function (properties) {
     }
     return layerEffectPsProperties;
 };
-var _dropShadowDescriptor = function (properties) {
+
+/**
+ * Return drop shadow descriptor for the given properties
+ * 
+ * The expected format of the properties object is like:
+ * {enabled: true, color: {r: 255, g: 0, b: 0}, blur: 20}
+ * Distance/positions values in pixels
+ * Angles in degrees
+ * Opacity percentage [0,100]
+ *
+ * @private
+ * @param {object} properties intermediate object format using Photoshop names, but without units
+ *
+ * @return {Descriptor}
+ */
+
+var  _dropShadowDescriptor = function (properties) {
     return {
-        'obj': 'dropShadow',
-        'value': _shadowProperties(properties)
+        "obj": "dropShadow",
+        "value": _shadowProperties(properties)
     };
 };
-var _innerShadowDescriptor = function (properties) {
+
+/**
+ * Return inner shadow descriptor for the given properties
+ * 
+ * The expected format of the properties object is like:
+ * {enabled: true, color: {r: 255, g: 0, b: 0}, blur: 20}
+ * Distance/positions values in pixels
+ * Angles in degrees
+ * Opacity percentage [0,100]
+ *
+ * @private
+ * @param {object} properties intermediate object format using Photoshop names, but without units
+ *
+ * @return {Descriptor}
+ */
+
+var  _innerShadowDescriptor = function (properties) {
     return {
-        'obj': 'innerShadow',
-        'value': _shadowProperties(properties)
+        "obj": "innerShadow",
+        "value": _shadowProperties(properties)
     };
 };
+/**
+ * Update multiple drop shadow layer effect properties for the given layer(s)
+ *
+ * @param {ActionDescriptor} ref - Reference of layer(s) to update
+ * @param {Array.<object>} propertyArray Array of DropShadow properties 
+ *
+ * @return {PlayObject}
+ */
 var _setDropShadows = function (ref, propertyArray) {
-    assert(referenceOf(ref) === 'layer', 'setDropShadow is passed a non-layer reference');
+    assert(referenceOf(ref) === "layer", "setDropShadow is passed a non-layer reference");
+    
     var descriptorArray = propertyArray.map(function (properties) {
-            return _dropShadowDescriptor(properties);
-        });
-    return _layerEffectDescriptor(ref, 'dropShadowMulti', descriptorArray, true);
+        return _dropShadowDescriptor(properties);
+    });
+
+    return _layerEffectDescriptor(ref, "dropShadowMulti", descriptorArray, true);
 };
+
+/**
+ * Update multiple drop shadow layer effect properties for the given layer(s) without changing the 
+ * parent layer effect
+ *
+ * @param {ActionDescriptor} ref - Reference of layer(s) to update
+ * @param {Array.<object>} propertyArray Array of DropShadow properties 
+ *
+ * @return {PlayObject}
+ */
 var _setExtendedDropShadows = function (ref, propertyArray) {
-    assert(referenceOf(ref) === 'layer', 'setDropShadow is passed a non-layer reference');
+    assert(referenceOf(ref) === "layer", "setDropShadow is passed a non-layer reference");
+    
     var descriptorArray = propertyArray.map(function (properties) {
-            return _dropShadowDescriptor(properties);
-        });
-    return _extendedLayerEffectDescriptor(ref, 'dropShadowMulti', descriptorArray, true);
+        return _dropShadowDescriptor(properties);
+    });
+
+    return _extendedLayerEffectDescriptor(ref, "dropShadowMulti", descriptorArray, true);
 };
+
+/**
+ * Update multiple inner shadow layer effect properties for the given layer(s)
+ *
+ * @param {ActionDescriptor} ref - Reference of layer(s) to update
+ * @param {Array.<object>} propertyArray Array of InnerShadow properties 
+ *
+ * @return {PlayObject}
+ */
 var _setInnerShadows = function (ref, propertyArray) {
-    assert(referenceOf(ref) === 'layer', 'setInnnerShadow is passed a non-layer reference');
+    assert(referenceOf(ref) === "layer", "setInnnerShadow is passed a non-layer reference");
+    
     var descriptorArray = propertyArray.map(function (properties) {
-            return _innerShadowDescriptor(properties);
-        });
-    return _layerEffectDescriptor(ref, 'innerShadowMulti', descriptorArray, true);
+        return _innerShadowDescriptor(properties);
+    });
+
+    return _layerEffectDescriptor(ref, "innerShadowMulti", descriptorArray, true);
 };
+
+/**
+ * Update multiple inner shadow layer effect properties for the given layer(s) without changing the 
+ * parent layer effect
+ *
+ * @param {ActionDescriptor} ref - Reference of layer(s) to update
+ * @param {Array.<object>} propertyArray Array of InnerShadow properties 
+ *
+ * @return {PlayObject}
+ */
 var _setExtendedInnerShadows = function (ref, propertyArray) {
-    assert(referenceOf(ref) === 'layer', 'setInnnerShadow is passed a non-layer reference');
+    assert(referenceOf(ref) === "layer", "setInnnerShadow is passed a non-layer reference");
+    
     var descriptorArray = propertyArray.map(function (properties) {
-            return _innerShadowDescriptor(properties);
-        });
-    return _extendedLayerEffectDescriptor(ref, 'innerShadowMulti', descriptorArray, true);
+        return _innerShadowDescriptor(properties);
+    });
+
+    return _extendedLayerEffectDescriptor(ref, "innerShadowMulti", descriptorArray, true);
 };
+
+/**
+ * Update the given type of layer effect properties for the given layer(s) 
+ *
+ * @param {string} type - type of layer effect. currently "dropShadow" or "innerShadow"
+ * @param {ActionDescriptor} ref - Reference of layer(s) to update
+ * @param {Array.<object>} propertyArray Array of InnerShadow properties 
+ *
+ * @return {PlayObject}
+ */
 var setLayerEffect = function (type, ref, propertyArray) {
-    if (type === 'innerShadow') {
+    if (type === "innerShadow") {
         return _setInnerShadows(ref, propertyArray);
-    } else if (type === 'dropShadow') {
+    } else if (type === "dropShadow") {
         return _setDropShadows(ref, propertyArray);
     }
 };
+
+/**
+ * Update the given type of layer effect properties for the given layer(s) without changing the 
+ * parent layer effect
+ *
+ * @param {string} type - type of layer effect. currently "dropShadow" or "innerShadow"
+ * @param {ActionDescriptor} ref - Reference of layer(s) to update
+ * @param {Array.<object>} propertyArray Array of InnerShadow properties 
+ *
+ * @return {PlayObject}
+ */
 var setExtendedLayerEffect = function (type, ref, propertyArray) {
-    if (type === 'innerShadow') {
+    if (type === "innerShadow") {
         return _setExtendedInnerShadows(ref, propertyArray);
-    } else if (type === 'dropShadow') {
+    } else if (type === "dropShadow") {
         return _setExtendedDropShadows(ref, propertyArray);
     }
 };
+
 exports.referenceBy = referenceBy;
+
 exports.setLayerEffect = setLayerEffect;
 exports.setExtendedLayerEffect = setExtendedLayerEffect;
+
 },{"../playobject":26,"../util":30,"./color":7,"./reference":17,"./unit":22,"lodash":2}],15:[function(require,module,exports){
-'use strict';
-var PlayObject = require('../playobject');
+/*
+* Copyright (c) 2014 Adobe Systems Incorporated. All rights reserved.
+*
+* Permission is hereby granted, free of charge, to any person obtaining a
+* copy of this software and associated documentation files (the "Software"),
+* to deal in the Software without restriction, including without limitation
+* the rights to use, copy, modify, merge, publish, distribute, sublicense,
+* and/or sell copies of the Software, and to permit persons to whom the
+* Software is furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+* DEALINGS IN THE SOFTWARE.
+*
+*/
+
+"use strict";
+
+var PlayObject = require("../playobject");
+
+/**
+ * Combines the paths in the current layer using ADD/UNION
+ *
+ * @return {PlayObject}
+ */
 var combinePathsUnion = function () {
-    return new PlayObject('changePathDetails', {
-        'keyActionMode': 0,
-        'keyOriginType': 3
-    });
+    return new PlayObject(
+        "changePathDetails",
+        {
+            "keyActionMode": 0,
+            "keyOriginType": 3
+        }
+    );
 };
+
+/**
+ * Combines the paths in the current layer using SUBTRACT
+ *
+ * @return {PlayObject}
+ */
 var combinePathsSubtract = function () {
-    return new PlayObject('changePathDetails', {
-        'keyActionMode': 1,
-        'keyOriginType': 3
-    });
+    return new PlayObject(
+        "changePathDetails",
+        {
+            "keyActionMode": 1,
+            "keyOriginType": 3
+        }
+    );
 };
+
+/**
+ * Combines the paths in the current layer using INTERSECT
+ *
+ * @return {PlayObject}
+ */
 var combinePathsIntersect = function () {
-    return new PlayObject('changePathDetails', {
-        'keyActionMode': 2,
-        'keyOriginType': 3
-    });
+    return new PlayObject(
+        "changePathDetails",
+        {
+            "keyActionMode": 2,
+            "keyOriginType": 3
+        }
+    );
 };
+
+/**
+ * Combines the paths in the current layer using DIFFERENCE/EXCLUDE
+ *
+ * @return {PlayObject}
+ */
 var combinePathsDifference = function () {
-    return new PlayObject('changePathDetails', {
-        'keyActionMode': 3,
-        'keyOriginType': 3
-    });
+    return new PlayObject(
+        "changePathDetails",
+        {
+            "keyActionMode": 3,
+            "keyOriginType": 3
+        }
+    );
 };
+
+/**
+ * Combines the layers using ADD/UNION
+ *
+ * @return {PlayObject}
+ */
 var combineLayersUnion = function () {
-    return new PlayObject('mergeLayersNew', {
-        'shapeOperation': {
-            'enum': 'shapeOperation',
-            'value': 'add'
+    return new PlayObject(
+        "mergeLayersNew",
+        {
+            "shapeOperation": {
+                "enum": "shapeOperation",
+                "value": "add"
+            }
         }
-    });
+    );
 };
+
+/**
+ * Combines the layers using SUBTRACT
+ *
+ * @return {PlayObject}
+ */
 var combineLayersSubtract = function () {
-    return new PlayObject('mergeLayersNew', {
-        'shapeOperation': {
-            'enum': 'shapeOperation',
-            'value': 'subtract'
+    return new PlayObject(
+        "mergeLayersNew",
+        {
+            "shapeOperation": {
+                "enum": "shapeOperation",
+                "value": "subtract"
+            }
         }
-    });
+    );
 };
+
+/**
+ * Combines the layers using INTERSECT
+ *
+ * @return {PlayObject}
+ */
 var combineLayersIntersect = function () {
-    return new PlayObject('mergeLayersNew', {
-        'shapeOperation': {
-            'enum': 'shapeOperation',
-            'value': 'interfaceIconFrameDimmed'
+    return new PlayObject(
+        "mergeLayersNew",
+        {
+            "shapeOperation": {
+                "enum": "shapeOperation",
+                "value": "interfaceIconFrameDimmed"
+            }
         }
-    });
+    );
 };
+
+/**
+ * Combines the layers using DIFFERENCE/EXCLUDE
+ *
+ * @return {PlayObject}
+ */
 var combineLayersDifference = function () {
-    return new PlayObject('mergeLayersNew', {
-        'shapeOperation': {
-            'enum': 'shapeOperation',
-            'value': 'xor'
+    return new PlayObject(
+        "mergeLayersNew",
+        {
+            "shapeOperation": {
+                "enum": "shapeOperation",
+                "value": "xor"
+            }
         }
-    });
+    );
 };
+
 exports.combinePathsUnion = combinePathsUnion;
 exports.combinePathsSubtract = combinePathsSubtract;
 exports.combinePathsIntersect = combinePathsIntersect;
@@ -19129,20 +20620,97 @@ exports.combineLayersUnion = combineLayersUnion;
 exports.combineLayersSubtract = combineLayersSubtract;
 exports.combineLayersIntersect = combineLayersIntersect;
 exports.combineLayersDifference = combineLayersDifference;
+
+
 },{"../playobject":26}],16:[function(require,module,exports){
-'use strict';
+/*
+* Copyright (c) 2014 Adobe Systems Incorporated. All rights reserved.
+*  
+* Permission is hereby granted, free of charge, to any person obtaining a
+* copy of this software and associated documentation files (the "Software"), 
+* to deal in the Software without restriction, including without limitation 
+* the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+* and/or sell copies of the Software, and to permit persons to whom the 
+* Software is furnished to do so, subject to the following conditions:
+*  
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*  
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
+* DEALINGS IN THE SOFTWARE.
+* 
+*/
+
+
+"use strict";
+
+/**
+ * Returns the target of the event by parsing the action descriptor
+ * 
+ * @param {ActionDescriptor} event
+ *
+ * @return {string} Target of the event
+ *
+ */
 var targetOf = function (event) {
-    if (event.hasOwnProperty('new')) {
+    if (event.hasOwnProperty("new")) {
+        // Case for "document"
         return event.new.obj;
-    } else if (event.hasOwnProperty('null')) {
+    } else if (event.hasOwnProperty("null")) {
+        // Case for layer
+        // Case for tool
         return event.null.ref;
     } else {
         return null;
     }
 };
+
 exports.targetOf = targetOf;
+
+
 },{}],17:[function(require,module,exports){
-'use strict';
+/*
+* Copyright (c) 2014 Adobe Systems Incorporated. All rights reserved.
+*
+* Permission is hereby granted, free of charge, to any person obtaining a
+* copy of this software and associated documentation files (the "Software"),
+* to deal in the Software without restriction, including without limitation
+* the rights to use, copy, modify, merge, publish, distribute, sublicense,
+* and/or sell copies of the Software, and to permit persons to whom the
+* Software is furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+* DEALINGS IN THE SOFTWARE.
+*
+*/
+
+// This is a wrapper to create reference action descriptors
+// It accepts the class name and will return functions that create
+// descriptors for references by different proparties
+
+"use strict";
+
+/**
+ * Given a reference object created by one of the wrapper functions
+ * this function will return the object name out
+ *
+ * @param {Array.<ActionDescriptor>|ActionDescriptor} reference Reference to an object
+ * or an array of references, where last one is the object
+ * @returns {string} Object type
+ */
 var refersTo = function (reference) {
     if (Array.isArray(reference)) {
         return refersTo(reference[reference.length - 1]);
@@ -19155,401 +20723,827 @@ var refersTo = function (reference) {
         }
     }
 };
+
 var wrapper = function (className) {
+    
+    /**
+     * This function is boiler plate for creating reference objects
+     * for given values using the given key.
+     *
+     * @param {string} key - Type of the reference
+     * @param {int|string|Array.<int>|Array.<string>} values - 
+     *  Values to be referenced with the given key
+     * @returns {ActionDescriptor} Reference to the values by key
+     */
     var referenceBy = function (key, values) {
         if (Array.isArray(values)) {
-            return { ref: values.map(referenceBy.bind(null, key)) };
+            return {ref: values.map(referenceBy.bind(null, key))};
         } else {
-            var rval = { ref: className };
+            var rval = {ref: className};
             rval[key] = values;
             return rval;
         }
     };
+    
+    /**
+     * Creates a reference object to the given enumtype/value for the class
+     *
+     * @param {string} type - Enumeration type
+     * @param {string} value - Enumeration value
+     * @returns {ActionDescriptor} Enumeration of the value with type
+     */
     var enumBy = function (type, value) {
-        return {
-            ref: className,
-            enum: type,
-            value: value
-        };
+        return {ref: className, enum: type, value: value};
     };
+    
     return {
-        index: referenceBy.bind(null, 'index'),
-        id: referenceBy.bind(null, 'id'),
-        offset: referenceBy.bind(null, 'offset'),
-        name: referenceBy.bind(null, 'name'),
-        target: enumBy('ordinal', 'targetEnum'),
-        current: enumBy('ordinal', 'targetEnum'),
-        front: enumBy('ordinal', 'front'),
-        back: enumBy('ordinal', 'back'),
-        all: enumBy('ordinal', 'all'),
-        none: enumBy('ordinal', 'none')
+        /**
+         * @param {int|Array.<int>} index or index array
+         * @returns {ActionDescriptor} Reference to the given indices
+         */
+        index: referenceBy.bind(null, "index"),
+        
+        /**
+         * @param {int|Array.<int>} ID or ID array
+         * @returns {ActionDescriptor} Reference to the given IDs
+         */
+        id: referenceBy.bind(null, "id"),
+        
+        
+        /**
+         * @param {int} Offset amount
+         * @returns {ActionDescriptor} Reference to the given IDs
+         */
+        offset: referenceBy.bind(null, "offset"),
+        
+        /**
+         * @param {string|Array.<string>} Name(s)
+         * @returns {ActionDescriptor} Reference to the given names
+         */
+        name: referenceBy.bind(null, "name"),
+        
+        /**
+         * @returns {ActionDescriptor} Reference to the current target
+         */
+        target: enumBy("ordinal", "targetEnum"),
+        
+        /**
+         * @returns {ActionDescriptor} Reference to the current target
+         */
+        current: enumBy("ordinal", "targetEnum"),
+    
+        /**
+         * @returns {ActionDescriptor} Reference to the front most object
+         */
+        front: enumBy("ordinal", "front"),
+        
+        /**
+         * @returns {ActionDescriptor} Reference to the object behind everything
+         */
+        back: enumBy("ordinal", "back"),
+        
+        /**
+         * @returns {ActionDescriptor} Reference to all the objects
+         */
+        all: enumBy("ordinal", "all"),
+        
+        /**
+         * @returns {ActionDescriptor} Reference to none of the objects
+         */
+        none: enumBy("ordinal", "none")
     };
 };
+
 module.exports.wrapper = wrapper;
 module.exports.refersTo = refersTo;
+
 },{}],18:[function(require,module,exports){
-'use strict';
-var PlayObject = require('../playobject');
+/*
+* Copyright (c) 2014 Adobe Systems Incorporated. All rights reserved.
+*
+* Permission is hereby granted, free of charge, to any person obtaining a
+* copy of this software and associated documentation files (the "Software"),
+* to deal in the Software without restriction, including without limitation
+* the rights to use, copy, modify, merge, publish, distribute, sublicense,
+* and/or sell copies of the Software, and to permit persons to whom the
+* Software is furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+* DEALINGS IN THE SOFTWARE.
+*
+*/
+
+"use strict";
+
+var PlayObject = require("../playobject");
+
 var setRulerVisibility = function (visible) {
-    return new PlayObject('set', {
-        'null': {
-            'ref': [
+    return new PlayObject("set", {
+        "null": {
+            "ref": [
                 {
-                    'ref': null,
-                    'property': 'toggleRulers'
+                    "ref": null,
+                    "property": "toggleRulers"
                 },
                 {
-                    'ref': 'document',
-                    'enum': 'ordinal',
-                    'value': 'targetEnum'
+                    "ref": "document",
+                    "enum": "ordinal",
+                    "value": "targetEnum"
                 }
             ]
         },
-        'visible': visible
+        "visible": visible
     });
 };
+
 exports.setRulerVisibility = setRulerVisibility;
+
 },{"../playobject":26}],19:[function(require,module,exports){
-'use strict';
-var colorObject = require('./color').colorObject, unitsIn = require('./unit');
+/*
+* Copyright (c) 2014 Adobe Systems Incorporated. All rights reserved.
+*
+* Permission is hereby granted, free of charge, to any person obtaining a
+* copy of this software and associated documentation files (the "Software"),
+* to deal in the Software without restriction, including without limitation
+* the rights to use, copy, modify, merge, publish, distribute, sublicense,
+* and/or sell copies of the Software, and to permit persons to whom the
+* Software is furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+* DEALINGS IN THE SOFTWARE.
+*
+*/
+
+"use strict";
+
+var colorObject = require("./color").colorObject,
+    unitsIn = require("./unit");
+
+/**
+ * Creates a fill contents object
+ *
+ * @param {string} type The type of shape fill content. "solidColorLayer" or "patternLayer"
+ * @param {array} value
+ *      The array of RGB color [red,green,blue] for "solidColorLayer". 0 to 255
+ *      The array of Pattern ID and name for "patternLayer".
+ *
+ * @return {ActionDescriptor} Fill content object
+ */
 var fillContentsObject = function (type, value) {
-    if (type === 'solidColorLayer') {
+    if (type === "solidColorLayer") {
         return {
-            'obj': 'solidColorLayer',
-            'value': { 'color': colorObject(value) }
+            "obj": "solidColorLayer",
+            "value": {
+                "color": colorObject(value)
+            }
         };
-    } else if (type === 'patternLayer') {
+    } else if (type === "patternLayer") {
         return {
-            'obj': 'patternLayer',
-            'value': {
-                'pattern': {
-                    'obj': 'pattern',
-                    'value': {
-                        'ID': value[0],
-                        'name': value[1]
+            "obj": "patternLayer",
+            "value": {
+                "pattern": {
+                    "obj": "pattern",
+                    "value": {
+                        "ID": value[0],
+                        "name": value[1]
                     }
                 }
             }
         };
     }
+    // TODO: Add a warning in this case
 };
+
+/**
+ * Creates the action descriptor for enabling/disabling fill
+ *
+ * @param {boolean} enabled Whether the shape fill is enabled.
+ *
+ * @return {ActionDescriptor} Style that toggles fill
+ */
 var shapeFillObject = function (enabled) {
     return {
-        'obj': 'strokeStyle',
-        'value': {
-            'fillEnabled': enabled,
-            'strokeStyleVersion': 2
+        "obj": "strokeStyle",
+        "value": {
+            "fillEnabled": enabled,
+            "strokeStyleVersion": 2
         }
     };
 };
+
+/**
+ * Creates the action descriptor for enabling/disabling stroke
+ *
+ * @param {boolean} enabled Whether the shape stroke is enabled.
+ *
+ * @return {ActionDescriptor} Style that toggles stroke
+ */
 var shapeStrokeObject = function (enabled) {
     return {
-        'obj': 'strokeStyle',
-        'value': {
-            'strokeEnabled': enabled,
-            'strokeStyleVersion': 2
+        "obj": "strokeStyle",
+        "value": {
+            "strokeEnabled": enabled,
+            "strokeStyleVersion": 2
         }
     };
 };
+
+/**
+ * Creates a shape object as an Action Descriptor
+ *
+ * @param {string} shape The kind of shape.
+ * @param {Array<number>} values The array of shape values.
+ *                  Rectangle or Rounded Rectangle: top,bottom,left,right,topleft,topright,bottomleft,bottomright
+ *                  Ellipse: top,bottom,left,right
+ *                  top,bottom,left,right: The location of shape 
+ *                  topleft,topright,bottomleft,bottomright: The shape corner radius values
+ *
+ * @return {ActionDescriptor} The defined shape
+ * Examples:
+ * getShapeObject("rectangle",[300,500,250,600,-1,-1,-1,-1]); //rectangle
+ * getShapeObject("rectangle",[300,500,250,600,10,10,10,10]); //rounded rectanglg
+ * getShapeObject("ellipse",[700,200,500,550]); //ellipse
+ */
 var shapeObject = function (shape, values) {
     var shapeVal;
-    if (shape === 'rectangle') {
-        shapeVal = {
-            'top': unitsIn.pixels(values[0]),
-            'bottom': unitsIn.pixels(values[1]),
-            'left': unitsIn.pixels(values[2]),
-            'right': unitsIn.pixels(values[3]),
-            'topLeft': unitsIn.pixels(values[4]),
-            'topRight': unitsIn.pixels(values[5]),
-            'bottomLeft': unitsIn.pixels(values[6]),
-            'bottomRight': unitsIn.pixels(values[7]),
-            'unitValueQuadVersion': 1
+    
+    if (shape === "rectangle") {
+        shapeVal =  {
+            "top": unitsIn.pixels(values[0]),
+            "bottom": unitsIn.pixels(values[1]),
+            "left": unitsIn.pixels(values[2]),
+            "right": unitsIn.pixels(values[3]),
+            "topLeft": unitsIn.pixels(values[4]),
+            "topRight": unitsIn.pixels(values[5]),
+            "bottomLeft": unitsIn.pixels(values[6]),
+            "bottomRight": unitsIn.pixels(values[7]),
+            "unitValueQuadVersion": 1
         };
-    } else if (shape === 'ellipse') {
+    } else if (shape === "ellipse") {
         shapeVal = {
-            'top': unitsIn.pixels(values[0]),
-            'bottom': unitsIn.pixels(values[1]),
-            'left': unitsIn.pixels(values[2]),
-            'right': unitsIn.pixels(values[3]),
-            'unitValueQuadVersion': 1
+            "top": unitsIn.pixels(values[0]),
+            "bottom": unitsIn.pixels(values[1]),
+            "left": unitsIn.pixels(values[2]),
+            "right": unitsIn.pixels(values[3]),
+            "unitValueQuadVersion": 1
         };
     }
+
     return {
         obj: shape,
-        'value': shapeVal
+        "value": shapeVal
     };
 };
+
 exports.shapeObject = shapeObject;
 exports.fillContentsObject = fillContentsObject;
 exports.shapeFillObject = shapeFillObject;
 exports.shapeStrokeObject = shapeStrokeObject;
+
 },{"./color":7,"./unit":22}],20:[function(require,module,exports){
-'use strict';
-var PlayObject = require('../playobject'), unitsIn = require('./unit'), colorObject = require('./color').colorObject;
-var assert = require('../util').assert, reference = require('./reference');
-var referenceOf = reference.refersTo, referenceBy = reference.wrapper('textLayer');
+/*
+* Copyright (c) 2014 Adobe Systems Incorporated. All rights reserved.
+*  
+* Permission is hereby granted, free of charge, to any person obtaining a
+* copy of this software and associated documentation files (the "Software"), 
+* to deal in the Software without restriction, including without limitation 
+* the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+* and/or sell copies of the Software, and to permit persons to whom the 
+* Software is furnished to do so, subject to the following conditions:
+*  
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*  
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
+* DEALINGS IN THE SOFTWARE.
+* 
+*/
+
+
+"use strict";
+
+var PlayObject = require("../playobject"),
+    unitsIn = require("./unit"),
+    colorObject = require("./color").colorObject;
+
+var assert = require("../util").assert,
+    reference = require("./reference");
+
+var referenceOf = reference.refersTo,
+    referenceBy = reference.wrapper("textLayer");
+
+/**
+ * Create a text layer
+ *
+ * @param {ActionDescriptor} sourceRef Layer reference
+ * @param {string} strTextKey The text string. 
+ * @param {array} numClickPointH The horizontal text click point.
+ * @param {array} numClickPointV The vertical text click point.
+ *
+ * @return {PlayObject} The action descriptor of the text style.
+ *
+ * Preconditions:
+ * Open or create a document
+ *
+ * Examples:
+ * createText("Photoshop Spaces",20,20);
+ */
 var createText = function (sourceRef, strTextKey, numClickPointH, numClickPointV) {
-    assert(referenceOf(sourceRef) === 'textLayer', 'createText expects a textLayer reference');
-    return new PlayObject('make', {
-        'null': sourceRef,
-        'using': {
-            'obj': 'textLayer',
-            'value': {
-                'textKey': strTextKey,
-                'textClickPoint': {
-                    'obj': 'paint',
-                    'value': {
-                        'horizontal': unitsIn.percent(numClickPointH),
-                        'vertical': unitsIn.percent(numClickPointV)
-                    }
-                },
-                'textStyleRange': []
-            }
-        }
-    });
-};
-var setFace = function (sourceRef, family, style) {
-    assert(referenceOf(sourceRef) === 'textLayer', 'setFace expects a textLayer reference');
-    sourceRef = {
-        'ref': 'textLayer',
-        'value': '$Trgt',
-        'enum': '$Ordn'
-    };
-    return new PlayObject('set', {
-        null: {
-            ref: [
-                {
-                    ref: 'property',
-                    property: 'textStyle'
-                },
-                sourceRef
-            ]
-        },
-        to: {
-            obj: 'textStyle',
-            value: {
-                fontName: family,
-                fontStyleName: style
-            }
-        }
-    });
-};
-var setSize = function (sourceRef, val, unit) {
-    assert(referenceOf(sourceRef) === 'textLayer', 'setSize expects a textLayer reference');
-    sourceRef = {
-        'ref': 'textLayer',
-        'value': '$Trgt',
-        'enum': '$Ordn'
-    };
-    return new PlayObject('set', {
-        null: {
-            ref: [
-                {
-                    ref: 'property',
-                    property: 'textStyle'
-                },
-                sourceRef
-            ]
-        },
-        to: {
-            obj: 'textStyle',
-            value: { size: unitsIn[unit](val) }
-        }
-    });
-};
-var alignmentTypes = Object.defineProperties({}, {
-        LEFT: {
-            value: 'left',
-            enumerable: true
-        },
-        CENTER: {
-            value: 'center',
-            enumerable: true
-        },
-        RIGHT: {
-            value: 'right',
-            enumerable: true
-        },
-        JUSTIFY: {
-            value: 'justifyAll',
-            enumerable: true
-        }
-    });
-var setAlignment = function (sourceRef, alignment) {
-    assert(referenceOf(sourceRef) === 'textLayer', 'setAlignment expects a textLayer reference');
-    sourceRef = {
-        'ref': 'textLayer',
-        'value': '$Trgt',
-        'enum': '$Ordn'
-    };
-    return new PlayObject('set', {
-        null: {
-            ref: [
-                {
-                    ref: 'property',
-                    property: 'paragraphStyle'
-                },
-                sourceRef
-            ]
-        },
-        'to': {
-            'obj': 'paragraphStyle',
-            'value': {
-                'align': {
-                    'enum': 'alignmentType',
-                    'value': alignment
+    assert(referenceOf(sourceRef) === "textLayer", "createText expects a textLayer reference");
+    return new PlayObject(
+        "make",
+        {
+            "null": sourceRef,
+            "using": {
+                "obj": "textLayer",
+                "value": {
+                    "textKey": strTextKey,
+                    "textClickPoint": {
+                        "obj": "paint",
+                        "value": {
+                            "horizontal": unitsIn.percent(numClickPointH),
+                            "vertical": unitsIn.percent(numClickPointV)
+                        }
+                    },
+                    "textStyleRange": [
+                    ]
                 }
             }
         }
-    });
+    );
 };
-var setLeading = function (sourceRef, auto, val, unit) {
-    assert(referenceOf(sourceRef) === 'textLayer', 'setLeading expects a textLayer reference');
+
+/**
+ * Set the font face
+ *
+ * @param {ActionDescriptor} sourceRef Layer reference
+ * @param {string} family The family name of the font
+ * @param {string} style The style of the font     
+ *
+ * @returns {PlayObject} The action descriptor of the text style.
+ *
+ * Preconditions:
+ * Select a text layer
+ *
+ * Examples:
+ * setFace("Helvetica", "Light");
+ */
+var setFace = function (sourceRef, family, style) {
+    // NOTE: Using a source ref with layer IDs crashes Photoshop. This also
+    // doesn't seem to work with postScriptName
+
+    assert(referenceOf(sourceRef) === "textLayer", "setFace expects a textLayer reference");
     sourceRef = {
-        'ref': 'textLayer',
-        'value': '$Trgt',
-        'enum': '$Ordn'
+        "ref": "textLayer",
+        "value": "$Trgt",
+        "enum": "$Ordn"
+    };
+
+    return new PlayObject(
+        "set",
+        {
+            null: {
+                ref: [
+                    {
+                        ref: "property",
+                        property: "textStyle"
+                    },
+                    sourceRef
+                ]
+            },
+            to: {
+                obj: "textStyle",
+                value: {
+                    fontName: family,
+                    fontStyleName: style
+                }
+            }
+        }
+    );
+};
+
+/**
+ * Set the font size
+ *
+ * @param {ActionDescriptor} sourceRef Layer reference
+ * @param {number} val The size of the font.
+ *      Points: 0.01pt to 1296.00pt
+ *      Pixels: 0.01px to 1296.00px
+ *      Millimeters: 0.00mm to 457.19mm
+ * @param {string} unit The unit of the type.  "pt","px", or "mm"
+ *
+ * @return {PlayObject} The action descriptor of the text style.
+ *
+ * Preconditions:
+ * Select a text layer
+ *
+ * Examples:
+ * setSize(14, "pt");
+ */
+var setSize = function (sourceRef, val, unit) {
+    // NOTE: See warning in setFace
+    assert(referenceOf(sourceRef) === "textLayer", "setSize expects a textLayer reference");
+    sourceRef = {
+        "ref": "textLayer",
+        "value": "$Trgt",
+        "enum": "$Ordn"
+    };
+
+    return new PlayObject(
+        "set",
+        {
+            null: {
+                ref: [
+                    {
+                        ref: "property",
+                        property: "textStyle"
+                    },
+                    sourceRef
+                ]
+            },
+            to: {
+                obj: "textStyle",
+                value: {
+                    size: unitsIn[unit](val)
+                }
+            }
+        }
+    );
+};
+
+/**
+ * Constant values for types of alignment
+ * @type {Object.<string, string>}
+ */
+var alignmentTypes = Object.defineProperties({}, {
+    LEFT: {
+        value: "left",
+        enumerable: true
+    },
+    CENTER: {
+        value: "center",
+        enumerable: true
+    },
+    RIGHT: {
+        value: "right",
+        enumerable: true
+    },
+    JUSTIFY: {
+        value: "justifyAll",
+        enumerable: true
+    }
+});
+
+/**
+ * Set the font alignment
+ *
+ * @param {ActionDescriptor} sourceRef Layer reference
+ * @param {string} alignment The alignment of the type, as described by the alignmentTypes enum.
+ * @return {PlayObject} The action descriptor of the paragraph style.
+ *
+ * Preconditions:
+ * Select a text layer
+ *
+ * Examples:
+ * setAlignment("center");
+ */
+var setAlignment = function (sourceRef, alignment) {
+    // NOTE: See warning in setFace
+    assert(referenceOf(sourceRef) === "textLayer", "setAlignment expects a textLayer reference");
+    sourceRef = {
+        "ref": "textLayer",
+        "value": "$Trgt",
+        "enum": "$Ordn"
+    };
+    return new PlayObject(
+        "set",
+        {
+            null: {
+                ref: [
+                    {
+                        ref: "property",
+                        property: "paragraphStyle"
+                    },
+                    sourceRef
+                ]
+            },
+            "to": {
+                "obj": "paragraphStyle",
+                "value": {
+                    "align": {
+                        "enum": "alignmentType",
+                        "value": alignment
+                    }
+                }
+            }
+        }
+    );
+};
+
+/**
+ * Set the text leading
+ *
+ * @param {ActionDescriptor} sourceRef Layer reference
+ * @param {boolean} auto Whether the auto leading is enabled.
+ * @param {number} val The leading of the text.
+ *      Points: 0.01pt to 5000.00pt
+ *      Pixels: 0.01px to 5000.00px
+ *      Millimeters: 0.00mm to 1763.88mm
+ * @param {string} unit The unit of the type.  "pointsUnit","pixelsUnit", or "millimetersUnit"
+ *
+ * @return {PlayObject} The action descriptor of the text style.
+ *
+ * Preconditions:
+ * Select a text layer
+ *
+ * Examples:
+ * setLeading(true);
+ * setLeading(false,14,"pt");
+ * setLeading(false,14);
+ */
+var setLeading = function (sourceRef, auto, val, unit) {
+    // NOTE: See warning in setFace
+    assert(referenceOf(sourceRef) === "textLayer", "setLeading expects a textLayer reference");
+    sourceRef = {
+        "ref": "textLayer",
+        "value": "$Trgt",
+        "enum": "$Ordn"
     };
     if (auto === false) {
-        return new PlayObject('set', {
-            null: {
-                ref: [
-                    {
-                        ref: 'property',
-                        property: 'textStyle'
-                    },
-                    sourceRef
-                ]
-            },
-            'to': {
-                'obj': 'textStyle',
-                'value': {
-                    'autoLeading': auto,
-                    'leading': unitsIn[unit](val)
+        return new PlayObject(
+            "set",
+            {
+                null: {
+                    ref: [
+                        {
+                            ref: "property",
+                            property: "textStyle"
+                        },
+                        sourceRef
+                    ]
+                },
+                "to": {
+                    "obj": "textStyle",
+                    "value": {
+                        "autoLeading": auto,
+                        "leading": unitsIn[unit](val)
+                    }
                 }
             }
-        });
+        );
     } else {
-        return new PlayObject('set', {
+        return new PlayObject(
+            "set",
+            {
+                null: {
+                    ref: [
+                        {
+                            ref: "property",
+                            property: "textStyle"
+                        },
+                        sourceRef
+                    ]
+                },
+                "to": {
+                    "obj": "textStyle",
+                    "value": {
+                        "autoLeading": auto
+                    }
+                }
+            }
+        );
+    }
+};
+
+/**
+ * Set the text tracking
+ *
+ * @param {ActionDescriptor} sourceRef Layer reference
+ * @param {number} val The amount of space between a range of letters or characters. -1000 to 10000
+ *
+ * @return {PlayObject} The action descriptor of the text style.
+ *
+ * Preconditions:
+ * Select a text layer
+ *
+ * Examples:
+ * setLeading(10);
+ */
+var setTracking = function (sourceRef, val) {
+    // NOTE: See warning in setFace        
+    assert(referenceOf(sourceRef) === "textLayer", "setTracking expects a textLayer reference");
+    sourceRef = {
+        "ref": "textLayer",
+        "value": "$Trgt",
+        "enum": "$Ordn"
+    };
+    return new PlayObject(
+        "set",
+        {
             null: {
                 ref: [
                     {
-                        ref: 'property',
-                        property: 'textStyle'
+                        ref: "property",
+                        property: "textStyle"
                     },
                     sourceRef
                 ]
             },
-            'to': {
-                'obj': 'textStyle',
-                'value': { 'autoLeading': auto }
+            "to": {
+                "obj": "textStyle",
+                "value": {
+                    "tracking": val
+                }
             }
-        });
-    }
-};
-var setTracking = function (sourceRef, val) {
-    assert(referenceOf(sourceRef) === 'textLayer', 'setTracking expects a textLayer reference');
-    sourceRef = {
-        'ref': 'textLayer',
-        'value': '$Trgt',
-        'enum': '$Ordn'
-    };
-    return new PlayObject('set', {
-        null: {
-            ref: [
-                {
-                    ref: 'property',
-                    property: 'textStyle'
-                },
-                sourceRef
-            ]
-        },
-        'to': {
-            'obj': 'textStyle',
-            'value': { 'tracking': val }
         }
-    });
+    );
 };
+
+/**
+ * Set the text color
+ *
+ * @param {ActionDescriptor} sourceRef Layer reference
+ * @param {Color} color The color of the layer. Opacity is ignored.
+ *
+ * @return {PlayObject} The action descriptor of the text style.
+ */
 var setColor = function (sourceRef, color) {
-    assert(referenceOf(sourceRef) === 'textLayer', 'setColor expects a textLayer reference');
+    // NOTE: See warning in setFace
+    assert(referenceOf(sourceRef) === "textLayer", "setColor expects a textLayer reference");
     sourceRef = {
-        'ref': 'textLayer',
-        'value': '$Trgt',
-        'enum': '$Ordn'
+        "ref": "textLayer",
+        "value": "$Trgt",
+        "enum": "$Ordn"
     };
-    return new PlayObject('set', {
-        null: {
-            ref: [
-                {
-                    ref: 'property',
-                    property: 'textStyle'
-                },
-                sourceRef
-            ]
-        },
-        to: {
-            obj: 'textStyle',
-            value: { color: colorObject(color) }
+
+    return new PlayObject(
+        "set",
+        {
+            null: {
+                ref: [
+                    {
+                        ref: "property",
+                        property: "textStyle"
+                    },
+                    sourceRef
+                ]
+            },
+            to: {
+                obj: "textStyle",
+                value: {
+                    color: colorObject(color)
+                }
+            }
         }
-    });
+    );
 };
+
+/**
+ * Set the text orientation
+ *
+ * @param {ActionDescriptor} sourceRef Layer reference
+ * @param {string} strTextOrientation The text orientation. "horizontal" or "vertical"
+ *
+ * @return {PlayObject} The action descriptor of the text style.
+ *
+ * Preconditions:
+ * Select a text layer
+ *
+ * Examples:
+ * setOrientation("vertical");
+ */
 var setOrientation = function (sourceRef, strTextOrientation) {
-    assert(referenceOf(sourceRef) === 'textLayer', 'setOrientation expects a textLayer reference');
-    return new PlayObject('set', {
-        'null': sourceRef,
-        'to': {
-            'enum': 'orientation',
-            'value': strTextOrientation
+    assert(referenceOf(sourceRef) === "textLayer", "setOrientation expects a textLayer reference");
+    return new PlayObject(
+        "set",
+        {
+            "null": sourceRef,
+            "to": {
+                "enum": "orientation",
+                "value": strTextOrientation
+            }
         }
-    });
+    );
 };
+
+/**
+ * Set the text anti alias
+ *
+ * @param {ActionDescriptor} sourceRef Layer reference
+ * @param {string} strAntiAliasType The anti alias type. "none","sharp","crisp","strong","smooth","macLcd", or "mac"
+ *
+ * @return {PlayObject} The action descriptor of the text style.
+ *
+ * Preconditions:
+ * Select a text layer
+ *
+ * Examples:
+ * setAntiAlias("smooth");
+ */
 var setAntiAlias = function (sourceRef, strAntiAliasType) {
-    assert(referenceOf(sourceRef) === 'textLayer', 'setAntiAlias expects a textLayer reference');
-    return new PlayObject('set', {
-        'null': sourceRef,
-        'to': {
-            'enum': 'antiAliasType',
-            'value': _antiAlias[strAntiAliasType]
+    assert(referenceOf(sourceRef) === "textLayer", "setAntiAlias expects a textLayer reference");
+    return new PlayObject(
+        "set",
+        {
+            "null": sourceRef,
+            "to": {
+                "enum": "antiAliasType",
+                "value": _antiAlias[strAntiAliasType]
+            }
         }
-    });
+    );
 };
+
 var _antiAlias = {
-        none: 'antiAliasNone',
-        sharp: 'antiAliasSharp',
-        crisp: 'antiAliasCrisp',
-        strong: 'antiAliasStrong',
-        smooth: 'antiAliasSmooth',
-        macLcd: 'antiAliasPlatformLCD',
-        mac: 'antiAliasPlatformGray'
-    };
+    none: "antiAliasNone",
+    sharp: "antiAliasSharp",
+    crisp: "antiAliasCrisp",
+    strong: "antiAliasStrong",
+    smooth: "antiAliasSmooth",
+    macLcd: "antiAliasPlatformLCD",
+    mac: "antiAliasPlatformGray"
+};
+
+/**
+ * Set range and change text style
+ *
+ * @param {ActionDescriptor} sourceRef Layer reference
+ * @param {number} from The index of string to set the range from
+ * @param {number} to The index of string to set the range to
+ * @param {string} face The string of font family name
+ * @param {string} weight The string of font style name
+ * @param {string} unit The unit of the type.  "pt","px", or "mm"
+ * @param {number} size The size of the font.
+ *      Points: 0.01pt to 1296.00pt
+ *      Pixels: 0.01px to 1296.00px
+ *      Millimeters: 0.00mm to 457.19mm
+ * @param {array} arrayTextColor The array of RGB color [red,green,blue]. 0 to 255
+ *
+ * @return {PlayObject} The action descriptor of the text style.
+ *
+ * Preconditions:
+ * Select a text layer
+ *
+ * Examples:
+ * setRangeAndChangeTextStyle(0,1,"Helvetica","Bold","pt",60,[200,100,150]);
+ * setRangeAndChangeTextStyle(0,3,"","","pt",20,[200,100,150]);
+ */
 var setRangeAndChangeTextStyle = function (sourceRef, from, to, face, weight, unit, size, arrayTextColor) {
-    assert(referenceOf(sourceRef) === 'textLayer', 'setRangeAndChangeTextStyle expects a textLayer reference');
-    return new PlayObject('set', {
-        'null': sourceRef,
-        'to': {
-            'obj': 'textLayer',
-            'value': {
-                'textStyleRange': [{
-                        'obj': 'textStyleRange',
-                        'value': {
-                            'from': from,
-                            'to': to,
-                            'textStyle': {
-                                'obj': 'textStyle',
-                                'value': {
-                                    'fontName': face,
-                                    'fontStyleName': weight,
-                                    'size': unitsIn[unit](size),
-                                    'color': colorObject(arrayTextColor)
+    assert(referenceOf(sourceRef) === "textLayer", "setRangeAndChangeTextStyle expects a textLayer reference");
+    return new PlayObject(
+        "set",
+        {
+            "null": sourceRef,
+            "to": {
+                "obj": "textLayer",
+                "value": {
+                    "textStyleRange": [
+                        {
+                            "obj": "textStyleRange",
+                            "value": {
+                                "from": from,
+                                "to": to,
+                                "textStyle": {
+                                    "obj": "textStyle",
+                                    "value": {
+                                        "fontName" : face,
+                                        "fontStyleName" : weight,
+                                        "size": unitsIn[unit](size),
+                                        "color": colorObject(arrayTextColor)
+                                    }
                                 }
                             }
                         }
-                    }]
+                    ]
+                }
             }
         }
-    });
+    );
 };
+
 exports.referenceBy = referenceBy;
+
 exports.createText = createText;
 exports.setFace = setFace;
 exports.setSize = setSize;
@@ -19561,380 +21555,1064 @@ exports.setColor = setColor;
 exports.createText = createText;
 exports.setOrientation = setOrientation;
 exports.setAntiAlias = setAntiAlias;
+
 exports.setRangeAndChangeTextStyle = setRangeAndChangeTextStyle;
+
+
 },{"../playobject":26,"../util":30,"./color":7,"./reference":17,"./unit":22}],21:[function(require,module,exports){
-'use strict';
-var PlayObject = require('../playobject');
+/*
+* Copyright (c) 2014 Adobe Systems Incorporated. All rights reserved.
+*  
+* Permission is hereby granted, free of charge, to any person obtaining a
+* copy of this software and associated documentation files (the "Software"), 
+* to deal in the Software without restriction, including without limitation 
+* the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+* and/or sell copies of the Software, and to permit persons to whom the 
+* Software is furnished to do so, subject to the following conditions:
+*  
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*  
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
+* DEALINGS IN THE SOFTWARE.
+* 
+*/
+
+"use strict";
+
+var PlayObject = require("../playobject");
+
+/**
+ * Sets the current tool to given tool
+ *
+ * @param {string} tool
+ * @return {PlayObject}
+ */
 var setTool = function (tool) {
-    return new PlayObject('select', { 'null': { 'ref': tool } });
-};
-var setToolOptions = function (tool, options) {
-    return new PlayObject('set', {
-        'null': { ref: tool },
-        'to': {
-            obj: 'currentToolOptions',
-            value: options
-        }
-    });
-};
-var setDirectSelectOptionForAllLayers = function (allLayers) {
-    return new PlayObject('set', {
-        'null': {
-            ref: [
-                {
-                    'property': 'generalPreferences',
-                    'ref': 'property'
-                },
-                {
-                    'enum': 'ordinal',
-                    'ref': 'application',
-                    'value': 'targetEnum'
-                }
-            ]
-        },
-        'to': {
-            obj: 'generalPreferences',
-            value: {
-                'legacyPathDrag': true,
-                'vectorSelectionModifiesLayerSelection': allLayers
+    return new PlayObject(
+        "select",
+        {
+            "null": {
+                "ref": tool
             }
         }
-    });
+    );
 };
-var resetShapeTool = function () {
-    return new PlayObject('reset', {
-        null: {
-            ref: [
-                {
-                    ref: null,
-                    property: 'vectorToolMode'
-                },
-                {
-                    ref: 'application',
-                    enum: 'ordinal',
-                    value: 'targetEnum'
-                }
-            ]
+
+/**
+ * Sets the tool options. Preconditions: tool is currently selected.
+ * 
+ * @param {string} tool
+ * @param {Object} options
+ *
+ * @return {PlayObject}
+ */
+var setToolOptions = function (tool, options) {
+    return new PlayObject(
+        "set",
+        {
+            "null": {
+                ref: tool
+            },
+            "to": {
+                obj: "currentToolOptions",
+                value: options
+            }
         }
-    });
+    );
 };
+
+/**
+ * Sets the global preference of whether vector tools modify layer selection or not
+ * This translates to the Select: [Active Layers vs All Layers] option in the toolbar.
+ * 
+ * @param {boolean} allLayers If true, will set the Select mode to All Layers, false for Active Layers
+ * 
+ * @return {PlayObject}
+ */
+var setDirectSelectOptionForAllLayers = function (allLayers) {
+    return new PlayObject(
+        "set",
+        {
+            "null": {
+                ref: [
+                    {
+                        "property": "generalPreferences",
+                        "ref": "property"
+                    },
+                    {
+                        "enum": "ordinal",
+                        "ref": "application",
+                        "value": "targetEnum"
+                    }
+                ]
+            },
+            "to": {
+                obj: "generalPreferences",
+                value: {
+                    "legacyPathDrag": true,
+                    "vectorSelectionModifiesLayerSelection": allLayers
+                }
+            }
+        }
+    );
+};
+
+
+/**
+ * Resets the mode of shape tools back to "shape" from "path" or "pixel".
+ * 
+ * @return {PlayObject}
+ */
+var resetShapeTool = function () {
+    return new PlayObject(
+        "reset",
+        {
+            null: {
+                ref: [
+                    {
+                        ref: null,
+                        property: "vectorToolMode"
+                    },
+                    {
+                        ref: "application",
+                        enum: "ordinal",
+                        value: "targetEnum"
+                    }
+                ]
+            }
+        }
+    );
+};
+
 exports.setTool = setTool;
 exports.setToolOptions = setToolOptions;
 exports.setDirectSelectOptionForAllLayers = setDirectSelectOptionForAllLayers;
 exports.resetShapeTool = resetShapeTool;
+
 },{"../playobject":26}],22:[function(require,module,exports){
-'use strict';
+/*
+* Copyright (c) 2014 Adobe Systems Incorporated. All rights reserved.
+*  
+* Permission is hereby granted, free of charge, to any person obtaining a
+* copy of this software and associated documentation files (the "Software"), 
+* to deal in the Software without restriction, including without limitation 
+* the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+* and/or sell copies of the Software, and to permit persons to whom the 
+* Software is furnished to do so, subject to the following conditions:
+*  
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*  
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
+* DEALINGS IN THE SOFTWARE.
+* 
+*/
+
+// This is a wrapper to create unit descriptors
+
+"use strict";
+
+/** 
+ * Private function to create the Action Descriptor for the given unit
+ */
 var _unit = function (kind, val) {
     return {
-        unit: kind + 'Unit',
+        unit: kind + "Unit",
         value: val
     };
 };
-exports.density = _unit.bind(null, 'density');
-exports.pixels = exports.px = _unit.bind(null, 'pixels');
-exports.percent = _unit.bind(null, 'percent');
-exports.angle = _unit.bind(null, 'angle');
-exports.inches = exports.in = _unit.bind(null, 'inches');
-exports.centimeters = exports.cm = _unit.bind(null, 'centimeters');
-exports.picas = _unit.bind(null, 'picas');
-exports.degrees = _unit.bind(null, 'degrees');
-exports.number = _unit.bind(null, 'number');
-exports.seconds = _unit.bind(null, 'seconds');
-exports.points = exports.pt = _unit.bind(null, 'points');
-exports.millimeters = exports.mm = _unit.bind(null, 'millimeters');
-exports.distance = _unit.bind(null, 'distance');
+
+// TODO: Later on we need a better translation method here
+// var _toInches = {
+//     rulerInches: 1,
+//     pointsUnit: 1 / 72,
+//     millimetersUnit: 1 / 25.4,
+//     rulerCm: 1 / 2.54
+// };
+// 
+// var toPixels = function (unitValue, resolution) {
+//     var rawValue = unitValue.value;
+//     var unit = unitValue.unit;
+// 
+//     var factor = unit === "pixelsUnit" ? 1 : resolution * _toInches[unit];
+// 
+//     return rawValue * factor;
+// };
+
+
+exports.density = _unit.bind(null, "density");
+exports.pixels = exports.px = _unit.bind(null, "pixels");
+exports.percent = _unit.bind(null, "percent");
+exports.angle = _unit.bind(null, "angle");
+
+exports.inches = exports.in = _unit.bind(null, "inches");
+exports.centimeters = exports.cm = _unit.bind(null, "centimeters");
+exports.picas = _unit.bind(null, "picas");
+exports.degrees = _unit.bind(null, "degrees");
+
+exports.number = _unit.bind(null, "number");
+exports.seconds = _unit.bind(null, "seconds");
+
+//Type uses these
+exports.points = exports.pt = _unit.bind(null, "points");
+exports.millimeters = exports.mm = _unit.bind(null, "millimeters");
+
+//Guides use this
+exports.distance = _unit.bind(null, "distance");
+
+// exports.toPixels = toPixels;
+
+
 },{}],23:[function(require,module,exports){
-'use strict';
-var Promise = require('bluebird');
+/*
+* Copyright (c) 2014 Adobe Systems Incorporated. All rights reserved.
+*  
+* Permission is hereby granted, free of charge, to any person obtaining a
+* copy of this software and associated documentation files (the "Software"), 
+* to deal in the Software without restriction, including without limitation 
+* the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+* and/or sell copies of the Software, and to permit persons to whom the 
+* Software is furnished to do so, subject to the following conditions:
+*  
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*  
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
+* DEALINGS IN THE SOFTWARE.
+* 
+*/
+
+/* global _spaces */
+
+"use strict";
+
+var Promise = require("bluebird");
+
+/**
+ * Promisified version of _spaces.openURLInDefaultBrowser.
+ */
 var _openURLInDefaultBrowserAsync = Promise.promisify(_spaces.openURLInDefaultBrowser);
+
+/**
+ * The minimum-compatible plugin version number. 
+ *
+ * @const
+ * @type {{major: number=, minor: number=, patch: number=}}
+ */
 var COMPATIBLE_PLUGIN_VERSION = {
-        major: 1,
-        minor: 0,
-        patch: 0
-    };
+    major: 1,
+    minor: 0,
+    patch: 0
+};
+
 Object.defineProperties(exports, {
-    'version': {
+    /**
+     * Version of the Spaces adapter plugin API.
+     * Follows Semver 2.0.0 conventions: http://semver.org/spec/v2.0.0.html
+     *
+     * @const
+     * @type {string}
+     */
+    "version": {
         enumerable: true,
         value: _spaces.version
     },
-    'abort': {
+
+    /**
+     * Abort the current application and return control to Classic Photoshop.
+     * If a message is supplied, Classic Photoshop may display it to the user,
+     * e.g., in a dialog.
+     * 
+     * @param {{message: string=}}
+     * @return {Promise}
+     */
+    "abort": {
         enumerable: true,
         value: Promise.promisify(_spaces.abort)
     }
 });
+
+/**
+ * Determine whether v1 is less than or equal to v2.
+ * 
+ * @private
+ * @param {{major: number=, minor: number=, patch: number=}} v1
+ * @param {{major: number=, minor: number=, patch: number=}} v2
+ * @return {boolean}
+ */
 var _versionLessThanOrEqualTo = function (v1, v2) {
-    if (v1.hasOwnProperty('major') && v1.major > v2.major) {
+    if (v1.hasOwnProperty("major") && v1.major > v2.major) {
         return false;
     }
-    if (v1.hasOwnProperty('minor') && v1.minor > v2.minor) {
+
+    if (v1.hasOwnProperty("minor") && v1.minor > v2.minor) {
         return false;
     }
-    if (v1.hasOwnProperty('patch') && v1.patch > v2.patch) {
+
+    if (v1.hasOwnProperty("patch") && v1.patch > v2.patch) {
         return false;
     }
+
     return true;
 };
+
+/**
+ * Format a version object a string.
+ * 
+ * @private
+ * @param {{major: number=, minor: number=, patch: number=}} version
+ * @return {string}
+ */
 var _formatVersion = function (version) {
-    return [
-        version.major,
-        version.minor,
-        version.patch
-    ].join('.');
+    return [version.major, version.minor, version.patch].join(".");
 };
+
+/**
+ * Assert that the current plugin version is compatible with the specified
+ * minimum-compatible plugin version.
+ * 
+ * @throws {Error} If the current plugin version is incompatible with the
+ *  minimum compatible plugin version.
+ */
 var _assertPluginVersionIsCompatible = function () {
     var pluginVersion = _spaces.version;
+
     if (!_versionLessThanOrEqualTo(COMPATIBLE_PLUGIN_VERSION, pluginVersion)) {
-        var message = 'Plugin version ' + _formatVersion(pluginVersion) + ' is incompatible with the minimum required version, ' + _formatVersion(COMPATIBLE_PLUGIN_VERSION);
+        var message = "Plugin version " + _formatVersion(pluginVersion) +
+            " is incompatible with the minimum required version, " +
+             _formatVersion(COMPATIBLE_PLUGIN_VERSION);
+
         throw new Error(message);
     }
 };
+
+/**
+ * Opens the given URL in the user's default browser.
+ *
+ * @param {string} url The URL to open in the user's default browser.
+ * @return {Promise}
+ */
 var openURLInDefaultBrowser = function (url) {
     return _openURLInDefaultBrowserAsync(url);
 };
+
 exports.openURLInDefaultBrowser = openURLInDefaultBrowser;
+
+// Assert plugin compatibility at load time
 _assertPluginVersionIsCompatible();
+
 },{"bluebird":1}],24:[function(require,module,exports){
-'use strict';
-var EventEmitter = require('eventEmitter').EventEmitter, util = require('./util'), Promise = require('bluebird');
-var _os = Promise.promisifyAll(_spaces.os);
-var _keyboardFocus = Promise.promisifyAll(_spaces.os.keyboardFocus);
-var _clipboard = Promise.promisifyAll(_spaces.os.clipboard);
-var OS = function () {
-    EventEmitter.call(this);
-};
-util.inherits(OS, EventEmitter);
-OS.prototype.notifierKind = _os.notifierKind;
-OS.prototype.eventKind = _os.eventKind;
-OS.prototype.eventModifiers = _os.eventModifiers;
-OS.prototype.eventKeyCode = _os.eventKeyCode;
-OS.prototype._eventHandler = function (err, event, payload) {
-    if (err) {
-        console.error('Failed to handle OS event: ' + err);
-        return;
-    }
-    this.emit('all', event, payload);
-    this.emit(event, payload);
-};
-OS.prototype.hasKeyboardFocus = function (options) {
-    options = options || {};
-    return _keyboardFocus.isActiveAsync(options);
-};
-OS.prototype.acquireKeyboardFocus = function (options) {
-    options = options || {};
-    return _keyboardFocus.acquireAsync(options);
-};
-OS.prototype.releaseKeyboardFocus = function (options) {
-    options = options || {};
-    return _keyboardFocus.releaseAsync(options);
-};
-OS.prototype.postEvent = function (eventInfo, options) {
-    options = options || {};
-    return _os.postEventAsync(eventInfo, options);
-};
-OS.prototype.clipboardRead = function (formats) {
-    var options = { formats: formats || ['string'] };
-    return _clipboard.readAsync(options);
-};
-OS.prototype.clipboardWrite = function (data, format) {
-    var options = {
-            data: data,
-            format: format || 'string'
+/*
+ * Copyright (c) 2014 Adobe Systems Incorporated. All rights reserved.
+ *  
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"), 
+ * to deal in the Software without restriction, including without limitation 
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+ * and/or sell copies of the Software, and to permit persons to whom the 
+ * Software is furnished to do so, subject to the following conditions:
+ *  
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *  
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
+ * DEALINGS IN THE SOFTWARE.
+ * 
+ */
+
+/* global _spaces, console */
+
+    "use strict";
+
+    var EventEmitter = require("eventEmitter").EventEmitter,
+        util = require("./util"),
+        Promise = require("bluebird");
+
+    /**
+     * Promisified version of low-level os functions
+     */
+    var _os = Promise.promisifyAll(_spaces.os);
+
+    /**
+     * Promisified version of low-level keyboard focus functions
+     */
+    var _keyboardFocus = Promise.promisifyAll(_spaces.os.keyboardFocus);
+
+    /**
+     * Promisified version of low-level keyboard focus functions
+     */
+    var _clipboard = Promise.promisifyAll(_spaces.os.clipboard);
+
+    /**
+     * The OS object provides helper methods for dealing with operating
+     * system by way of Photoshop.
+     *
+     * @extends EventEmitter
+     * @constructor
+     * @private
+     */
+    var OS = function () {
+        EventEmitter.call(this);
+    };
+    util.inherits(OS, EventEmitter);
+
+    /**
+     * OS notifier kinds
+     * 
+     * @const
+     * @type{Object.<string, number>}
+     */
+    OS.prototype.notifierKind = _os.notifierKind;
+
+    /**
+     * OS event kinds
+     * 
+     * @const
+     * @type{Object.<string, number>}
+     */
+    OS.prototype.eventKind = _os.eventKind;
+
+    /**
+     * OS event modifiers
+     * 
+     * @const
+     * @type{Object.<string, number>}
+     */
+    OS.prototype.eventModifiers = _os.eventModifiers;
+
+    /**
+     * OS event keyCodes
+     * 
+     * @const
+     * @type{Object.<string, number>}
+     */
+    OS.prototype.eventKeyCode = _os.eventKeyCode;
+
+
+    /**
+     * Event handler for events from the native bridge.
+     *
+     * @private
+     * @param {*=} err Error information
+     * @param {String} event Name of the event
+     * @param {*} payload
+     */
+    OS.prototype._eventHandler = function (err, event, payload) {
+        if (err) {
+            // TODO: emit an error event, as in adapter.js
+            console.error("Failed to handle OS event: " + err);
+            return;
+        }
+        
+        this.emit("all", event, payload);
+        this.emit(event, payload);
+    };
+
+    /**
+     * Determine whether or not CEF currently has keyboard focus.
+     *
+     * @param {object=} options Options passed directly to the low-level call
+     * @return {Promise} Resolves once the status of focus has been determined.
+     */
+    OS.prototype.hasKeyboardFocus = function (options) {
+        options = options || {};
+
+        return _keyboardFocus.isActiveAsync(options);
+    };
+
+    /**
+     * Request that keyboard focus be transferred from Photoshop to CEF. 
+     *
+     * @param {object=} options Options passed directly to the low-level aquire call
+     * @return {Promise} Resolves once focus has been transferred.
+     */
+    OS.prototype.acquireKeyboardFocus = function (options) {
+        options = options || {};
+
+        return _keyboardFocus.acquireAsync(options);
+    };
+
+    /**
+     * Request that keyboard focus be transferred from CEF to Photoshop.
+     *
+     * @param {object=} options Options passed directly to the low-level release call
+     * @return {Promise} Resolves once focus has been transferred.
+     */
+    OS.prototype.releaseKeyboardFocus = function (options) {
+        options = options || {};
+
+        return _keyboardFocus.releaseAsync(options);
+    };
+
+    /**
+     * @return {Promise}
+     */
+    OS.prototype.postEvent = function (eventInfo, options) {
+        options = options || {};
+
+        return _os.postEventAsync(eventInfo, options);
+    };
+
+    /**
+     * @param {Array.<string>=} formats
+     * @return {Promise.<{data: *, format: string}>}
+     */
+    OS.prototype.clipboardRead = function (formats) {
+        var options = {
+            formats: formats || ["string"]
         };
-    return _clipboard.writeAsync(options);
-};
-OS.prototype.setTooltip = function (label) {
-    return _os.setTooltipAsync({ label: label });
-};
-OS.prototype.resetCursor = function (options) {
-    options = options || {};
-    return _os.resetCursorAsync(options);
-};
-var theOS = new OS();
-_spaces.setNotifier(_spaces.notifierGroup.OS, {}, theOS._eventHandler.bind(theOS));
-module.exports = theOS;
+
+        return _clipboard.readAsync(options);
+    };
+
+    /**
+     * @param {*} data
+     * @param {string=} format
+     * @return {Promise}
+     */
+    OS.prototype.clipboardWrite = function (data, format) {
+        var options = {
+            data: data,
+            format: format || "string"
+        };
+
+        return _clipboard.writeAsync(options);
+    };
+
+    /**
+     * Set the tooltip label, or invalidate the tooltip if the label is empty.
+     *
+     * @param {string} label
+     * @return {Promise}
+     */
+    OS.prototype.setTooltip = function (label) {
+        return _os.setTooltipAsync({
+            label: label
+        });
+    };
+
+    /**
+     * Resets the mouse cursor, letting it catch up without a mouse move event
+     *
+     * @param {object} options Currently unused
+     * @return {Promise}
+     */
+    OS.prototype.resetCursor = function (options) {
+        options = options || {};
+        return _os.resetCursorAsync(options);
+    };
+
+    /** @type {OS} The OS singleton */
+    var theOS = new OS();
+
+    // bind native phtooshop event handler to our handler function
+    _spaces.setNotifier(_spaces.notifierGroup.OS, {}, theOS._eventHandler.bind(theOS));
+    
+    module.exports = theOS;
+
 },{"./util":30,"bluebird":1,"eventEmitter":3}],25:[function(require,module,exports){
-'use strict';
-var Descriptor = require('./ps/descriptor');
-var PlayObject = function (command, descriptor, options) {
-    this.command = command;
-    this.descriptor = descriptor;
-    this.options = { interactionMode: Descriptor.interactionMode.SILENT };
-    if (options !== undefined) {
-        Object.keys(options).forEach(function (property) {
-            this.options[property] = options[property];
-        }, this);
-    }
-};
-PlayObject.prototype.command = null;
-PlayObject.prototype.descriptor = null;
-PlayObject.prototype.options = null;
-module.exports = PlayObject;
+/*
+ * Copyright (c) 2014 Adobe Systems Incorporated. All rights reserved.
+ *  
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"), 
+ * to deal in the Software without restriction, including without limitation 
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+ * and/or sell copies of the Software, and to permit persons to whom the 
+ * Software is furnished to do so, subject to the following conditions:
+ *  
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *  
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
+ * DEALINGS IN THE SOFTWARE.
+ * 
+ */
+
+    "use strict";
+
+    var Descriptor = require("./ps/descriptor");
+
+    /**
+     * In Spaces-adapter, all library functions return PlayObjects. 
+     * These PlayObjects can be called in Photoshop by passing them into 
+     * ps/descriptor's playObject function.
+     * 
+     * @constructor
+     * @param {!string} command Command name to be played
+     * @param {!Object} descriptor Arguments for the command
+     * @param {Object} options Options for Photoshop while playing this command
+     */
+    var PlayObject = function (command, descriptor, options) {
+        this.command = command;
+        this.descriptor = descriptor;
+        this.options = {
+            interactionMode: Descriptor.interactionMode.SILENT
+        };
+
+        if (options !== undefined) {
+            Object.keys(options).forEach(function (property) {
+                this.options[property] = options[property];
+            }, this);
+        }
+    };
+
+    /**
+     * @type {string}
+     */
+    PlayObject.prototype.command = null;
+
+    /**
+     * @type {Object}
+     */
+    PlayObject.prototype.descriptor = null;
+
+    /**
+     * @type {Object}
+     */
+    PlayObject.prototype.options = null;
+
+    
+    module.exports = PlayObject;
+
 },{"./ps/descriptor":27}],26:[function(require,module,exports){
 arguments[4][25][0].apply(exports,arguments)
 },{"./ps/descriptor":27,"dup":25}],27:[function(require,module,exports){
-'use strict';
-var EventEmitter = require('eventEmitter').EventEmitter, util = require('../util'), Promise = require('bluebird');
+/*
+* Copyright (c) 2014 Adobe Systems Incorporated. All rights reserved.
+*  
+* Permission is hereby granted, free of charge, to any person obtaining a
+* copy of this software and associated documentation files (the "Software"), 
+* to deal in the Software without restriction, including without limitation 
+* the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+* and/or sell copies of the Software, and to permit persons to whom the 
+* Software is furnished to do so, subject to the following conditions:
+*  
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*  
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
+* DEALINGS IN THE SOFTWARE.
+* 
+*/
+
+/* global _spaces */
+
+"use strict";
+
+var EventEmitter = require("eventEmitter").EventEmitter,
+    util = require("../util"),
+    Promise = require("bluebird");
+
+/**
+ * The Descriptor object provides helper methods for dealing with the
+ * low-level native binding to Photoshop. This object will typically
+ * not be used by user-level code.
+ *
+ * Emits low-level Photoshop events such as "select" with
+ * the following parameters:
+ *    1. @param {?} info about the event, dependent on event type (Note:
+ *           this should become more specific as the native interface is
+ *           further defined.)
+ *
+ * @extends EventEmitter
+ * @constructor
+ * @private
+ */
 var Descriptor = function () {
     EventEmitter.call(this);
+
     this._psEventHandler = this._psEventHandler.bind(this);
 };
 util.inherits(Descriptor, EventEmitter);
+
+/**
+ * Event handler for events from the native bridge.
+ *
+ * @private
+ * @param {*=} err Error information
+ * @param {String} eventID typeID for event type
+ * @param {Object} payload serialized ActionDescriptor for the event, dependent on event type
+ */
 Descriptor.prototype._psEventHandler = function (err, eventID, payload) {
     if (err) {
-        this.emit('error', 'Failed to handle Photoshop event: ' + err);
+        this.emit("error", "Failed to handle Photoshop event: " + err);
         return;
     }
-    this.emit('all', eventID, payload);
+
+    this.emit("all", eventID, payload);
     this.emit(eventID, payload);
 };
+
+/**
+ * Emit the named event with the given arguments as parameters. Throws if the
+ * event is "error" and there are no listeners.
+ * 
+ * @override EventEmitter.prototype.emitEvent
+ * @param {string|RegExp} event Name of the event to emit and execute listeners for
+ * @param {Array=} args Optional array of arguments to be passed to each listener
+ * @return {object} Current instance for chaining
+ */
 Descriptor.prototype.emitEvent = function (event, args) {
-    if (event === 'error') {
+    if (event === "error") {
         var listeners = this.getListeners(event);
+
         if (listeners.length === 0) {
-            var message, error;
-            if (args.length > 0 && typeof args[0] === 'string') {
+            var message,
+                error;
+
+            if (args.length > 0 && typeof args[0] === "string") {
                 message = args.shift();
             } else {
-                message = 'Unhandled error event';
+                message = "Unhandled error event";
             }
+
             error = new Error(message);
             error.args = args;
             throw error;
         }
     }
+
     Descriptor.super_.prototype.emitEvent.call(this, event, args);
 };
+
+/** 
+ * Wraps certain type of parameters making it easier to call Descriptor.prototype.get
+ * For arrays, returns the reference to array recursively mapping everything inside
+ * For string values, references to the currently active one
+ * For objects, leaves them as is.
+ * 
+ * @private
+ * @param {(string|Array.<object>|object)} toWrap object to reference to
+ * @return {object} Reference to the toWrap object in a form .get will accept
+ */
 var _wrap = function (toWrap) {
     var reference;
+
     if (Array.isArray(toWrap)) {
-        reference = { ref: toWrap.map(_wrap).reverse() };
-    } else if (typeof toWrap === 'string') {
+        reference = {
+            ref: toWrap.map(_wrap).reverse()
+        };
+    } else if (typeof toWrap === "string") {
         reference = {
             ref: toWrap,
-            enum: 'ordinal',
-            value: 'targetEnum'
+            enum: "ordinal",
+            value: "targetEnum"
         };
     } else {
         reference = toWrap;
-        if (reference.hasOwnProperty('null')) {
-            reference['null'] = _wrap(reference['null']);
+        
+        // Special case for play objects
+        if (reference.hasOwnProperty("null")) {
+            reference["null"] = _wrap(reference["null"]);
         }
+        
     }
+
     return reference;
 };
+
+/**
+ * Constructs a property reference from the given action reference and
+ * property name.
+ *
+ * @private
+ * @param {(string|Array.<object>|object)} reference
+ * @param {string} property
+ * @return {Array.<object>}
+ */
 var _makePropertyReference = function (reference, property) {
     var propertyDescriptor = {
-            ref: 'property',
+            ref: "property",
             property: property
         };
-    return Array.isArray(reference) ? reference.concat(propertyDescriptor) : [
-        reference,
-        propertyDescriptor
-    ];
+
+    return Array.isArray(reference) ?
+            reference.concat(propertyDescriptor) :
+            [reference, propertyDescriptor];
 };
+
+/**
+ * Executes a low-level "get" call using an ActionReference.
+ *
+ * @param {(string|Array.<(string|Object)>|Object)} reference The reference to retrieve. Can be:
+ *     - string of a class name
+ *     - Object representation of ActionReference key/value pairs
+ *     - An array of a combination of the above, which will get turned into the appropriate ActionReference
+ * @param {object=} options
+ * @return {Promise.<?>} The value of the reference, dependent on reference type
+ */
 Descriptor.prototype.get = function (reference, options) {
     if (options === undefined) {
         options = {};
     }
-    var wrappedReference = _wrap(reference), getAsync = Promise.promisify(_spaces.ps.descriptor.get, _spaces.ps.descriptor);
+
+    var wrappedReference = _wrap(reference),
+        getAsync = Promise.promisify(_spaces.ps.descriptor.get,
+            _spaces.ps.descriptor);
+
     return getAsync(wrappedReference, options);
 };
+
+/**
+ * Retrieves a property of a reference
+ *
+ * @param {string} reference The name of the reference
+ * @param {string} property The name of the property
+ * @param {object=} options
+ * @return {Promise.<?>} The value of the property, dependent on reference type
+ */
 Descriptor.prototype.getProperty = function (reference, property, options) {
     var propertyReference = _makePropertyReference(reference, property);
-    return this.get(propertyReference, options).then(function (obj) {
-        if (!obj || !obj.hasOwnProperty(property)) {
-            throw new Error('No such property: ' + property);
-        }
-        return obj[property];
-    });
+
+    return this.get(propertyReference, options)
+        .then(function (obj) {
+            if (!obj || !obj.hasOwnProperty(property)) {
+                throw new Error("No such property: " + property);
+            }
+
+            return obj[property];
+        });
 };
+
+/**
+ * Executes a "set" call on the given property of the reference to set to value.
+ *
+ * @param {object} reference A full reference object, possibly created by lib/reference.js wrappers
+ * @param {string} property Property name to edit
+ * @param {object|string} value Desired new value of the property
+ * @param {Object=} options options, defaults to "silent"
+ * @return {Promise.<object>} Resolves when property is set
+ */
 Descriptor.prototype.setProperty = function (reference, property, value, options) {
-    if (!reference.hasOwnProperty('ref')) {
-        throw new Error('You must pass a full reference to setProperty or else PS will crash!');
+    if (!reference.hasOwnProperty("ref")) {
+        throw new Error("You must pass a full reference to setProperty or else PS will crash!");
     }
-    var propertyReference = _makePropertyReference(reference, property).reverse(), propertyValue = {
-            'obj': property,
-            'value': value
-        }, propertyDescriptor = {
-            'null': { 'ref': propertyReference },
-            'to': propertyValue
+
+    // We need to reverse this because for play calls _makePropertyReference orders it wrong
+    var propertyReference = _makePropertyReference(reference, property).reverse(),
+        propertyValue = {
+            "obj": property,
+            "value": value
+        },
+        propertyDescriptor = {
+            "null": {"ref": propertyReference},
+            "to": propertyValue
         };
-    return this.play('set', propertyDescriptor, options);
+
+    return this.play("set", propertyDescriptor, options);
 };
+
+/**
+ * Defines an enumeration of three constants that control dialog display
+ * while executing action descriptors: DONT_DISPLAY, DISPLAY and SILENT.
+ * 
+ * @const
+ * @type {Object.<string: number>}
+ */
 Descriptor.prototype.interactionMode = _spaces.ps.descriptor.interactionMode;
+
+/**
+ * Executes a low-level "play" call on the specified ActionDescriptor.
+ * 
+ * NOTE: play is now implemented internally with batchPlay, which has
+ * additional options for describing history states.
+ *
+ * @param {string} name Name of the ActionDescriptor command
+ * @param {object=} descriptor JS Object representation of ActionDescriptor key/value pairs, defaults to {}
+ * @param {object=} options options, defaults to "silent"
+ * @return {Promise.<object>} Resolves when the call is complete (Note: eventually, this will
+ *     return the value resulting from the execution of the ActionDescriptor, if any).
+ */
 Descriptor.prototype.play = function (name, descriptor, options) {
     var commands = [{
-                name: name,
-                descriptor: descriptor || {}
-            }];
+        name: name,
+        descriptor: descriptor || {}
+    }];
+
     return this.batchPlay(commands, options).get(0);
 };
+
+/**
+ * Executes a low-level "play" call on the PlayObject by unwrapping it
+ *
+ * @param {PlayObject} playObject Contains command, descriptor and options information
+ * @param {object=} options Overrides any options in the playObject
+ * @returns {Promise} Resolves to the result of the call
+ */
 Descriptor.prototype.playObject = function (playObject, options) {
     return this.batchPlayObjects([playObject], options).get(0);
 };
+
+/**
+ * Executes a low-level "batchPlay" call on the specified ActionDescriptors.
+ *
+ * @param {Array.<{name: string, descriptor: object, options: object=}>} commands Array of 
+ *  ActionDescriptors to play
+ * @param {{continueOnError: boolean=}=} options Options applied to the execution of the batchPlay
+ * @return {Promise.<Array.<object>>} Resolves with the list of ActionDescriptor results, or rejects
+ *      with either an adapter error, or a single command error if not continueOnError mode. In
+ *      continueOnError mode, always resolve with both the results and errors arrays.
+ */
 Descriptor.prototype.batchPlay = function (commands, options) {
     options = options || {};
-    if (!options.hasOwnProperty('interactionMode')) {
+
+    if (!options.hasOwnProperty("interactionMode")) {
         options.interactionMode = this.interactionMode.SILENT;
     }
-    var batchPlayAsync = Promise.promisify(_spaces.ps.descriptor.batchPlay, _spaces.ps.descriptor);
-    return batchPlayAsync(commands, options).then(function (response) {
-        if (options.continueOnError) {
-            return response;
-        }
-        var theError;
-        response[1].some(function (error) {
-            if (error) {
-                theError = error;
-                return true;
+
+    var batchPlayAsync = Promise.promisify(_spaces.ps.descriptor.batchPlay,
+        _spaces.ps.descriptor);
+
+    return batchPlayAsync(commands, options)
+        .then(function (response) {
+            // Never reject in continueOnError mode; the caller must always check the results
+            if (options.continueOnError) {
+                return response;
             }
+
+            var theError;
+            response[1].some(function (error) {
+                if (error) {
+                    theError = error;
+                    return true;
+                }
+            });
+
+            if (theError) {
+                // otherwise, throw the first error, because there is only one
+                throw theError;
+            }
+            
+            // if there are no errors, resolve with just the results
+            return response[0];
         });
-        if (theError) {
-            throw theError;
-        }
-        return response[0];
-    });
 };
+
+/**
+ * Executes a low-level "batchPlay" call on the specified PlayObjects.
+ *
+ * @param {Array.<PlayObject>} objects Array of PlayObjects to play
+ * @param {{continueOnError: boolean=}=} options Options applied to the execution of the batchPlay
+ * @return {Promise.<Array.<object>>} Resolves with the list of ActionDescriptor results. 
+ */
 Descriptor.prototype.batchPlayObjects = function (objects, options) {
     var commands = objects.map(function (object) {
-            var command = {
-                    name: object.command,
-                    descriptor: _wrap(object.descriptor)
-                };
-            if (object.hasOwnProperty('options')) {
-                command.options = object.options;
-            }
-            return command;
-        });
+        var command = {
+            name: object.command,
+            descriptor: _wrap(object.descriptor)
+        };
+
+        if (object.hasOwnProperty("options")) {
+            command.options = object.options;
+        }
+
+        return command;
+    });
+
     return this.batchPlay(commands, options);
 };
+
+/**
+ * Executes a sequence of low-level "get" calls using batchPlay.
+ *
+ * NOTE: batchGet is currently slightly slower than simply executing the
+ * get calls independently, which is almost certainly an adapter bug.
+ * If that bug isn't fixed, we should consider replacing the implementation
+ * of this method with one that simply performs the gets independently.
+ *
+ * @see Descriptor.prototype.get
+ * @see Descriptor.prototype.batchPlay
+ * @param {Array.<object>} references The references to retrieve.
+ * @param {object=} options
+ * @return {Promise.<Array.<object>>} Resolves with an array of results.
+ */
 Descriptor.prototype.batchGet = function (references, options) {
     var commands = references.map(function (reference) {
-            return {
-                name: 'get',
-                descriptor: { 'null': _wrap(reference) }
-            };
-        });
+        return {
+            name: "get",
+            descriptor: {
+                "null": _wrap(reference)
+            }
+        };
+    });
+
     return this.batchPlay(commands, options);
 };
+
+/**
+ * Executes a sequence of low-level "getProperty" calls using batchPlay.
+ *
+ * @see Descriptor.prototype.get
+ * @see Descriptor.prototype.batchPlay
+ * @param {Array.<{reference: object, property: string}>} refObjs
+ *      The references and properties to retrieve.
+ * @param {object=} options
+ * @return {Promise.<Array.<object>>} Resolves with an array of property results.
+ */
 Descriptor.prototype.batchGetProperties = function (refObjs, options) {
     options = options || {};
+
     var propertyReferences = refObjs.map(function (refObj) {
-            return _makePropertyReference(refObj.reference, refObj.property);
-        });
-    return this.batchGet(propertyReferences, options).then(function (response) {
-        if (options.continueOnError) {
-            return response;
-        }
-        return response.map(function (result, index) {
-            var property = refObjs[index].property;
-            if (!result || !result.hasOwnProperty(property)) {
-                throw new Error('No such property: ' + property);
-            }
-            return result[property];
-        });
+        return _makePropertyReference(refObj.reference, refObj.property);
     });
+
+    return this.batchGet(propertyReferences, options)
+        .then(function (response) {
+            if (options.continueOnError) {
+                return response;
+            }
+
+            return response.map(function (result, index) {
+                var property = refObjs[index].property;
+                if (!result || !result.hasOwnProperty(property)) {
+                    throw new Error("No such property: " + property);
+                }
+
+                return result[property];
+            });
+        });
 };
+
+/**
+ * Fetch optional properties, which might not exist, and ignore errors.
+ * 
+ * @param {object} reference
+ * @param {Array.<string>} properties
+ * @return {Promise.<object>} Always resolves to an object, but keys that
+ *  don't exist are omitted from the resolved value.
+ */
 Descriptor.prototype.batchGetOptionalProperties = function (reference, properties) {
     var makeRefObj = function (property) {
         return {
@@ -19942,174 +22620,608 @@ Descriptor.prototype.batchGetOptionalProperties = function (reference, propertie
             property: property
         };
     };
-    var refObjs = properties.map(makeRefObj), options = { continueOnError: true };
-    return this.batchGetProperties(refObjs, options).then(function (results) {
-        var values = results[0];
-        return values.reduce(function (result, value, index) {
-            var property = properties[index];
-            if (value && value.hasOwnProperty(property)) {
-                result[property] = value[property];
-            }
-            return result;
-        }, {});
-    });
+
+    var refObjs = properties.map(makeRefObj),
+        options = {
+            continueOnError: true
+        };
+
+    return this.batchGetProperties(refObjs, options)
+        .then(function (results) {
+            var values = results[0];
+
+            return values.reduce(function (result, value, index) {
+                var property = properties[index];
+                if (value && value.hasOwnProperty(property)) {
+                    result[property] = value[property];
+                }
+                return result;
+            }, {});
+        });
 };
+
+/**
+ * Executes a sequence of low-level "getProperty" calls for a single property
+ * using batchPlay.
+ *
+ * @see Descriptor.prototype.get
+ * @see Descriptor.prototype.batchPlay
+ * @param {object} references The references to retrieve
+ * @param {string} property The property to retrieve
+ * @param {object=} options
+ * @return {Promise.<Array.<object>>} Resolves with an array of property results.
+ */
 Descriptor.prototype.batchGetProperty = function (references, property, options) {
     var refObjs = references.map(function (reference) {
-            return {
-                reference: reference,
-                property: property
-            };
-        });
+        return {
+            reference: reference,
+            property: property
+        };
+    });
+
     return this.batchGetProperties(refObjs, options);
 };
+
+
+/**
+ * @type {Descriptor} The Descriptor singleton
+ */
 var descriptor = new Descriptor();
+
+// bind native Photoshop event handler to our handler function
 _spaces.setNotifier(_spaces.notifierGroup.PHOTOSHOP, {}, descriptor._psEventHandler);
+
 module.exports = descriptor;
+
 },{"../util":30,"bluebird":1,"eventEmitter":3}],28:[function(require,module,exports){
-'use strict';
-var Promise = require('bluebird');
+/*
+* Copyright (c) 2014 Adobe Systems Incorporated. All rights reserved.
+*  
+* Permission is hereby granted, free of charge, to any person obtaining a
+* copy of this software and associated documentation files (the "Software"), 
+* to deal in the Software without restriction, including without limitation 
+* the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+* and/or sell copies of the Software, and to permit persons to whom the 
+* Software is furnished to do so, subject to the following conditions:
+*  
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*  
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
+* DEALINGS IN THE SOFTWARE.
+* 
+*/
+
+/* global _spaces */
+
+"use strict";
+
+var Promise = require("bluebird");
+
+/**
+ * @private
+ * Promisified version of _spaces.ps functions.
+ */
 var _ps = Promise.promisifyAll(_spaces.ps);
+
+
+/**
+ * Commit or cancel the current modal tool edit state.
+ *
+ * @param {boolean=} commit Commits if true; cancels otherwise
+ * @param {options=} options
+ * @return {Promise} Resolves once the modal state has ended
+ */
 var endModalToolState = function (commit, options) {
     commit = commit || false;
-    options = options || { invalidateMenus: true };
-    return _ps.endModalToolStateAsync(commit).then(function () {
-        return _ps.processQueuedCommandsAsync(options);
-    });
+    options = options || {
+        invalidateMenus: true
+    };
+    
+    return _ps.endModalToolStateAsync(commit)
+        .then(function () {
+            return _ps.processQueuedCommandsAsync(options);
+        });
 };
+
+/**
+ * Execute a Photoshop menu command.
+ * Should only be used for items that are not yet implemented via ActionDescriptors
+ *
+ * @param {number} commandID Photoshop menu command ID
+ * @return {Promise.<*>} Promise representing execution state of the menu command
+ */
 var performMenuCommand = function (commandID) {
     return _ps.performMenuCommandAsync(commandID);
 };
+
+/**
+ * Log an analytics event using the Adobe Headlights API.
+ * 
+ * NOTE: This is an Adobe-private API that must not be used by third-party
+ * developers!
+ *
+ * @private
+ * @param {string} category
+ * @param {string} subcategory
+ * @param {string} event
+ * @return {Promise}
+ */
 var logHeadlightsEvent = function (category, subcategory, event) {
     var options = {
-            category: category,
-            subcategory: subcategory,
-            event: event
-        };
+        category: category,
+        subcategory: subcategory,
+        event: event
+    };
+
     return _ps.logHeadlightsEventAsync(options);
 };
+
 exports.endModalToolState = endModalToolState;
 exports.performMenuCommand = performMenuCommand;
 exports.logHeadlightsEvent = logHeadlightsEvent;
-exports.ui = require('./ui');
-exports.descriptor = require('./descriptor');
+
+exports.ui = require("./ui");
+exports.descriptor = require("./descriptor");
+
 },{"./descriptor":27,"./ui":29,"bluebird":1}],29:[function(require,module,exports){
-'use strict';
-var EventEmitter = require('eventEmitter').EventEmitter, util = require('../util'), Promise = require('bluebird');
+/*
+* Copyright (c) 2014 Adobe Systems Incorporated. All rights reserved.
+*  
+* Permission is hereby granted, free of charge, to any person obtaining a
+* copy of this software and associated documentation files (the "Software"), 
+* to deal in the Software without restriction, including without limitation 
+* the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+* and/or sell copies of the Software, and to permit persons to whom the 
+* Software is furnished to do so, subject to the following conditions:
+*  
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*  
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
+* DEALINGS IN THE SOFTWARE.
+* 
+*/
+
+/* global _spaces */
+
+"use strict";
+
+var EventEmitter = require("eventEmitter").EventEmitter,
+    util = require("../util"),
+    Promise = require("bluebird");
+
+/**
+ * Promisified version of low-level keyboard focus functions
+ */
 var _ui = Promise.promisifyAll(_spaces.ps.ui);
-var ALL_NONWINDOW_WIDGETS_BITMASK = _ui.widgetTypes.CONTROLBAR | _ui.widgetTypes.DOCUMENT_TABS | _ui.widgetTypes.PALETTE | _ui.widgetTypes.TOOLBAR;
+
+/* jshint bitwise: false */
+/**
+ * Bitmask of all of the classic UI widgets we want to hide in DesignShop mode
+ *
+ * @const
+ * @type {number}
+ */
+var ALL_NONWINDOW_WIDGETS_BITMASK =
+    _ui.widgetTypes.CONTROLBAR |
+    _ui.widgetTypes.DOCUMENT_TABS |
+    _ui.widgetTypes.PALETTE |
+    _ui.widgetTypes.TOOLBAR;
+/* jshint bitwise: true */
+
+/**
+ * The UI object provides helper methods for dealing with the
+ * low-level native binding to Photoshop. This object will typically
+ * not be used by user-level code.
+ *
+ * Emits low-level Photoshop events such as "select" with
+ * the following parameters:
+ *    1. @param {?} info about the event, dependent on event type (Note:
+ *           this should become more specific as the native interface is
+ *           further defined.)
+ *
+ * @extends EventEmitter
+ * @constructor
+ * @private
+ */
 var UI = function () {
     EventEmitter.call(this);
+
     this._menuEventHandler = this._menuEventHandler.bind(this);
     this._interactionEventHandler = this._interactionEventHandler.bind(this);
 };
 util.inherits(UI, EventEmitter);
+
+/**
+ * Event handler for menu events from the native bridge.
+ *
+ * @private
+ * @param {*=} err Error information
+ * @param {string} menuCommand
+ * @param {object} info
+ */
 UI.prototype._menuEventHandler = function (err, menuCommand, info) {
     if (err) {
-        this.emit('error', 'Failed to handle menu event: ' + err);
+        this.emit("error", "Failed to handle menu event: " + err);
         return;
     }
-    this.emit('menu', {
+
+    this.emit("menu", {
         command: menuCommand,
         info: info
     });
 };
+
+/**
+ * Event handler for interaction events (e.g., display of progress, error
+ * or options dialogs, context menus, etc.) from the native bridge.
+ *
+ * @private
+ * @param {*=} err Error information
+ * @param {number} type
+ * @param {object} info
+ */
 UI.prototype._interactionEventHandler = function (err, type, info) {
     if (err) {
-        this.emit('error', 'Failed to handle interaction event: ' + err);
+        this.emit("error", "Failed to handle interaction event: " + err);
         return;
     }
+
     var eventKind;
     switch (type) {
-    case 'progress':
-        eventKind = 'interactionProgress';
+    case "progress":
+        eventKind = "interactionProgress";
         break;
-    case 'error':
-        eventKind = 'interactionError';
+    case "error":
+        eventKind = "interactionError";
         break;
-    case 'options':
-        eventKind = 'interactionOptions';
+    case "options":
+        eventKind = "interactionOptions";
         break;
-    case 'context':
-        eventKind = 'interactionContext';
+    case "context":
+        eventKind = "interactionContext";
         break;
-    case 'user':
-        eventKind = 'interactionUser';
+    case "user":
+        eventKind = "interactionUser";
         break;
     default:
-        return;
+        return; // setNotifier registration callback
     }
-    this.emit(eventKind, { info: info });
+
+    this.emit(eventKind, {
+        info: info
+    });
 };
+
+/**
+ * Overscroll modes
+ * 
+ * @const
+ * @type{object.<number>}
+ */
 UI.prototype.overscrollMode = _spaces.ps.ui.overscrollMode;
+
+/**
+ * Get the current Photoshop overscroll mode.
+ * 
+ * @see UI.prototype.overscrollMode
+ * @return {Promise.<number>} Resolves with the overscroll mode
+ */
 UI.prototype.getOverscrollMode = function () {
     return _ui.getOverscrollModeAsync();
 };
+
+/**
+ * Set the current Photoshop overscroll mode.
+ * 
+ * @see UI.prototype.overscrollMode
+ * @param {number} mode The desired overscroll model
+ * @return {Promise.<number>} Resolves once the overscroll mode is set
+ */
 UI.prototype.setOverscrollMode = function (mode) {
-    var options = { mode: mode };
+    var options = {
+        mode: mode
+    };
+
     return _ui.setOverscrollModeAsync(options);
 };
+
+/**
+ * Determines whether the scrollbars are currently suppressed.
+ * 
+ * @return {Promise.<boolean>}
+ */
 UI.prototype.getSuppressScrollbars = function () {
     return _ui.getSuppressScrollbarsAsync();
 };
+
+/**
+ * Sets whether or not the scrollbars should be suppressed.
+ * 
+ * @param {boolean} suppress Whether or not the scrollbars should be suppressed
+ * @return {Promise}
+ */
 UI.prototype.setSuppressScrollbars = function (suppress) {
     return _ui.setSuppressScrollbarsAsync(suppress);
 };
+
+/**
+ * Determines whether target path drawing is currently suppressed.
+ * 
+ * @return {Promise.<boolean>}
+ */
 UI.prototype.getSuppressTargetPaths = function () {
     return _ui.getSuppressTargetPathsAsync();
 };
+
+/**
+ * Sets whether or not target path drawing should be suppressed.
+ * 
+ * @param {boolean} suppress Whether or not target path drawing should be suppressed
+ * @return {Promise}
+ */
 UI.prototype.setSuppressTargetPaths = function (suppress) {
     return _ui.setSuppressTargetPathsAsync(suppress);
 };
+
+/**
+ * Sets whether or not the Photoshop classic chrome is visible
+ *
+ * @param {boolean} visible Whether or not the chrome should be visible
+ * @return {Promise}
+ */
 UI.prototype.setClassicChromeVisibility = function (visible) {
     return this.setSuppressScrollbars(!visible).then(function () {
         _ui.setWidgetTypeVisibilityAsync(ALL_NONWINDOW_WIDGETS_BITMASK, visible);
     });
+
 };
+
+/**
+ * Pointer propagation modes - Used for the default mouse policy
+ * ALPHA_PROPAGATE: Default behavior, events will be sent to Spaces
+ * if they're clicking on a Spaces view
+ * ALWAYS_PROPAGATE: Spaces will never get a pointer event
+ * NEVER_PROPAGATE: Spaces consumes all pointer events
+ */
 UI.prototype.pointerPropagationMode = _spaces.ps.ui.pointerPropagationMode;
+
+/**
+ * Keyboard propagation modes - Used for the default keyboard policy
+ * FOCUS_PROPAGATE: Default behavior, events will be sent to in focus element
+ * ALWAYS_PROPAGATE: Spaces will never get a keyboard event
+ * NEVER_PROPAGATE: Spaces consumes all keyboard events
+ */
 UI.prototype.keyboardPropagationMode = _spaces.ps.ui.keyboardPropagationMode;
+
+/**
+ * Policy action modes - Used for custom policies
+ * Numerically, they're identical for keyboard and pointer
+ * ALPHA_PROPAGATE (applies as FOCUS_PROPAGATE on Keyboard events)
+ * ALWAYS_PROPAGATE
+ * NEVER_PROPAGATE
+ */
 UI.prototype.policyAction = _spaces.ps.ui.policyAction;
+
+/**
+ * Command kinds - Used for certain commands that are also used in
+ * OS dialogs (like copy/paste), with USER_DEFINED as extra
+ */
 UI.prototype.commandKind = _spaces.ps.ui.commandKind;
+
+/**
+ * Gets the mode of pointer propagation determining the rules of
+ * what mouse events will be trickled down to Spaces layer.
+ * 
+ * @return {Promise.<number>} Resolves to a value in pointerPropagationMode
+ */
 UI.prototype.getPointerPropagationMode = function () {
     return _ui.getPointerPropagationModeAsync();
 };
+
+/**
+ * Set the pointer propagation mode
+ * 
+ * @param {number} mode What level of mouse events to pass to Spaces
+ *  possible values defined in UI.prototype.pointerPropagationMode
+ * @return {Promise}
+ */
 UI.prototype.setPointerPropagationMode = function (mode) {
     return _ui.setPointerPropagationModeAsync(mode);
 };
+
+/**
+ * Gets the mode of keyboard propagation determining the rules of
+ * what keyboard events will be trickled down to Spaces layer.
+ * 
+ * @return {Promise.<number>} Resolves to a value in keyboardPropagationMode
+ */
 UI.prototype.getKeyboardPropagationMode = function () {
     return _ui.getKeyboardPropagationModeAsync();
 };
+
+/**
+ * Set the keyboard propagation mode
+ * 
+ * @param {number} mode What level of keyboard events to pass to Spaces
+ *  possible values defined in UI.prototype.keyboardPropagationMode
+ * @return {Promise}
+ */
 UI.prototype.setKeyboardPropagationMode = function (mode) {
     return _ui.setKeyboardPropagationModeAsync(mode);
 };
+
+/**
+ * Installs the given list of pointer event policies into Photoshop
+ * Each policy is an object with this structure:
+ * {    eventKind: _spaces.os.eventKind,
+ *      modifiers: _spaces.os.eventModifiers,
+ *      keyCode: _spaces.os.keyCode,
+ *      action: _spaces.ps.ui.policyAction
+ * }
+ *
+ * @param {Array.<{eventKind: number, modifiers: number, keyCode: number, action: number}>} policyList
+ */
 UI.prototype.setPointerEventPropagationPolicy = function (policyList) {
-    return _ui.setPointerEventPropagationPolicyAsync({ policyList: policyList });
+    return _ui.setPointerEventPropagationPolicyAsync({policyList: policyList});
 };
+
+/**
+ * Installs the given list of keyboard event policies into Photoshop
+ * Each policy is an object with this structure:
+ * {    eventKind: _spaces.os.eventKind,
+ *      modifiers: _spaces.os.eventModifiers,
+ *      keyCode: _spaces.os.keyCode,
+ *      action: _spaces.ps.ui.policyAction
+ * }
+ *
+ * @param {Array.<{eventKind: number, modifiers: number, keyCode: number, action: number}>} policyList
+ */
 UI.prototype.setKeyboardEventPropagationPolicy = function (policyList) {
-    return _ui.setKeyboardEventPropagationPolicyAsync({ policyList: policyList });
+    return _ui.setKeyboardEventPropagationPolicyAsync({policyList: policyList});
 };
+
+/**
+ * Install a menu bar, which consists of an array of MenuEntry objects, an
+ * example of which follows:
+ *
+ * {
+ *      "id": "example-menu",
+ *      "menu": [
+ *           {
+ *               "label": "Functions",
+ *               "submenu": [
+ *                   { "label": "Tool", "shortcut": {"key": "t", "modifiers": 2 }, "command": "application:tool" },
+ *                   { "type": "separator" },
+ *                   { "label": "More Tool", "command": "application:more-tool" }
+ *               ]
+ *           },
+ *           {
+ *               "label": "Frunctions",
+ *               "submenu": [
+ *                   { "label": "Tool", "shortcut": {"key": "t", "modifiers": 3 }, "command": "application:tool" },
+ *                   { "type": "separator" },
+ *                   { "label": "More Tool", "command": "application:more-tool" }
+ *               ]
+ *           }
+ *      ]
+ * }
+ *
+ * @param {object=} options Currently unused
+ * @param {{id: string, menu: Array.<MenuEntry>}} description Menu description
+ */
 UI.prototype.installMenu = function (options, description) {
     if (description === undefined) {
         description = options;
         options = {};
     }
+
     return _ui.installMenuAsync(options, description);
 };
+
+/**
+ * Define the bounds of the non-UI portion of the application window.
+ *
+ * @param {{top: number, left: number, right:number, bottom: number}} offset
+ * @return {Promise.<{top: number, left: number, right:number, bottom: number}>}
+ */
 UI.prototype.setOverlayOffsets = function (offset) {
-    return _ui.setOverlayOffsetsAsync({ offset: offset });
+    return _ui.setOverlayOffsetsAsync({
+        offset: offset
+    });
 };
+
+/**
+ * @type {UI} The UI singleton
+ */
 var ui = new UI();
+
+// Install the menu notifier group handler
 _spaces.setNotifier(_spaces.notifierGroup.MENU, {}, ui._menuEventHandler);
+
+// Install the interaction notifier group handler. For now, listen to "options" and
+// "context" and "error" events, but not "progress" events, because listening for
+// a particular class of events also suppresses the corresponding interaction dialog.
+// In the case of "error" events, only an internally black-listed set of dialogs are
+// suppresesed.
 var _interactionOpts = _spaces.notifierOptions.interaction;
-_spaces.setNotifier(_spaces.notifierGroup.INTERACTION, { notificationKind: _interactionOpts.OPTIONS + _interactionOpts.CONTEXT + _interactionOpts.ERROR }, ui._interactionEventHandler);
+_spaces.setNotifier(_spaces.notifierGroup.INTERACTION, {
+    notificationKind:
+        _interactionOpts.OPTIONS +
+        _interactionOpts.CONTEXT +
+        _interactionOpts.ERROR
+}, ui._interactionEventHandler);
+
 module.exports = ui;
+
 },{"../util":30,"bluebird":1,"eventEmitter":3}],30:[function(require,module,exports){
-'use strict';
-var assert = function (expression, message) {
-    console.assert(expression, message);
-};
-exports.inherits = require('util').inherits;
-exports.assert = assert;
+/*
+ * Copyright (c) 2014 Adobe Systems Incorporated. All rights reserved.
+ *  
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"), 
+ * to deal in the Software without restriction, including without limitation 
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+ * and/or sell copies of the Software, and to permit persons to whom the 
+ * Software is furnished to do so, subject to the following conditions:
+ *  
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *  
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
+ * DEALINGS IN THE SOFTWARE.
+ * 
+ */
+
+/* global console */
+
+    "use strict";
+
+    /**
+     * Inherit the prototype methods from one constructor into another. 
+     *
+     * Modeled after Node's util.inherits, which is licensed under the MIT license
+     *   Implementation: https://github.com/joyent/node/blob/master/lib/util.js#L628
+     *   License: https://github.com/joyent/node/blob/master/LICENSE
+     *
+     * @param {function} ctor Constructor function which needs to inherit the prototype.
+     * @param {function} superCtor Constructor function to inherit prototype from.
+     */
+    // var inherits = function (ctor, superCtor) {
+    //     ctor.super_ = superCtor;
+    //     ctor.prototype = Object.create(superCtor.prototype, {
+    //         constructor: {
+    //             value: ctor,
+    //             enumerable: false,
+    //             writable: true,
+    //             configurable: true
+    //         }
+    //     });
+    // };
+
+    var assert = function (expression, message) {
+        console.assert(expression, message);
+    };
+
+    exports.inherits = require("util").inherits;
+    exports.assert = assert;
+
 },{"util":34}],31:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module

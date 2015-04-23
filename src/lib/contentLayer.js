@@ -21,7 +21,6 @@
  *
  */
 
-define(function (require, exports) {
     "use strict";
 
     var PlayObject = require("../playobject"),
@@ -798,4 +797,3 @@ define(function (require, exports) {
     exports.createShape = createShape;
     exports.setRadius = setRadius;
 
-});

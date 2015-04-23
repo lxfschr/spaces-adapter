@@ -23,7 +23,6 @@
  
  /*jshint bitwise: false*/
 
-define(function (require, exports) {
     "use strict";
     
     var PlayObject = require("../playobject");
@@ -119,4 +118,4 @@ define(function (require, exports) {
     exports.colorObject = colorObject;
     exports.setForegroundColor = setForegroundColor;
     exports.setBackgroundColor = setBackgroundColor;
-});
+

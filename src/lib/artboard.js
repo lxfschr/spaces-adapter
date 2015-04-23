@@ -21,73 +21,72 @@
  * 
  */
 
-define(function (require, exports) {
-    "use strict";
+"use strict";
+
+var PlayObject = require("../playobject"),
+    referenceLib = require("./reference");
+
+var assert = require("../util").assert;
     
-    var PlayObject = require("../playobject"),
-        referenceLib = require("./reference");
-
-    var assert = require("../util").assert;
-        
-    /**
-     * Creates a new artboard at the given location
-     *
-     * @param {ActionDescriptor} layerRef Reference object to layers that will be added to artboard
-     * @param {bottom: <number>, top: <number>, left: <number>, right: <number>} boundingBox
-     * @return {PlayObject}
-     */
-    var makeArtboard = function (layerRef, boundingBox) {
-        if (boundingBox === undefined) {
-            boundingBox = layerRef;
-            layerRef = referenceLib.wrapper("layer").target;
-        }
-        
-        return new PlayObject(
-            "make",
-            {
-                "null": {
-                    "ref": "layerSection"
-                },
-                "from": layerRef,
-                "artboardRect": {
-                    "obj": "classFloatRect",
-                    "value": boundingBox
-                }
+/**
+ * Creates a new artboard at the given location
+ *
+ * @param {ActionDescriptor} layerRef Reference object to layers that will be added to artboard
+ * @param {bottom: <number>, top: <number>, left: <number>, right: <number>} boundingBox
+ * @return {PlayObject}
+ */
+var makeArtboard = function (layerRef, boundingBox) {
+    if (boundingBox === undefined) {
+        boundingBox = layerRef;
+        layerRef = referenceLib.wrapper("layer").target;
+    }
+    
+    return new PlayObject(
+        "make",
+        {
+            "null": {
+                "ref": "layerSection"
+            },
+            "from": layerRef,
+            "artboardRect": {
+                "obj": "classFloatRect",
+                "value": boundingBox
             }
-        );
-    };
+        }
+    );
+};
 
-    /**
-     * Moves/resized the referenced artboard layer to a new bounding box
-     *
-     * @param {ActionDescriptor} ref - Artboard layer reference
-     * @param {bottom: <number>, top: <number>, left: <number>, right: <number>} boundingBox
-     * @return {PlayObject}
-     */
-    var transformArtboard = function (ref, boundingBox) {
-        assert(referenceLib.refersTo(ref) === "layer", "transformArtboard requires a layer reference");
-        return new PlayObject(
-            "editArtboardEvent",
-            {
-                "null": ref,
-                "artboard": {
-                    "obj": "artboard",
-                    "value": {
-                        "artboardCanvasResize": {
-                            "enum": "artboardCanvasResize",
-                            "value": "artboardCanvasResizeExpand"
-                        },
-                        "artboardEnabled": true,
-                        "artboardRect": {
-                            "obj": "classFloatRect",
-                            "value": boundingBox
-                        }
+/**
+ * Moves/resized the referenced artboard layer to a new bounding box
+ *
+ * @param {ActionDescriptor} ref - Artboard layer reference
+ * @param {bottom: <number>, top: <number>, left: <number>, right: <number>} boundingBox
+ * @return {PlayObject}
+ */
+var transformArtboard = function (ref, boundingBox) {
+    assert(referenceLib.refersTo(ref) === "layer", "transformArtboard requires a layer reference");
+    return new PlayObject(
+        "editArtboardEvent",
+        {
+            "null": ref,
+            "artboard": {
+                "obj": "artboard",
+                "value": {
+                    "artboardCanvasResize": {
+                        "enum": "artboardCanvasResize",
+                        "value": "artboardCanvasResizeExpand"
+                    },
+                    "artboardEnabled": true,
+                    "artboardRect": {
+                        "obj": "classFloatRect",
+                        "value": boundingBox
                     }
                 }
             }
-        );
-    };
+        }
+    );
+};
 
-    exports.make = makeArtboard;
-    exports.transform = transformArtboard;
-});
+exports.make = makeArtboard;
+exports.transform = transformArtboard;
+

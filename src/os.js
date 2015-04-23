@@ -23,7 +23,6 @@
 
 /* global _spaces, console */
 
-define(function (require, exports, module) {
     "use strict";
 
     var EventEmitter = require("eventEmitter").EventEmitter,
@@ -211,4 +210,3 @@ define(function (require, exports, module) {
     _spaces.setNotifier(_spaces.notifierGroup.OS, {}, theOS._eventHandler.bind(theOS));
     
     module.exports = theOS;
-});

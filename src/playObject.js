@@ -21,7 +21,6 @@
  * 
  */
 
-define(function (require, exports, module) {
     "use strict";
 
     var Descriptor = require("./ps/descriptor");
@@ -67,4 +66,3 @@ define(function (require, exports, module) {
 
     
     module.exports = PlayObject;
-});

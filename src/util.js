@@ -23,7 +23,6 @@
 
 /* global console */
 
-define(function (require, exports) {
     "use strict";
 
     /**
@@ -54,4 +53,3 @@ define(function (require, exports) {
 
     exports.inherits = require("util").inherits;
     exports.assert = assert;
-});
