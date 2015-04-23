@@ -140,9 +140,4 @@ define(function (require, exports) {
 
     // Assert plugin compatibility at load time
     _assertPluginVersionIsCompatible();
-
-    exports.os = require("./os");
-    exports.ps = require("./ps");
-    exports.util = require("./util");
-    exports.PlayObject = require("./playObject");
 });
