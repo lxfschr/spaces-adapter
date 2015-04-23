@@ -1,6 +1,6 @@
 #!/bin/bash
 
 # 1. npm install -g browserify exorcist
-# 2. npm install deamdify
+# 2. npm install
 
 browserify -t deamdify src/index.js --debug | exorcist browser.js.map > browser.js
