@@ -126,6 +126,52 @@ define(function (require, exports) {
     };
 
     /**
+     * Sets the typeface by postscript name
+     *
+     * @param {ActionDescriptor} sourceRef Layer reference
+     * @param {string} postScriptName Postscript name of the typeface
+     *
+     * @returns {PlayObject} The action descriptor of the text style.
+     *
+     * Preconditions:
+     * Select a text layer
+     *
+     * Examples:
+     * setPostScript("Kozuka Gothic Pr6N L");
+     */
+    var setPostScript = function (sourceRef, postScriptName) {
+        // NOTE: Using a source ref with layer IDs crashes Photoshop.
+
+        assert(referenceOf(sourceRef) === "textLayer", "setPostScript expects a textLayer reference");
+        sourceRef = {
+            "ref": "textLayer",
+            "value": "$Trgt",
+            "enum": "$Ordn"
+        };
+
+        return new PlayObject(
+            "set",
+            {
+                null: {
+                    ref: [
+                        {
+                            ref: "property",
+                            property: "textStyle"
+                        },
+                        sourceRef
+                    ]
+                },
+                to: {
+                    obj: "textStyle",
+                    value: {
+                        fontPostScriptName: postScriptName
+                    }
+                }
+            }
+        );
+    };
+
+    /**
      * Set the font size
      *
      * @param {ActionDescriptor} sourceRef Layer reference
@@ -527,6 +573,7 @@ define(function (require, exports) {
     exports.referenceBy = referenceBy;
 
     exports.createText = createText;
+    exports.setPostScript = setPostScript;
     exports.setFace = setFace;
     exports.setSize = setSize;
     exports.setAlignment = setAlignment;
