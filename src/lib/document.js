@@ -475,6 +475,37 @@ define(function (require, exports) {
     };
 
     /**
+     * Sets the artboard auto-nesting of the document. THis is available in the classic UI
+     * when artboard tool is selected under the gear icon.
+     *
+     * @param {object} sourceRef
+     * @param {boolean} enabled 
+     * @return {PlayObject}
+     */
+    var setArtboardAutoNesting = function (sourceRef, enabled) {
+        assert(referenceOf(sourceRef) === "document", "setTargetPathVisible is passed a non-document reference");
+
+        var reference = {
+            "ref": [
+                {
+                    "ref": "property",
+                    "property": "artboards"
+                },
+                sourceRef
+            ]
+        };
+
+        var descriptor = {
+            null: reference,
+            to: {
+                autoNestEnabled: enabled
+            }
+        };
+
+        return new PlayObject("set", descriptor);
+    };
+
+    /**
      * Build the base descriptor for guide visibility
      *
      * @private
@@ -556,6 +587,7 @@ define(function (require, exports) {
     exports.create = createDocument;
     exports.createWithPreset = createWithPreset;
     exports.resize = resizeDocument;
+    exports.setArtboardAutoNesting = setArtboardAutoNesting;
     exports.setTargetPathVisible = setTargetPathVisible;
     exports.getGuidesVisibility = getGuidesVisibility;
     exports.getSmartGuidesVisibility = getSmartGuidesVisibility;
