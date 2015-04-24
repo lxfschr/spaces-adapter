@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "bluebird": "^2.9.24",
+    "inherits": "^2.0.1",
     "lodash": "^3.7.0",
     "wolfy-eventemitter": "^0.1.0"
   }

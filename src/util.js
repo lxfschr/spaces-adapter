@@ -25,6 +25,8 @@
 
     "use strict";
 
+    var inherits = require("inherits");
+    
     /**
      * Inherit the prototype methods from one constructor into another. 
      *
@@ -51,5 +53,5 @@
         console.assert(expression, message);
     };
 
-    exports.inherits = require("util").inherits;
+    exports.inherits = inherits;
     exports.assert = assert;
