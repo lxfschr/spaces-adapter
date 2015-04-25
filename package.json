@@ -4,6 +4,7 @@
   "scripts": {
     "test": "grunt test"
   },
+  "main": "./src/index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/adobe-photoshop/spaces-adapter.git"
@@ -12,11 +13,24 @@
   "bugs": {
     "url": "https://github.com/adobe-photoshop/spaces-adapater/issues"
   },
-  "homepage": "https://github.com/adobe-photoshop/spaces-adapater",
+  "homepage": "https://github.com/adobe-photoshop/spaces-adapter",
   "devDependencies": {
     "grunt": "^0.4.5",
     "grunt-contrib-jshint": "^0.11.2",
     "grunt-jscs": "^1.6.0",
     "jscs-trailing-whitespace-in-source": "0.0.1"
+  },
+  "dependencies": {
+    "wolfy-eventemitter": "^0.1.0",
+    "bluebird": "^2.9.24",
+    "lodash": "^3.7.0"
+  },
+  "browserify": {
+    "transform": [
+      "deamdify"
+    ]
+  },
+  "browser": {
+    "eventEmitter": "wolfy-eventemitter"
   }
 }

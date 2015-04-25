@@ -90,4 +90,7 @@ define(function (require, exports) {
     exports.endModalToolState = endModalToolState;
     exports.performMenuCommand = performMenuCommand;
     exports.logHeadlightsEvent = logHeadlightsEvent;
+
+    exports.ui = require("./ui");
+    exports.descriptor = require("./descriptor");
 });
