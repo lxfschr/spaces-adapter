@@ -39,8 +39,7 @@ define(function (require, exports) {
      *
      * @returns {PlayObject}
      */
-    var setBrushTip = function (diameter, hardness, angle, roundness, spacing)
-    {
+    var setBrushTip = function (diameter, hardness, angle, roundness, spacing) {
         return new PlayObject(
             "set",
             {
