@@ -480,7 +480,7 @@ define(function (require, exports) {
         );
     };
 
-   /**
+    /**
      * Sets the proportional scaling property of a layer descriptor.
      *
      * @param {ActionDescriptor} ref Reference of layer(s) to set blend mode

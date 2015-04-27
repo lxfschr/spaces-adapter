@@ -27,9 +27,6 @@ module.exports = function (grunt) {
     "use strict";
 
     grunt.initConfig({
-        qunit: {
-            all: ["test/index.html"]
-        },
         jshint : {
             options : {
                 jshintrc : ".jshintrc"
@@ -55,11 +52,10 @@ module.exports = function (grunt) {
         }
     });
 
-    grunt.loadNpmTasks("grunt-contrib-qunit");
     grunt.loadNpmTasks("grunt-contrib-jshint");
     grunt.loadNpmTasks("grunt-jscs");
 
-    grunt.registerTask("test", ["jshint", "jscs", "qunit"]);
+    grunt.registerTask("test", ["jshint", "jscs"]);
 
     grunt.registerTask("default", ["test"]);
 
