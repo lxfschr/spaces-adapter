@@ -132,7 +132,6 @@ define(function (require, exports, module) {
             if (reference.hasOwnProperty("null")) {
                 reference["null"] = _wrap(reference["null"]);
             }
-            
         }
 
         return reference;

@@ -555,8 +555,8 @@ define(function (require, exports) {
                                     "textStyle": {
                                         "obj": "textStyle",
                                         "value": {
-                                            "fontName" : face,
-                                            "fontStyleName" : weight,
+                                            "fontName": face,
+                                            "fontStyleName": weight,
                                             "size": unitsIn[unit](size),
                                             "color": colorObject(arrayTextColor)
                                         }
@@ -571,7 +571,6 @@ define(function (require, exports) {
     };
 
     exports.referenceBy = referenceBy;
-
     exports.createText = createText;
     exports.setPostScript = setPostScript;
     exports.setFace = setFace;
@@ -584,7 +583,5 @@ define(function (require, exports) {
     exports.createText = createText;
     exports.setOrientation = setOrientation;
     exports.setAntiAlias = setAntiAlias;
-
     exports.setRangeAndChangeTextStyle = setRangeAndChangeTextStyle;
-
 });

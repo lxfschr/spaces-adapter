@@ -85,5 +85,4 @@ define(function (require, exports) {
     
     exports.layerIDsAtPoint = layerIDsAtPoint;
     exports.colorSampleAtPoint = colorSampleAtPoint;
-
 });

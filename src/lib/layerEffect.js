@@ -92,7 +92,6 @@ define(function (require, exports) {
      */
     
     var _extendedLayerEffectDescriptor = function (ref, layerEffectType, layerEffectValue) {
-
         return new PlayObject(
             "set",
             {
@@ -188,7 +187,7 @@ define(function (require, exports) {
      * @return {Descriptor}
      */
 
-    var  _dropShadowDescriptor = function (properties) {
+    var _dropShadowDescriptor = function (properties) {
         return {
             "obj": "dropShadow",
             "value": _shadowProperties(properties)
@@ -210,7 +209,7 @@ define(function (require, exports) {
      * @return {Descriptor}
      */
 
-    var  _innerShadowDescriptor = function (properties) {
+    var _innerShadowDescriptor = function (properties) {
         return {
             "obj": "innerShadow",
             "value": _shadowProperties(properties)

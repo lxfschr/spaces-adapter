@@ -27,11 +27,11 @@ module.exports = function (grunt) {
     "use strict";
 
     grunt.initConfig({
-        jshint : {
-            options : {
-                jshintrc : ".jshintrc"
+        jshint: {
+            options: {
+                jshintrc: ".jshintrc"
             },
-            all : [
+            all: [
                 "*.js",
                 "package.json",
                 "bower.json",
@@ -58,5 +58,4 @@ module.exports = function (grunt) {
     grunt.registerTask("test", ["jshint", "jscs"]);
 
     grunt.registerTask("default", ["test"]);
-
 };

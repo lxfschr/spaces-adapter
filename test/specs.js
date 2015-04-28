@@ -27,11 +27,11 @@ define(function (require, exports) {
     var _ = require("lodash");
 
     var TEST_SECTION_MAP = {
-        unit : [
+        unit: [
             "spec/version-test",
             "spec/library-test"
         ],
-        integration : [
+        integration: [
             "spec/low-level-test"
         ]
     };

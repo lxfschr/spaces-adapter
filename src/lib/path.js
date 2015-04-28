@@ -162,5 +162,4 @@ define(function (require, exports) {
     exports.combineLayersSubtract = combineLayersSubtract;
     exports.combineLayersIntersect = combineLayersIntersect;
     exports.combineLayersDifference = combineLayersDifference;
-
 });
