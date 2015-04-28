@@ -475,14 +475,14 @@ define(function (require, exports) {
     };
 
     /**
-     * Sets the artboard auto-nesting of the document. THis is available in the classic UI
-     * when artboard tool is selected under the gear icon.
+     * Sets the artboard auto-nesting and artboard auto-positioning of the document. 
+     * This is available in the classic UI when artboard tool is selected under the gear icon.
      *
      * @param {object} sourceRef
      * @param {boolean} enabled 
      * @return {PlayObject}
      */
-    var setArtboardAutoNesting = function (sourceRef, enabled) {
+    var setArtboardAutoAttributes = function (sourceRef, enabled) {
         assert(referenceOf(sourceRef) === "document", "setTargetPathVisible is passed a non-document reference");
 
         var reference = {
@@ -498,7 +498,8 @@ define(function (require, exports) {
         var descriptor = {
             null: reference,
             to: {
-                autoNestEnabled: enabled
+                autoNestEnabled: enabled,
+                autoPositionEnabled: enabled
             }
         };
 
@@ -587,7 +588,7 @@ define(function (require, exports) {
     exports.create = createDocument;
     exports.createWithPreset = createWithPreset;
     exports.resize = resizeDocument;
-    exports.setArtboardAutoNesting = setArtboardAutoNesting;
+    exports.setArtboardAutoAttributes = setArtboardAutoAttributes;
     exports.setTargetPathVisible = setTargetPathVisible;
     exports.getGuidesVisibility = getGuidesVisibility;
     exports.getSmartGuidesVisibility = getSmartGuidesVisibility;
