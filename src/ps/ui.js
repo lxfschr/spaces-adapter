@@ -214,7 +214,6 @@ define(function (require, exports, module) {
         return this.setSuppressScrollbars(!visible).then(function () {
             _ui.setWidgetTypeVisibilityAsync(ALL_NONWINDOW_WIDGETS_BITMASK, visible);
         });
-
     };
 
     /**

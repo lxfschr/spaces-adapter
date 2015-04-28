@@ -676,7 +676,6 @@ define(function (require, exports) {
     var createShape = function (sourceRef, fillEnabledVal, fillContentShape, fillContentShapeVal,
             strokeEnabledVal, fillContentStroke, fillContentStrokeVal, strokeAlignment,
             cap, corner, strokeWidth, typeShape, shapeVal) {
-        
         assert(referenceOf(sourceRef) === "contentLayer", "createShape is passed a non-layer reference");
         
         var patternLayerName;
@@ -797,5 +796,4 @@ define(function (require, exports) {
     exports.moveShape = moveShape;
     exports.createShape = createShape;
     exports.setRadius = setRadius;
-
 });

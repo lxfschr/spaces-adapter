@@ -50,7 +50,6 @@ define(function (require, exports, module) {
     };
 
     var wrapper = function (className) {
-        
         /**
          * This function is boiler plate for creating reference objects
          * for given values using the given key.

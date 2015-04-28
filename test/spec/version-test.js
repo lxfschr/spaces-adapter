@@ -31,7 +31,6 @@ define(function (require) {
     module("version");
 
     test("adapter.version is set to a string", function () {
-        ok(typeof(adapter.version) === "string", "type of adapter version is a string");
+        ok(typeof adapter.version === "string", "type of adapter version is a string");
     });
-
 });

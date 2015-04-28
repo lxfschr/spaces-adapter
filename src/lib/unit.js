@@ -23,8 +23,7 @@
  
  // This is a wrapper to create unit descriptors
 
-define(function (require, exports)
-{
+define(function (require, exports) {
     "use strict";
 
     /** 
@@ -68,13 +67,12 @@ define(function (require, exports)
     exports.number = _unit.bind(null, "number");
     exports.seconds = _unit.bind(null, "seconds");
     
-    //Type uses these
+    // Type uses these
     exports.points = exports.pt = _unit.bind(null, "points");
     exports.millimeters = exports.mm = _unit.bind(null, "millimeters");
     
-    //Guides use this
+    // Guides use this
     exports.distance = _unit.bind(null, "distance");
 
     // exports.toPixels = toPixels;
-
 });

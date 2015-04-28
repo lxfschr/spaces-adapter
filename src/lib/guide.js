@@ -126,11 +126,8 @@ define(function (require, exports) {
         );
     };
 
-
-
     exports.getGuide = getGuide;
     exports.createGuide = createGuide;
     exports.deleteGuide = deleteGuide;
     exports.getGuideCount = getGuideCount;
-    
 });

@@ -116,7 +116,7 @@ define(function (require, exports) {
         var shapeVal;
         
         if (shape === "rectangle") {
-            shapeVal =  {
+            shapeVal = {
                 "top": unitsIn.pixels(values[0]),
                 "bottom": unitsIn.pixels(values[1]),
                 "left": unitsIn.pixels(values[2]),

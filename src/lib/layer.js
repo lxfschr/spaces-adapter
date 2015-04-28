@@ -40,72 +40,72 @@ define(function (require, exports) {
         "ANY": {
             writeable: false,
             enumerable: true,
-            value:  0
+            value: 0
         },
         PIXEL: {
             writeable: false,
             enumerable: true,
-            value:  1
+            value: 1
         },
         ADJUSTMENT: {
             writeable: false,
             enumerable: true,
-            value:  2
+            value: 2
         },
         TEXT: {
             writeable: false,
             enumerable: true,
-            value:  3
+            value: 3
         },
         VECTOR: {
             writeable: false,
             enumerable: true,
-            value:  4
+            value: 4
         },
         SMARTOBJECT: {
             writeable: false,
             enumerable: true,
-            value:  5
+            value: 5
         },
         VIDEO: {
             writeable: false,
             enumerable: true,
-            value:  6
+            value: 6
         },
         GROUP: {
             writeable: false,
             enumerable: true,
-            value:  7
+            value: 7
         },
         "3D": {
             writeable: false,
             enumerable: true,
-            value:  8
+            value: 8
         },
         GRADIENT: {
             writeable: false,
             enumerable: true,
-            value:  9
+            value: 9
         },
         PATTERN: {
             writeable: false,
             enumerable: true,
-            value:  10
+            value: 10
         },
         SOLIDCOLOR: {
             writeable: false,
             enumerable: true,
-            value:  11
+            value: 11
         },
         BACKGROUND: {
             writeable: false,
             enumerable: true,
-            value:  12
+            value: 12
         },
         GROUPEND: {
             writeable: false,
             enumerable: true,
-            value:  13
+            value: 13
         }
     });
 
@@ -545,7 +545,7 @@ define(function (require, exports) {
      * 
      * @returns {PlayObject}
      */
-    var deleteLayer =  function (ref) {
+    var deleteLayer = function (ref) {
         assert(referenceOf(ref) === "layer", "deleteLayer is passed a non-layer reference");
         return new PlayObject(
             "delete",

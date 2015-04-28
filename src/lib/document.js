@@ -55,18 +55,18 @@ define(function (require, exports) {
      */
     var openDocument = function (sourceRef, settings) {
         var params = {
-                pdfSelection:       settings.pdfSelection || "page",
-                pageNumber:         settings.pageNumber || 1,
-                suppressWarnings:   settings.suppressWarnings || false,
-                name:               settings.name || sourceRef.name,
-                bitDepth:           settings.bitDepth || 8,
-                box:                settings.box || "boundingBox",
-                bAntiAlias:         settings.bAntiAlias || true,
-                bConstrainProportions:      settings.bConstrainProportions || true,
-                width:              settings.width || sourceRef.width,
-                height:             settings.height || sourceRef.height,
-                colorSpace:         settings.colorSpace || "RGBColorMode",
-                resolution:         settings.resolution
+                pdfSelection: settings.pdfSelection || "page",
+                pageNumber: settings.pageNumber || 1,
+                suppressWarnings: settings.suppressWarnings || false,
+                name: settings.name || sourceRef.name,
+                bitDepth: settings.bitDepth || 8,
+                box: settings.box || "boundingBox",
+                bAntiAlias: settings.bAntiAlias || true,
+                bConstrainProportions: settings.bConstrainProportions || true,
+                width: settings.width || sourceRef.width,
+                height: settings.height || sourceRef.height,
+                colorSpace: settings.colorSpace || "RGBColorMode",
+                resolution: settings.resolution
             },
             fileType,
             strIndex = sourceRef.path.lastIndexOf(".");
@@ -86,7 +86,7 @@ define(function (require, exports) {
             desc.as.value.suppressWarnings = params.suppressWarnings;
             desc.as.value.pageNumber = params.pageNumber;
             if (params.pdfSelection === "page") {
-                desc.as.value =  {
+                desc.as.value = {
                     "antiAlias": params.bAntiAlias,
                     "constrainProportions": params.bConstrainProportions,
                     "crop": {
@@ -182,16 +182,16 @@ define(function (require, exports) {
             saveAs = {},
             saveTo = {},
             params = {
-                gifColorPalette:     settings.gifColorPalette || "exact",
-                gifRowOrder:         settings.gifRowOrder || "normal",
-                gifForcedColors:     settings.gifForcedColors || "blackAndWhite",
-                gitTransparency:     settings.gitTransparency || true,
-                jpgExtendedQuality:  settings.jpgExtendedQuality || 8,
-                jpgFormatOptions:    settings.jpgFormatOptions || "standard",
+                gifColorPalette: settings.gifColorPalette || "exact",
+                gifRowOrder: settings.gifRowOrder || "normal",
+                gifForcedColors: settings.gifForcedColors || "blackAndWhite",
+                gitTransparency: settings.gitTransparency || true,
+                jpgExtendedQuality: settings.jpgExtendedQuality || 8,
+                jpgFormatOptions: settings.jpgFormatOptions || "standard",
                 jpgProgressiveScans: settings.jpgProgressiveScans || 3,
-                pngCompression:      settings.pngCompression,
-                pngInterlace:        settings.pngInterlace,
-                embedProfiles:       settings.embedProfiles || false
+                pngCompression: settings.pngCompression,
+                pngInterlace: settings.pngInterlace,
+                embedProfiles: settings.embedProfiles || false
             };
         if (strIndex !== -1) {
             strIndex++;
@@ -353,14 +353,14 @@ define(function (require, exports) {
      */
     var createDocument = function (settings) {
         var params = {
-                width:      settings.width || 7,
-                height:     settings.width || 5,
+                width: settings.width || 7,
+                height: settings.width || 5,
                 resolution: settings.resolution || 72,
-                fill:       settings.fill || "white",
-                colorMode:  settings.colorMode || "RGBColorMode",
-                depth:      settings.depth || 8,
-                colorProfile:    settings.colorProfile || "none",
-                pixelAspectRatio:  settings.pixelAspectRatio || 1
+                fill: settings.fill || "white",
+                colorMode: settings.colorMode || "RGBColorMode",
+                depth: settings.depth || 8,
+                colorProfile: settings.colorProfile || "none",
+                pixelAspectRatio: settings.pixelAspectRatio || 1
             };
         var newObj = {
             "obj": "document",
