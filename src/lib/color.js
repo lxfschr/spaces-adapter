@@ -49,6 +49,10 @@ define(function (require, exports) {
                 r = rgb.red;
                 g = rgb.grain;
                 b = rgb.blue;
+            } else if (rgb.hasOwnProperty("green")) {
+                r = rgb.red;
+                g = rgb.green;
+                b = rgb.blue;
             } else if (rgb.hasOwnProperty("_r")) {
                 r = rgb._r;
                 g = rgb._g;
