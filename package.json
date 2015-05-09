@@ -1,6 +1,6 @@
 {
   "name": "spaces-adapter",
-  "description": "JS middleware layer for Spaces",
+  "description": "JavaScript adapter for the Adobe Photoshop Spaces plugin",
   "scripts": {
     "test": "grunt test"
   },

@@ -6,7 +6,7 @@
     "Joel Brandt <jobrandt@adobe.com>",
     "Ian Wehrman <wehrman@adobe.com>"
   ],
-  "description": "JS middleware layer for Spaces",
+  "description": "JavaScript adapter for the Adobe Photoshop Spaces plugin",
   "moduleType": [
     "node"
   ],
@@ -16,13 +16,12 @@
   "private": true,
   "ignore": [
     "**/.*",
-    "node_modules",
-    "src/thirdparty"
+    "node_modules"
   ],
   "dependencies": {
     "eventEmitter": "~4.2.11",
     "bluebird": "~2.9.24",
-    "lodash": "~3.6.0"
+    "lodash": "~3.8.0"
   },
   "devDependencies": {
     "requirejs": "~2.1.17",
