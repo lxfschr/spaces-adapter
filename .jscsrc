@@ -128,6 +128,7 @@
         "beforeOpeningRoundBrace": true,
         "beforeOpeningCurlyBrace": true
     },
+    "requireSpacesInsideObjectBrackets": "all",
     "safeContextKeyword": [
         "self"
     ],
