@@ -84,6 +84,7 @@
         "<",
         "<="
     ],
+    "requirePaddingNewLinesAfterUseStrict": true,
     "requirePaddingNewlinesBeforeKeywords": [
         "do",
         "for",
