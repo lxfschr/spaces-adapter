@@ -36,11 +36,11 @@ define(function (require, exports) {
     var targetOf = function (event) {
         if (event.hasOwnProperty("new")) {
             // Case for "document"
-            return event.new.obj;
+            return event.new._obj;
         } else if (event.hasOwnProperty("null")) {
             // Case for layer
             // Case for tool
-            return event.null.ref;
+            return event.null._ref;
         } else {
             return null;
         }

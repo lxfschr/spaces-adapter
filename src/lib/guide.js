@@ -73,11 +73,11 @@ define(function (require, exports) {
             "make",
             {
                 "new": {
-                    "obj": "guide",
-                    "value": {
+                    "_obj": "guide",
+                    "_value": {
                         "orientation": {
-                            "enum": "orientation",
-                            "value": orientation
+                            "_enum": "orientation",
+                            "_value": orientation
                         },
                         "position": unitsIn[unit](position)
                     }
@@ -121,7 +121,7 @@ define(function (require, exports) {
             "getProperty",
             {
                 "null": sourceRef,
-                "property": "count"
+                "_property": "count"
             }
         );
     };

@@ -43,7 +43,7 @@ define(function (require, exports) {
             g = rgb[1];
             b = rgb[2];
         } else if (typeof rgb === "object") {
-            if (rgb.hasOwnProperty("obj") && rgb.hasOwnProperty("value")) {
+            if (rgb.hasOwnProperty("_obj") && rgb.hasOwnProperty("_value")) {
                 return rgb; // Identity, as we don't need to change it
             } else if (rgb.hasOwnProperty("grain")) {
                 r = rgb.red;
@@ -75,8 +75,8 @@ define(function (require, exports) {
         };
         
         return {
-            obj: "RGBColor",
-            value: color
+            _obj: "RGBColor",
+            _value: color
         };
     };
     
@@ -92,8 +92,8 @@ define(function (require, exports) {
             "set",
             {
                 "null": {
-                    "ref": "color",
-                    "property": "foregroundColor"
+                    "_ref": "color",
+                    "_property": "foregroundColor"
                 },
                 "to": colorObject(rgb)
             }
@@ -112,8 +112,8 @@ define(function (require, exports) {
             "set",
             {
                 "null": {
-                    "ref": "color",
-                    "property": "backgroundColor"
+                    "_ref": "color",
+                    "_property": "backgroundColor"
                 },
                 "to": colorObject(rgb)
             }

@@ -96,8 +96,8 @@ define(function (require, exports) {
             "mergeLayersNew",
             {
                 "shapeOperation": {
-                    "enum": "shapeOperation",
-                    "value": "add"
+                    "_enum": "shapeOperation",
+                    "_value": "add"
                 }
             }
         );
@@ -113,8 +113,8 @@ define(function (require, exports) {
             "mergeLayersNew",
             {
                 "shapeOperation": {
-                    "enum": "shapeOperation",
-                    "value": "subtract"
+                    "_enum": "shapeOperation",
+                    "_value": "subtract"
                 }
             }
         );
@@ -130,8 +130,8 @@ define(function (require, exports) {
             "mergeLayersNew",
             {
                 "shapeOperation": {
-                    "enum": "shapeOperation",
-                    "value": "interfaceIconFrameDimmed"
+                    "_enum": "shapeOperation",
+                    "_value": "interfaceIconFrameDimmed"
                 }
             }
         );
@@ -147,8 +147,8 @@ define(function (require, exports) {
             "mergeLayersNew",
             {
                 "shapeOperation": {
-                    "enum": "shapeOperation",
-                    "value": "xor"
+                    "_enum": "shapeOperation",
+                    "_value": "xor"
                 }
             }
         );

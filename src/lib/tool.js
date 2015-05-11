@@ -37,7 +37,7 @@ define(function (require, exports) {
             "select",
             {
                 "null": {
-                    "ref": tool
+                    "_ref": tool
                 }
             }
         );
@@ -56,11 +56,11 @@ define(function (require, exports) {
             "set",
             {
                 "null": {
-                    ref: tool
+                    _ref: tool
                 },
                 "to": {
-                    obj: "currentToolOptions",
-                    value: options
+                    _obj: "currentToolOptions",
+                    _value: options
                 }
             }
         );
@@ -79,21 +79,21 @@ define(function (require, exports) {
             "set",
             {
                 "null": {
-                    ref: [
+                    _ref: [
                         {
-                            "property": "generalPreferences",
-                            "ref": "property"
+                            "_property": "generalPreferences",
+                            "_ref": "property"
                         },
                         {
-                            "enum": "ordinal",
-                            "ref": "application",
-                            "value": "targetEnum"
+                            "_enum": "ordinal",
+                            "_ref": "application",
+                            "_value": "targetEnum"
                         }
                     ]
                 },
                 "to": {
-                    obj: "generalPreferences",
-                    value: {
+                    _obj: "generalPreferences",
+                    _value: {
                         "legacyPathDrag": true,
                         "vectorSelectionModifiesLayerSelection": allLayers
                     }
@@ -113,15 +113,15 @@ define(function (require, exports) {
             "reset",
             {
                 null: {
-                    ref: [
+                    _ref: [
                         {
-                            ref: null,
-                            property: "vectorToolMode"
+                            _ref: null,
+                            _property: "vectorToolMode"
                         },
                         {
-                            ref: "application",
-                            enum: "ordinal",
-                            value: "targetEnum"
+                            _ref: "application",
+                            _enum: "ordinal",
+                            _value: "targetEnum"
                         }
                     ]
                 }

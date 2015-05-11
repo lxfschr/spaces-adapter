@@ -62,20 +62,20 @@ define(function (require, exports) {
             "colorSampler",
             {
                 "null": {
-                    "ref": "document",
-                    "enum": "ordinal",
-                    "value": "targetEnum"
+                    "_ref": "document",
+                    "_enum": "ordinal",
+                    "_value": "targetEnum"
                 },
                 "samplePoint": {
-                    "obj": "samplePoint",
-                    "value": {
+                    "_obj": "samplePoint",
+                    "_value": {
                         "horizontal": {
-                            "unit": "distanceUnit",
-                            "value": px
+                            "_unit": "distanceUnit",
+                            "_value": px
                         },
                         "vertical": {
-                            "unit": "distanceUnit",
-                            "value": py
+                            "_unit": "distanceUnit",
+                            "_value": py
                         }
                     }
                 }

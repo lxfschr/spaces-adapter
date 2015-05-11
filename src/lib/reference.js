@@ -40,11 +40,11 @@ define(function (require, exports, module) {
         if (Array.isArray(reference)) {
             return refersTo(reference[reference.length - 1]);
         } else {
-            var refValue = reference.ref;
+            var refValue = reference._ref;
             if (Array.isArray(refValue)) {
-                return refValue[0].ref;
+                return refValue[0]._ref;
             } else {
-                return reference.ref;
+                return reference._ref;
             }
         }
     };
@@ -61,9 +61,9 @@ define(function (require, exports, module) {
          */
         var referenceBy = function (key, values) {
             if (Array.isArray(values)) {
-                return { ref: values.map(referenceBy.bind(null, key)) };
+                return { _ref: values.map(referenceBy.bind(null, key)) };
             } else {
-                var rval = { ref: className };
+                var rval = { _ref: className };
                 rval[key] = values;
                 return rval;
             }
@@ -77,7 +77,7 @@ define(function (require, exports, module) {
          * @returns {ActionDescriptor} Enumeration of the value with type
          */
         var enumBy = function (type, value) {
-            return { ref: className, enum: type, value: value };
+            return { _ref: className, _enum: type, _value: value };
         };
         
         return {
@@ -85,26 +85,26 @@ define(function (require, exports, module) {
              * @param {int|Array.<int>} index or index array
              * @returns {ActionDescriptor} Reference to the given indices
              */
-            index: referenceBy.bind(null, "index"),
+            index: referenceBy.bind(null, "_index"),
             
             /**
              * @param {int|Array.<int>} ID or ID array
              * @returns {ActionDescriptor} Reference to the given IDs
              */
-            id: referenceBy.bind(null, "id"),
+            id: referenceBy.bind(null, "_id"),
             
             
             /**
              * @param {int} Offset amount
              * @returns {ActionDescriptor} Reference to the given IDs
              */
-            offset: referenceBy.bind(null, "offset"),
+            offset: referenceBy.bind(null, "_offset"),
             
             /**
              * @param {string|Array.<string>} Name(s)
              * @returns {ActionDescriptor} Reference to the given names
              */
-            name: referenceBy.bind(null, "name"),
+            name: referenceBy.bind(null, "_name"),
             
             /**
              * @returns {ActionDescriptor} Reference to the current target

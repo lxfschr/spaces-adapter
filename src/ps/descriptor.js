@@ -117,13 +117,13 @@ define(function (require, exports, module) {
 
         if (Array.isArray(toWrap)) {
             reference = {
-                ref: toWrap.map(_wrap).reverse()
+                _ref: toWrap.map(_wrap).reverse()
             };
         } else if (typeof toWrap === "string") {
             reference = {
-                ref: toWrap,
-                enum: "ordinal",
-                value: "targetEnum"
+                _ref: toWrap,
+                _enum: "ordinal",
+                _value: "targetEnum"
             };
         } else {
             reference = toWrap;
@@ -148,8 +148,8 @@ define(function (require, exports, module) {
      */
     var _makePropertyReference = function (reference, property) {
         var propertyDescriptor = {
-                ref: "property",
-                property: property
+                _ref: "property",
+                _property: property
             };
 
         return Array.isArray(reference) ?
@@ -210,18 +210,18 @@ define(function (require, exports, module) {
      * @return {Promise.<object>} Resolves when property is set
      */
     Descriptor.prototype.setProperty = function (reference, property, value, options) {
-        if (!reference.hasOwnProperty("ref")) {
+        if (!reference.hasOwnProperty("_ref")) {
             throw new Error("You must pass a full reference to setProperty or else PS will crash!");
         }
 
         // We need to reverse this because for play calls _makePropertyReference orders it wrong
         var propertyReference = _makePropertyReference(reference, property).reverse(),
             propertyValue = {
-                "obj": property,
-                "value": value
+                "_obj": property,
+                "_value": value
             },
             propertyDescriptor = {
-                "null": { "ref": propertyReference },
+                "null": { "_ref": propertyReference },
                 "to": propertyValue
             };
 
