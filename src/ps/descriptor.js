@@ -221,7 +221,7 @@ define(function (require, exports, module) {
                 "value": value
             },
             propertyDescriptor = {
-                "null": {"ref": propertyReference},
+                "null": { "ref": propertyReference },
                 "to": propertyValue
             };
 

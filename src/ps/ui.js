@@ -302,7 +302,7 @@ define(function (require, exports, module) {
      * @param {Array.<{eventKind: number, modifiers: number, keyCode: number, action: number}>} policyList
      */
     UI.prototype.setPointerEventPropagationPolicy = function (policyList) {
-        return _ui.setPointerEventPropagationPolicyAsync({policyList: policyList});
+        return _ui.setPointerEventPropagationPolicyAsync({ policyList: policyList });
     };
 
     /**
@@ -317,7 +317,7 @@ define(function (require, exports, module) {
      * @param {Array.<{eventKind: number, modifiers: number, keyCode: number, action: number}>} policyList
      */
     UI.prototype.setKeyboardEventPropagationPolicy = function (policyList) {
-        return _ui.setKeyboardEventPropagationPolicyAsync({policyList: policyList});
+        return _ui.setKeyboardEventPropagationPolicyAsync({ policyList: policyList });
     };
 
     /**

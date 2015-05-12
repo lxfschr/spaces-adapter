@@ -84,6 +84,7 @@
         "<",
         "<="
     ],
+    "requirePaddingNewLinesAfterUseStrict": true,
     "requirePaddingNewlinesBeforeKeywords": [
         "do",
         "for",
@@ -128,6 +129,7 @@
         "beforeOpeningRoundBrace": true,
         "beforeOpeningCurlyBrace": true
     },
+    "requireSpacesInsideObjectBrackets": "all",
     "safeContextKeyword": [
         "self"
     ],

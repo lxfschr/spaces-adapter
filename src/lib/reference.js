@@ -61,9 +61,9 @@ define(function (require, exports, module) {
          */
         var referenceBy = function (key, values) {
             if (Array.isArray(values)) {
-                return {ref: values.map(referenceBy.bind(null, key))};
+                return { ref: values.map(referenceBy.bind(null, key)) };
             } else {
-                var rval = {ref: className};
+                var rval = { ref: className };
                 rval[key] = values;
                 return rval;
             }
@@ -77,7 +77,7 @@ define(function (require, exports, module) {
          * @returns {ActionDescriptor} Enumeration of the value with type
          */
         var enumBy = function (type, value) {
-            return {ref: className, enum: type, value: value};
+            return { ref: className, enum: type, value: value };
         };
         
         return {
