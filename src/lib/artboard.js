@@ -46,12 +46,12 @@ define(function (require, exports) {
             "make",
             {
                 "null": {
-                    "ref": "layerSection"
+                    "_ref": "layerSection"
                 },
                 "from": layerRef,
                 "artboardRect": {
-                    "obj": "classFloatRect",
-                    "value": boundingBox
+                    "_obj": "classFloatRect",
+                    "_value": boundingBox
                 }
             }
         );
@@ -71,16 +71,16 @@ define(function (require, exports) {
             {
                 "null": ref,
                 "artboard": {
-                    "obj": "artboard",
-                    "value": {
+                    "_obj": "artboard",
+                    "_value": {
                         "artboardCanvasResize": {
-                            "enum": "artboardCanvasResize",
-                            "value": "artboardCanvasResizeExpand"
+                            "_enum": "artboardCanvasResize",
+                            "_value": "artboardCanvasResizeExpand"
                         },
                         "artboardEnabled": true,
                         "artboardRect": {
-                            "obj": "classFloatRect",
-                            "value": boundingBox
+                            "_obj": "classFloatRect",
+                            "_value": boundingBox
                         }
                     }
                 }

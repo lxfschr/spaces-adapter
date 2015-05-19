@@ -147,8 +147,8 @@ define(function (require, exports) {
             {
                 "null": sourceRef,
                 "using": {
-                    "enum": "alignDistributeSelector",
-                    "value": align.vals[alignment]
+                    "_enum": "alignDistributeSelector",
+                    "_value": align.vals[alignment]
                 }
             }
         );
@@ -185,8 +185,8 @@ define(function (require, exports) {
             {
                 "null": sourceRef,
                 "using": {
-                    "enum": "alignDistributeSelector",
-                    "value": align.vals[alignment]
+                    "_enum": "alignDistributeSelector",
+                    "_value": align.vals[alignment]
                 }
             }
         );
@@ -210,8 +210,8 @@ define(function (require, exports) {
                 "null": ref,
                 "makeVisible": makeVisible,
                 "selectionModifier": {
-                    enum: "selectionModifierType",
-                    value: select.vals[modifier]
+                    _enum: "selectionModifierType",
+                    _value: select.vals[modifier]
                 }
             }
         );
@@ -282,7 +282,7 @@ define(function (require, exports) {
 
         var descriptor = {
             "null": {
-                "ref": fromRef
+                "_ref": fromRef
             },
             "to": toRef
         };
@@ -307,8 +307,8 @@ define(function (require, exports) {
             {
                 "null": ref,
                 "axis": {
-                    enum: "orientation",
-                    value: orientation
+                    _enum: "orientation",
+                    _value: orientation
                 }
             }
         );
@@ -330,8 +330,8 @@ define(function (require, exports) {
                 "snapToDocBounds": true,
                 "relative": false,
                 "position": {
-                    "obj": "position",
-                    "value": {
+                    "_obj": "position",
+                    "_value": {
                         "horizontal": inUnits.pixels(_x),
                         "vertical": inUnits.pixels(_y)
                     }
@@ -375,8 +375,8 @@ define(function (require, exports) {
                 "Calling setSize with absolute flag with no x,y provided");
 
             sizeDescriptor.position = {
-                "obj": "position",
-                "value": {
+                "_obj": "position",
+                "_value": {
                     "horizontal": inUnits.pixels(_x),
                     "vertical": inUnits.pixels(_y)
                 }
@@ -424,8 +424,8 @@ define(function (require, exports) {
             {
                 "null": ref,
                 "to": {
-                    "obj": "to",
-                    "value": {
+                    "_obj": "to",
+                    "_value": {
                         "opacity": inUnits.percent(opacity)
                     }
                 }
@@ -446,8 +446,8 @@ define(function (require, exports) {
             {
                 "null": ref,
                 "to": {
-                    "obj": "to",
-                    "value": {
+                    "_obj": "to",
+                    "_value": {
                         "fillOpacity": inUnits.percent(opacity)
                     }
                 }
@@ -468,11 +468,11 @@ define(function (require, exports) {
             {
                 "null": ref,
                 "to": {
-                    "obj": "layer",
-                    "value": {
+                    "_obj": "layer",
+                    "_value": {
                         "mode": {
-                            "enum": "blendMode",
-                            "value": mode
+                            "_enum": "blendMode",
+                            "_value": mode
                         }
                     }
                 }
@@ -494,8 +494,8 @@ define(function (require, exports) {
             {
                 "null": ref,
                 "to": {
-                    "obj": "layer",
-                    "value": {
+                    "_obj": "layer",
+                    "_value": {
                         "proportionalScaling": proportion
                     }
                 }
@@ -520,19 +520,19 @@ define(function (require, exports) {
             {
                 "layerID": id,
                 "null": {
-                    "property": "background",
-                    "ref": "layer"
+                    "_property": "background",
+                    "_ref": "layer"
                 },
                 "to": {
-                    "obj": "layer",
-                    "value": {
+                    "_obj": "layer",
+                    "_value": {
                         "mode": {
-                            "enum": "blendMode",
-                            "value": "normal"
+                            "_enum": "blendMode",
+                            "_value": "normal"
                         },
                         "opacity": {
-                            "unit": "percentUnit",
-                            "value": 100
+                            "_unit": "percentUnit",
+                            "_value": 100
                         }
                     }
                 }
@@ -568,8 +568,8 @@ define(function (require, exports) {
             {
                 "null": ref,
                 "to": {
-                    "obj": "layer",
-                    "value": {
+                    "_obj": "layer",
+                    "_value": {
                         "name": name
                     }
                 }
@@ -587,7 +587,7 @@ define(function (require, exports) {
             {
                 "from": referenceBy.target,
                 "null": {
-                    "ref": "layerSection"
+                    "_ref": "layerSection"
                 }
             }
         );
@@ -608,8 +608,8 @@ define(function (require, exports) {
                 "null": ref,
                 "group": true,
                 "layerLocking": {
-                    "obj": "layerLocking",
-                    "value": lockObject
+                    "_obj": "layerLocking",
+                    "_value": lockObject
                 }
             }
         );
@@ -633,8 +633,8 @@ define(function (require, exports) {
                 "null": ref,
                 "snapToDocBounds": true,
                 "position": {
-                    "obj": "position",
-                    "value": {
+                    "_obj": "position",
+                    "_value": {
                         "horizontal": inUnits.pixels(x),
                         "vertical": inUnits.pixels(y)
                     }

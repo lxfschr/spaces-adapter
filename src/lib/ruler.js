@@ -29,15 +29,15 @@ define(function (require, exports) {
     var setRulerVisibility = function (visible) {
         return new PlayObject("set", {
             "null": {
-                "ref": [
+                "_ref": [
                     {
-                        "ref": null,
-                        "property": "toggleRulers"
+                        "_ref": null,
+                        "_property": "toggleRulers"
                     },
                     {
-                        "ref": "document",
-                        "enum": "ordinal",
-                        "value": "targetEnum"
+                        "_ref": "document",
+                        "_enum": "ordinal",
+                        "_value": "targetEnum"
                     }
                 ]
             },

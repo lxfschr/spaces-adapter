@@ -58,12 +58,12 @@ define(function (require, exports) {
             {
                 "null": sourceRef,
                 "using": {
-                    "obj": "textLayer",
-                    "value": {
+                    "_obj": "textLayer",
+                    "_value": {
                         "textKey": strTextKey,
                         "textClickPoint": {
-                            "obj": "paint",
-                            "value": {
+                            "_obj": "paint",
+                            "_value": {
                                 "horizontal": unitsIn.percent(numClickPointH),
                                 "vertical": unitsIn.percent(numClickPointV)
                             }
@@ -97,26 +97,26 @@ define(function (require, exports) {
 
         assert(referenceOf(sourceRef) === "textLayer", "setFace expects a textLayer reference");
         sourceRef = {
-            "ref": "textLayer",
-            "value": "$Trgt",
-            "enum": "$Ordn"
+            "_ref": "textLayer",
+            "_value": "$Trgt",
+            "_enum": "$Ordn"
         };
 
         return new PlayObject(
             "set",
             {
                 null: {
-                    ref: [
+                    _ref: [
                         {
-                            ref: "property",
-                            property: "textStyle"
+                            _ref: "property",
+                            _property: "textStyle"
                         },
                         sourceRef
                     ]
                 },
                 to: {
-                    obj: "textStyle",
-                    value: {
+                    _obj: "textStyle",
+                    _value: {
                         fontName: family,
                         fontStyleName: style
                     }
@@ -144,26 +144,26 @@ define(function (require, exports) {
 
         assert(referenceOf(sourceRef) === "textLayer", "setPostScript expects a textLayer reference");
         sourceRef = {
-            "ref": "textLayer",
-            "value": "$Trgt",
-            "enum": "$Ordn"
+            "_ref": "textLayer",
+            "_value": "$Trgt",
+            "_enum": "$Ordn"
         };
 
         return new PlayObject(
             "set",
             {
                 null: {
-                    ref: [
+                    _ref: [
                         {
-                            ref: "property",
-                            property: "textStyle"
+                            _ref: "property",
+                            _property: "textStyle"
                         },
                         sourceRef
                     ]
                 },
                 to: {
-                    obj: "textStyle",
-                    value: {
+                    _obj: "textStyle",
+                    _value: {
                         fontPostScriptName: postScriptName
                     }
                 }
@@ -193,26 +193,26 @@ define(function (require, exports) {
         // NOTE: See warning in setFace
         assert(referenceOf(sourceRef) === "textLayer", "setSize expects a textLayer reference");
         sourceRef = {
-            "ref": "textLayer",
-            "value": "$Trgt",
-            "enum": "$Ordn"
+            "_ref": "textLayer",
+            "_value": "$Trgt",
+            "_enum": "$Ordn"
         };
 
         return new PlayObject(
             "set",
             {
                 null: {
-                    ref: [
+                    _ref: [
                         {
-                            ref: "property",
-                            property: "textStyle"
+                            _ref: "property",
+                            _property: "textStyle"
                         },
                         sourceRef
                     ]
                 },
                 to: {
-                    obj: "textStyle",
-                    value: {
+                    _obj: "textStyle",
+                    _value: {
                         size: unitsIn[unit](val)
                     }
                 }
@@ -260,28 +260,28 @@ define(function (require, exports) {
         // NOTE: See warning in setFace
         assert(referenceOf(sourceRef) === "textLayer", "setAlignment expects a textLayer reference");
         sourceRef = {
-            "ref": "textLayer",
-            "value": "$Trgt",
-            "enum": "$Ordn"
+            "_ref": "textLayer",
+            "_value": "$Trgt",
+            "_enum": "$Ordn"
         };
         return new PlayObject(
             "set",
             {
                 null: {
-                    ref: [
+                    _ref: [
                         {
-                            ref: "property",
-                            property: "paragraphStyle"
+                            _ref: "property",
+                            _property: "paragraphStyle"
                         },
                         sourceRef
                     ]
                 },
                 "to": {
-                    "obj": "paragraphStyle",
-                    "value": {
+                    "_obj": "paragraphStyle",
+                    "_value": {
                         "align": {
-                            "enum": "alignmentType",
-                            "value": alignment
+                            "_enum": "alignmentType",
+                            "_value": alignment
                         }
                     }
                 }
@@ -314,26 +314,26 @@ define(function (require, exports) {
         // NOTE: See warning in setFace
         assert(referenceOf(sourceRef) === "textLayer", "setLeading expects a textLayer reference");
         sourceRef = {
-            "ref": "textLayer",
-            "value": "$Trgt",
-            "enum": "$Ordn"
+            "_ref": "textLayer",
+            "_value": "$Trgt",
+            "_enum": "$Ordn"
         };
         if (auto === false) {
             return new PlayObject(
                 "set",
                 {
                     null: {
-                        ref: [
+                        _ref: [
                             {
-                                ref: "property",
-                                property: "textStyle"
+                                _ref: "property",
+                                _property: "textStyle"
                             },
                             sourceRef
                         ]
                     },
                     "to": {
-                        "obj": "textStyle",
-                        "value": {
+                        "_obj": "textStyle",
+                        "_value": {
                             "autoLeading": auto,
                             "leading": unitsIn[unit](val)
                         }
@@ -345,17 +345,17 @@ define(function (require, exports) {
                 "set",
                 {
                     null: {
-                        ref: [
+                        _ref: [
                             {
-                                ref: "property",
-                                property: "textStyle"
+                                _ref: "property",
+                                _property: "textStyle"
                             },
                             sourceRef
                         ]
                     },
                     "to": {
-                        "obj": "textStyle",
-                        "value": {
+                        "_obj": "textStyle",
+                        "_value": {
                             "autoLeading": auto
                         }
                     }
@@ -382,25 +382,25 @@ define(function (require, exports) {
         // NOTE: See warning in setFace        
         assert(referenceOf(sourceRef) === "textLayer", "setTracking expects a textLayer reference");
         sourceRef = {
-            "ref": "textLayer",
-            "value": "$Trgt",
-            "enum": "$Ordn"
+            "_ref": "textLayer",
+            "_value": "$Trgt",
+            "_enum": "$Ordn"
         };
         return new PlayObject(
             "set",
             {
                 null: {
-                    ref: [
+                    _ref: [
                         {
-                            ref: "property",
-                            property: "textStyle"
+                            _ref: "property",
+                            _property: "textStyle"
                         },
                         sourceRef
                     ]
                 },
                 "to": {
-                    "obj": "textStyle",
-                    "value": {
+                    "_obj": "textStyle",
+                    "_value": {
                         "tracking": val
                     }
                 }
@@ -420,26 +420,26 @@ define(function (require, exports) {
         // NOTE: See warning in setFace
         assert(referenceOf(sourceRef) === "textLayer", "setColor expects a textLayer reference");
         sourceRef = {
-            "ref": "textLayer",
-            "value": "$Trgt",
-            "enum": "$Ordn"
+            "_ref": "textLayer",
+            "_value": "$Trgt",
+            "_enum": "$Ordn"
         };
 
         return new PlayObject(
             "set",
             {
                 null: {
-                    ref: [
+                    _ref: [
                         {
-                            ref: "property",
-                            property: "textStyle"
+                            _ref: "property",
+                            _property: "textStyle"
                         },
                         sourceRef
                     ]
                 },
                 to: {
-                    obj: "textStyle",
-                    value: {
+                    _obj: "textStyle",
+                    _value: {
                         color: colorObject(color)
                     }
                 }
@@ -468,8 +468,8 @@ define(function (require, exports) {
             {
                 "null": sourceRef,
                 "to": {
-                    "enum": "orientation",
-                    "value": strTextOrientation
+                    "_enum": "orientation",
+                    "_value": strTextOrientation
                 }
             }
         );
@@ -496,8 +496,8 @@ define(function (require, exports) {
             {
                 "null": sourceRef,
                 "to": {
-                    "enum": "antiAliasType",
-                    "value": _antiAlias[strAntiAliasType]
+                    "_enum": "antiAliasType",
+                    "_value": _antiAlias[strAntiAliasType]
                 }
             }
         );
@@ -544,17 +544,17 @@ define(function (require, exports) {
             {
                 "null": sourceRef,
                 "to": {
-                    "obj": "textLayer",
-                    "value": {
+                    "_obj": "textLayer",
+                    "_value": {
                         "textStyleRange": [
                             {
-                                "obj": "textStyleRange",
-                                "value": {
+                                "_obj": "textStyleRange",
+                                "_value": {
                                     "from": from,
                                     "to": to,
                                     "textStyle": {
-                                        "obj": "textStyle",
-                                        "value": {
+                                        "_obj": "textStyle",
+                                        "_value": {
                                             "fontName": face,
                                             "fontStyleName": weight,
                                             "size": unitsIn[unit](size),

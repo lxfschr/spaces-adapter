@@ -45,8 +45,8 @@ define(function (require, exports) {
             {
                 "null": referenceBy.current,
                 "to": {
-                    "obj": "computedBrush",
-                    "value": {
+                    "_obj": "computedBrush",
+                    "_value": {
                         "diameter": inUnits.pixels(diameter),
                         "hardness": inUnits.percent(hardness || 100),
                         "angle": inUnits.angle(angle || 0),

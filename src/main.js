@@ -29,11 +29,6 @@ define(function (require, exports) {
     var Promise = require("bluebird");
 
     /**
-     * Promisified version of _spaces.openURLInDefaultBrowser.
-     */
-    var _openURLInDefaultBrowserAsync = Promise.promisify(_spaces.openURLInDefaultBrowser);
-
-    /**
      * The minimum-compatible plugin version number. 
      *
      * @const
@@ -44,33 +39,6 @@ define(function (require, exports) {
         minor: 0,
         patch: 13
     };
-
-    Object.defineProperties(exports, {
-        /**
-         * Version of the Spaces adapter plugin API.
-         * Follows Semver 2.0.0 conventions: http://semver.org/spec/v2.0.0.html
-         *
-         * @const
-         * @type {string}
-         */
-        "version": {
-            enumerable: true,
-            value: _spaces.version
-        },
-
-        /**
-         * Abort the current application and return control to Classic Photoshop.
-         * If a message is supplied, Classic Photoshop may display it to the user,
-         * e.g., in a dialog.
-         * 
-         * @param {{message: string=}}
-         * @return {Promise}
-         */
-        "abort": {
-            enumerable: true,
-            value: Promise.promisify(_spaces.abort)
-        }
-    });
 
     /**
      * Determine whether v1 is less than or equal to v2.
@@ -126,6 +94,49 @@ define(function (require, exports) {
         }
     };
 
+    // Assert plugin compatibility at load time
+    _assertPluginVersionIsCompatible();
+
+    /**
+     * Promisified version of _spaces.
+     */
+    var _main = Promise.promisifyAll(_spaces);
+
+    Object.defineProperties(exports, {
+        /**
+         * Version of the Spaces adapter plugin API.
+         * Follows Semver 2.0.0 conventions: http://semver.org/spec/v2.0.0.html
+         *
+         * @const
+         * @type {string}
+         */
+        "version": {
+            enumerable: true,
+            value: _spaces.version
+        },
+
+        /**
+         * Abort the current application and return control to Classic Photoshop.
+         * If a message is supplied, Classic Photoshop may display it to the user,
+         * e.g., in a dialog.
+         * 
+         * @param {{message: string=}}
+         * @return {Promise}
+         */
+        "abort": {
+            enumerable: true,
+            value: _main.abortAsync
+        }
+    });
+
+    var getPropertyValue = function (name) {
+        return _main.getPropertyValueAsync(name, {});
+    };
+
+    var setPropertyValue = function (name, value) {
+        return _main.setPropertyValueAsync(name, value, {});
+    };
+
     /**
      * Opens the given URL in the user's default browser.
      *
@@ -133,11 +144,10 @@ define(function (require, exports) {
      * @return {Promise}
      */
     var openURLInDefaultBrowser = function (url) {
-        return _openURLInDefaultBrowserAsync(url);
+        return _main.openURLInDefaultBrowserAsync(url);
     };
 
     exports.openURLInDefaultBrowser = openURLInDefaultBrowser;
-
-    // Assert plugin compatibility at load time
-    _assertPluginVersionIsCompatible();
+    exports.getPropertyValue = getPropertyValue;
+    exports.setPropertyValue = setPropertyValue;
 });

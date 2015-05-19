@@ -28,17 +28,17 @@ define(function (require, exports) {
 
     var stepBackward = new PlayObject("select", {
         "null": {
-            "enum": "ordinal",
-            "ref": "historyState",
-            "value": "previous"
+            "_enum": "ordinal",
+            "_ref": "historyState",
+            "_value": "previous"
         }
     });
 
     var stepForward = new PlayObject("select", {
         "null": {
-            "enum": "ordinal",
-            "ref": "historyState",
-            "value": "next"
+            "_enum": "ordinal",
+            "_ref": "historyState",
+            "_value": "next"
         }
     });
 

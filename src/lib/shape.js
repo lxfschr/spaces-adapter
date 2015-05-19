@@ -40,18 +40,18 @@ define(function (require, exports) {
     var fillContentsObject = function (type, value) {
         if (type === "solidColorLayer") {
             return {
-                "obj": "solidColorLayer",
-                "value": {
+                "_obj": "solidColorLayer",
+                "_value": {
                     "color": colorObject(value)
                 }
             };
         } else if (type === "patternLayer") {
             return {
-                "obj": "patternLayer",
-                "value": {
+                "_obj": "patternLayer",
+                "_value": {
                     "pattern": {
-                        "obj": "pattern",
-                        "value": {
+                        "_obj": "pattern",
+                        "_value": {
                             "ID": value[0],
                             "name": value[1]
                         }
@@ -71,8 +71,8 @@ define(function (require, exports) {
      */
     var shapeFillObject = function (enabled) {
         return {
-            "obj": "strokeStyle",
-            "value": {
+            "_obj": "strokeStyle",
+            "_value": {
                 "fillEnabled": enabled,
                 "strokeStyleVersion": 2
             }
@@ -88,8 +88,8 @@ define(function (require, exports) {
      */
     var shapeStrokeObject = function (enabled) {
         return {
-            "obj": "strokeStyle",
-            "value": {
+            "_obj": "strokeStyle",
+            "_value": {
                 "strokeEnabled": enabled,
                 "strokeStyleVersion": 2
             }
@@ -138,8 +138,8 @@ define(function (require, exports) {
         }
 
         return {
-            obj: shape,
-            "value": shapeVal
+            _obj: shape,
+            "_value": shapeVal
         };
     };
 

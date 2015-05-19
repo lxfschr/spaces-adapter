@@ -35,13 +35,13 @@ define(function (require, exports) {
 
     /**
      * Generically build a PlayObject for a layerEffect
-     * The layerEffectValue parameter should be a fully constructed object that can be supplied to the "to.value"
+     * The layerEffectValue parameter should be a fully constructed object that can be supplied to the "to._value"
      * property of the descriptor.
      *
      * @private
      * @param {ActionDescriptor} ref layer(s) reference
      * @param {string} layerEffectType type of layerEffect (example: dropShadow)
-     * @param {object} layerEffectValue object that can be supplied for "to.value" in the descriptor
+     * @param {object} layerEffectValue object that can be supplied for "to._value" in the descriptor
      * @param {boolean=} multi value that allows function to return the Multi Layer Effect friendly descriptor 
      *
      * @return {PlayObject}
@@ -53,8 +53,8 @@ define(function (require, exports) {
             val[layerEffectType] = layerEffectValue;
         } else {
             val[layerEffectType] = {
-                obj: layerEffectType,
-                value: layerEffectValue
+                _obj: layerEffectType,
+                _value: layerEffectValue
             };
         }
 
@@ -62,17 +62,17 @@ define(function (require, exports) {
             "set",
             {
                 "null": {
-                    "ref": [
+                    "_ref": [
                         {
-                            "property": "layerEffects",
-                            "ref": "property"
+                            "_property": "layerEffects",
+                            "_ref": "property"
                         },
                         ref
                     ]
                 },
                 "to": {
-                    "obj": "layerEffects",
-                    "value": val
+                    "_obj": "layerEffects",
+                    "_value": val
                 }
             }
         );
@@ -80,13 +80,13 @@ define(function (require, exports) {
     
     /**
      * Generically build an PlayObject for a layerEffect which uses the useExtendedReference option
-     * The layerEffectValue parameter should be a fully constructed object that can be supplied to the "to.value"
+     * The layerEffectValue parameter should be a fully constructed object that can be supplied to the "to._value"
      * property of the descriptor.
      *
      * @private
      * @param {ActionDescriptor} ref layer(s) reference
      * @param {string} layerEffectType type of layerEffect (example: dropShadow)
-     * @param {object} layerEffectValue object that can be supplied for "to.value" in the descriptor
+     * @param {object} layerEffectValue object that can be supplied for "to._value" in the descriptor
      *
      * @return {PlayObject}
      */
@@ -96,14 +96,14 @@ define(function (require, exports) {
             "set",
             {
                 "null": {
-                    "ref": [
+                    "_ref": [
                         {
-                            ref: null,
-                            "property": layerEffectType
+                            _ref: null,
+                            "_property": layerEffectType
                         },
                         {
-                            "property": "layerEffects",
-                            "ref": "property"
+                            "_property": "layerEffects",
+                            "_ref": "property"
                         },
                         ref
                     ]
@@ -123,8 +123,8 @@ define(function (require, exports) {
      */
     var _blendMode = function (mode) {
         return {
-            enum: "blendMode",
-            value: mode
+            _enum: "blendMode",
+            _value: mode
         };
     };
 
@@ -189,8 +189,8 @@ define(function (require, exports) {
 
     var _dropShadowDescriptor = function (properties) {
         return {
-            "obj": "dropShadow",
-            "value": _shadowProperties(properties)
+            "_obj": "dropShadow",
+            "_value": _shadowProperties(properties)
         };
     };
 
@@ -211,8 +211,8 @@ define(function (require, exports) {
 
     var _innerShadowDescriptor = function (properties) {
         return {
-            "obj": "innerShadow",
-            "value": _shadowProperties(properties)
+            "_obj": "innerShadow",
+            "_value": _shadowProperties(properties)
         };
     };
     /**

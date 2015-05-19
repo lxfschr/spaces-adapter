@@ -50,6 +50,7 @@ define(function () {
 
         var fPass = false;
         var logstr;
+
         do {
             if (err === undefined) {
                 fPass = true;
@@ -60,7 +61,7 @@ define(function () {
                 logstr = "err is null";
                 break;
             }
-            if (! err instanceof Error) {
+            if (!err instanceof Error) {
                 logstr = "err is not a proper Error object";
                 break;
             }
@@ -73,14 +74,14 @@ define(function () {
                 logstr = "err.number == 0: OK / succeeded";
                 break;
             }
-            if (err.message !== undefined)
-            {
+            if (err.message !== undefined) {
                 logstr = "err.message: '" + err.message + "'";
             } else {
                 logstr = "NO ERROR MESSAGE PROVIDED";
             }
         } while (0);
-        if (! fPass) {
+
+        if (!fPass) {
             console.error("_validateNotifierResult FAIL:", logstr);
         }
         ok(fPass, logstr);
@@ -102,15 +103,15 @@ define(function () {
      * @param {number=} expectedErrorCode
      */
     var _validateNotifierResultError = function (err, expectedErrorCode) {
-
         var fValidForm = false;
         var logstr;
+
         do {
             if (err === undefined) {
                 logstr = "err should not be undefined when an error is expected";
                 break;
             }
-            if (! (err instanceof Error)) {
+            if (!(err instanceof Error)) {
                 logstr = "err object is not an instance of the Error object" + err;
                 break;
             }
@@ -295,7 +296,7 @@ define(function () {
     asyncTest("_spaces.setNotifier() functional: set/reset for _spaces.notifierGroup.ERROR", function () {
         expect(3);
         var notifierGroup = _spaces.notifierGroup.INTERACTION;
-        var options = {"notificationKind": _spaces.notifierOptions.interaction.ERROR};
+        var options = { "notificationKind": _spaces.notifierOptions.interaction.ERROR };
         _spaces.setNotifier(notifierGroup, options, function (err, type, info) {
             _validateNotifierResult(err);
             strictEqual(type, undefined, "callback type arg on set should be undefined");
@@ -308,7 +309,7 @@ define(function () {
     asyncTest("_spaces.setNotifier() functional: set/reset for _spaces.notifierGroup.PROGRESS", function () {
         expect(3);
         var notifierGroup = _spaces.notifierGroup.INTERACTION;
-        var options = {"notificationKind": _spaces.notifierOptions.interaction.PROGRESS};
+        var options = { "notificationKind": _spaces.notifierOptions.interaction.PROGRESS };
         _spaces.setNotifier(notifierGroup, options, function (err, type, info) {
             _validateNotifierResult(err);
             strictEqual(type, undefined, "callback type arg on set should be undefined");
@@ -321,7 +322,7 @@ define(function () {
     asyncTest("_spaces.setNotifier() functional: set/reset for _spaces.notifierGroup.OPTIONS", function () {
         expect(3);
         var notifierGroup = _spaces.notifierGroup.INTERACTION;
-        var options = {"notificationKind": _spaces.notifierOptions.interaction.OPTIONS};
+        var options = { "notificationKind": _spaces.notifierOptions.interaction.OPTIONS };
         _spaces.setNotifier(notifierGroup, options, function (err, type, info) {
             _validateNotifierResult(err);
             strictEqual(type, undefined, "callback type arg on set should be undefined");
@@ -334,7 +335,7 @@ define(function () {
     asyncTest("_spaces.setNotifier() functional: set/reset for _spaces.notifierGroup.CONTEXT", function () {
         expect(3);
         var notifierGroup = _spaces.notifierGroup.INTERACTION;
-        var options = {"notificationKind": _spaces.notifierOptions.interaction.CONTEXT};
+        var options = { "notificationKind": _spaces.notifierOptions.interaction.CONTEXT };
         _spaces.setNotifier(notifierGroup, options, function (err, type, info) {
             _validateNotifierResult(err);
             strictEqual(type, undefined, "callback type arg on set should be undefined");
@@ -344,12 +345,12 @@ define(function () {
         });
     });
 
-// tburbage (2015/01/28): FAIL, BUT NEED REVIEW
-if (0) {
-    /* _spaces.setNotifier() functional/negative: set with invalid notifierGroup string
-     * Validates: error handling on invalid input
-     */
-    asyncTest("_spaces.setNotifier() functional/negative: set with invalid notifierGroup string value", function () {
+    // tburbage (2015/01/28): FAIL, BUT NEED REVIEW
+    if (0) {
+        /* _spaces.setNotifier() functional/negative: set with invalid notifierGroup string
+         * Validates: error handling on invalid input
+         */
+        asyncTest("_spaces.setNotifier() functional/negative: set with invalid notifierGroup string value", function () {
         expect(3);
         var notifierGroup = ""; // not a valid notifierGroup string value
         var options = {};
@@ -360,15 +361,15 @@ if (0) {
             start();
         });
     });
-} // if (0)
+    } // if (0)
 
 
-// tburbage (2015/01/28): FAIL, BUT NEED REVIEW
-if (0) {
-    /* _spaces.setNotifier() functional/negative: set with undefined notifierGroup
-     * Validates: error handling on invalid input
-     */
-    asyncTest("_spaces.setNotifier() functional/negative: set with undefined notifierGroup", function () {
+    // tburbage (2015/01/28): FAIL, BUT NEED REVIEW
+    if (0) {
+        /* _spaces.setNotifier() functional/negative: set with undefined notifierGroup
+         * Validates: error handling on invalid input
+         */
+        asyncTest("_spaces.setNotifier() functional/negative: set with undefined notifierGroup", function () {
         expect(3);
         var notifierGroup; // undefined not a valid notifierGroup string value
         var options = {};
@@ -379,7 +380,7 @@ if (0) {
             start();
         });
     });
-} // if (0)
+    } // if (0)
 
     /* _spaces.setNotifier() functional/negative: invalid input AND undefined callback
      * Validates: A JavaScript exception should be thrown in this case
@@ -390,7 +391,6 @@ if (0) {
             _spaces.setNotifier(undefined, undefined, undefined);
         } catch (err) {
             exceptionThrown = true;
-
         }
         ok(exceptionThrown, "Expect native Javascript exception to be thrown");
     });
@@ -708,7 +708,7 @@ if (0) {
      */
     asyncTest("_spaces.abort(): negative: undefined 'options' arg", function () {
         expect(1);
-        _spaces.abort(undefined, function(err) {
+        _spaces.abort(undefined, function (err) {
             _validateNotifierResultError(err, _spaces.errorCodes.CONVERSION_ERROR);
             start();
         });
@@ -726,7 +726,7 @@ if (0) {
      */
     asyncTest("_spaces.openURLInDefaultBrowser(): negative: undefined 'url' arg", function () {
         expect(1);
-        _spaces.openURLInDefaultBrowser(undefined, function(err) {
+        _spaces.openURLInDefaultBrowser(undefined, function (err) {
             _validateNotifierResultError(err, _spaces.errorCodes.CONVERSION_ERROR);
             start();
         });
@@ -816,9 +816,7 @@ if (0) {
             callbacksReceived++;
             if (callbacksReceived < iterations) {
                 _spaces._debug.descriptorIdentity({}, {}, callback);
-            }
-            else
-            {
+            } else {
                 var elapsed = timings[timings.length - 1] - startTime;
                 var avgTime = elapsed / iterations;
                 var discreteTimings = timings.map(function (currentValue, index, array) {
@@ -851,7 +849,7 @@ if (0) {
                 if (reportAsWarning) {
                     console.warn(logstring);
                 }
-                ok(! reportAsError, logstring);
+                ok(!reportAsError, logstring);
                 start();
             }
         };
@@ -984,15 +982,15 @@ if (0) {
             "_spaces.ps.descriptor.get() function defined");
 
         var reference = {
-            ref: [
+            _ref: [
                 {
-                    ref: "property",
-                    property: "hostName"
+                    _ref: "property",
+                    _property: "hostName"
                 },
                 {
-                    ref: "application",
-                    enum: "ordinal",
-                    value: "targetEnum"
+                    _ref: "application",
+                    _enum: "ordinal",
+                    _value: "targetEnum"
                 }
             ]
         };
@@ -1024,19 +1022,19 @@ if (0) {
         expect(4);
 
         var reference = {
-            ref: [
+            _ref: [
                 {
-                    ref: "property",
-                    property: "hostName"
+                    _ref: "property",
+                    _property: "hostName"
                 },
                 {
-                    ref: "application",
-                    enum: "ordinal",
-                    value: "targetEnum"
+                    _ref: "application",
+                    _enum: "ordinal",
+                    _value: "targetEnum"
                 }
             ]
         };
-        var options = {useExtendedReference: true};
+        var options = { useExtendedReference: true };
 
         _spaces.ps.descriptor.get(reference, options, function (err, descriptor) {
             _validateNotifierResult(err);
@@ -1063,9 +1061,9 @@ if (0) {
         expect(2);
 
         var reference = {
-            "ref": "xxx-ref-does-not-exist-xxx",
-            "enum": "$Ordn",
-            "value": "$Trgt"
+            "_ref": "xxx-ref-does-not-exist-xxx",
+            "_enum": "$Ordn",
+            "_value": "$Trgt"
         };
         var options = {};
         _spaces.ps.descriptor.get(reference, options, function (err, descriptor) {
@@ -1128,7 +1126,7 @@ if (0) {
     asyncTest("_spaces.ps.descriptor.play(): (negative: argument conversion failure)", function () {
         expect(2);
 
-        _spaces.ps.descriptor.play("jsonAction", { ref: NaN }, {}, function (err, descriptor) {
+        _spaces.ps.descriptor.play("jsonAction", { _ref: NaN }, {}, function (err, descriptor) {
             _validateNotifierResultError(err, _spaces.errorCodes.CONVERSION_ERROR);
             ok(!descriptor, "Call failed");
 
@@ -1430,7 +1428,7 @@ if (0) {
             }
             ok(mode in setModeList, "mode on get should be a valid pointerPropagationMode member");
             if (setModeIndex < setModeList.length) {
-                var options = {defaultMode: setModeList[setModeIndex]};
+                var options = { defaultMode: setModeList[setModeIndex] };
                 _spaces.ps.ui.setPointerPropagationMode(options, setModeCallback);
             } else {
                 start();
@@ -1502,6 +1500,7 @@ if (0) {
             _validateNotifierResult(err);
             strictEqual(typeof mode, "number", "typeof 'mode' arg should be 'number'");
             var modeFound = false;
+
             for (var key in _spaces.ps.ui.keyboardPropagationMode) {
                 if (mode === _spaces.ps.ui.keyboardPropagationMode[key]) {
                     modeFound = true;
@@ -1542,7 +1541,7 @@ if (0) {
             }
             ok(mode in setModeList, "mode on get should be a valid pointerPropagationMode member");
             if (setModeIndex < setModeList.length) {
-                var options = {defaultMode: setModeList[setModeIndex]};
+                var options = { defaultMode: setModeList[setModeIndex] };
                 _spaces.ps.ui.setKeyboardPropagationMode(options, setModeCallback);
             } else {
                 start();
@@ -1831,11 +1830,11 @@ if (0) {
                 ok(startOffsets[attr] >= 0, "offset values >= 0");
             }
             // Invert startValue state on set and compare to previousValue
-            var newOffsets = {"left": startOffsets.left + 10,
+            var newOffsets = { "left": startOffsets.left + 10,
                               "top": startOffsets.top + 20,
                               "right": startOffsets.right + 30,
-                              "bottom": startOffsets.bottom + 40};
-            _spaces.ps.ui.setOverlayOffsets({"offset": newOffsets}, function (err, prevValue) {
+                              "bottom": startOffsets.bottom + 40 };
+            _spaces.ps.ui.setOverlayOffsets({ "offset": newOffsets }, function (err, prevValue) {
                 _validateNotifierResult(err);
                 deepEqual(prevValue.offset, startOffsets, "startOffsets and prevOffsets should be equivalent");
                 // get to confirm set
@@ -1844,7 +1843,7 @@ if (0) {
                     deepEqual(options.offset, newOffsets, "callback offset and newOffsets should be equivalent");
 
                     // set back to the initial state
-                    _spaces.ps.ui.setOverlayOffsets({"offset": startOffsets}, function (err, prevValue) {
+                    _spaces.ps.ui.setOverlayOffsets({ "offset": startOffsets }, function (err, prevValue) {
                         _validateNotifierResult(err);
                         deepEqual(prevValue.offset, newOffsets, "callback offset and newOffsets should be equivalent");
 
@@ -1871,9 +1870,9 @@ if (0) {
              "_spaces.ps.logHeadlightsEvent() function defined");
 
         var options = {
-            category:      "playground",
-            subcategory:   "test",
-            event:         "execute headlights unit test",
+            category: "playground",
+            subcategory: "test",
+            event: "execute headlights unit test",
         };
 
         // Log an Event
@@ -2838,7 +2837,7 @@ if (0) {
 
         ok(typeof _spaces.os.setTooltip === "function",
            "_spaces.os.setTooltip() function defined");
-        var options = {"label": "The tooltip text"};
+        var options = { "label": "The tooltip text" };
         _spaces.os.setTooltip(options, function (err) {
             _validateNotifierResult(err);
             // "reset" by omitting optional 'options' 'label' key
@@ -2858,7 +2857,7 @@ if (0) {
     asyncTest("_spaces.os.setTooltip(): functional: label with 'Copyright' Unicode char", function () {
         expect(1);
 
-        var options = {"label": "\u00A9 Adobe Systems Incorporated"};
+        var options = { "label": "\u00A9 Adobe Systems Incorporated" };
         _spaces.os.setTooltip(options, function (err) {
             _validateNotifierResult(err);
             start();
@@ -2870,8 +2869,8 @@ if (0) {
      */
     asyncTest("_spaces.os.setTooltip(): negative: invalid/undefined 'label' value", function () {
         expect(1);
-        var options = {"label": undefined};
-        _spaces.os.setTooltip(options, function(err) {
+        var options = { "label": undefined };
+        _spaces.os.setTooltip(options, function (err) {
             _validateNotifierResultError(err, _spaces.errorCodes.CONVERSION_ERROR);
             start();
         });

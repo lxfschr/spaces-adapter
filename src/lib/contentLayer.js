@@ -172,15 +172,15 @@ define(function (require, exports) {
             {
                 "null": sourceRef,
                 "to": {
-                    "obj": "shapeStyle",
-                    "value": {
+                    "_obj": "shapeStyle",
+                    "_value": {
                         "strokeStyle": {
-                            "obj": "strokeStyle",
-                            "value": {
+                            "_obj": "strokeStyle",
+                            "_value": {
                                 "strokeEnabled": true,
                                 "strokeStyleLineAlignment": {
-                                    "enum": "strokeStyleLineAlignment",
-                                    "value": alignmentTypes[alignment]
+                                    "_enum": "strokeStyleLineAlignment",
+                                    "_value": alignmentTypes[alignment]
                                 },
                                 "strokeStyleVersion": 2
                             }
@@ -206,15 +206,15 @@ define(function (require, exports) {
             {
                 "null": sourceRef,
                 "to": {
-                    "obj": "shapeStyle",
-                    "value": {
+                    "_obj": "shapeStyle",
+                    "_value": {
                         "strokeStyle": {
-                            "obj": "strokeStyle",
-                            "value": {
+                            "_obj": "strokeStyle",
+                            "_value": {
                                 "strokeEnabled": true,
                                 "strokeStyleLineCapType": {
-                                    "enum": "strokeStyleLineCapType",
-                                    "value": _strokeCap[cap]
+                                    "_enum": "strokeStyleLineCapType",
+                                    "_value": _strokeCap[cap]
                                 },
                                 "strokeStyleVersion": 2
                             }
@@ -238,15 +238,15 @@ define(function (require, exports) {
             {
                 "null": sourceRef,
                 "to": {
-                    "obj": "shapeStyle",
-                    "value": {
+                    "_obj": "shapeStyle",
+                    "_value": {
                         "strokeStyle": {
-                            "obj": "strokeStyle",
-                            "value": {
+                            "_obj": "strokeStyle",
+                            "_value": {
                                 "strokeEnabled": true,
                                 "strokeStyleLineJoinType": {
-                                    "enum": "strokeStyleLineJoinType",
-                                    "value": _strokeCorner[corner]
+                                    "_enum": "strokeStyleLineJoinType",
+                                    "_value": _strokeCorner[corner]
                                 },
                                 "strokeStyleVersion": 2
                             }
@@ -271,11 +271,11 @@ define(function (require, exports) {
         var descriptor = {
             "null": sourceRef,
             "to": {
-                "obj": "shapeStyle",
-                "value": {
+                "_obj": "shapeStyle",
+                "_value": {
                     "strokeStyle": {
-                        "obj": "strokeStyle",
-                        "value": {
+                        "_obj": "strokeStyle",
+                        "_value": {
                             "strokeEnabled": true,
                             "strokeStyleOpacity": unitsIn.percent(opacity),
                             "strokeStyleVersion": 2
@@ -315,8 +315,8 @@ define(function (require, exports) {
             {
                 "null": sourceRef,
                 "to": {
-                    "obj": "shapeStyle",
-                    "value": {
+                    "_obj": "shapeStyle",
+                    "_value": {
                         "fillContents": shape.fillContentsObject("solidColorLayer", rgb),
                         "strokeStyle": shape.shapeFillObject(true)
                     }
@@ -352,11 +352,11 @@ define(function (require, exports) {
         var descriptor = {
             "null": sourceRef,
             "to": {
-                "obj": "shapeStyle",
-                "value": {
+                "_obj": "shapeStyle",
+                "_value": {
                     "strokeStyle": {
-                        "obj": "strokeStyle",
-                        "value": {
+                        "_obj": "strokeStyle",
+                        "_value": {
                             "strokeEnabled": true,
                             "strokeStyleContent": shape.fillContentsObject("solidColorLayer", rgba),
                             "strokeStyleVersion": 2
@@ -366,7 +366,7 @@ define(function (require, exports) {
             }
         };
         if (rgba.hasOwnProperty("a")) {
-            descriptor.to.value.strokeStyle.value.strokeStyleOpacity = unitsIn.percent(rgba.a * 100);
+            descriptor.to._value.strokeStyle._value.strokeStyleOpacity = unitsIn.percent(rgba.a * 100);
         }
         return new PlayObject("set", descriptor);
     };
@@ -390,8 +390,8 @@ define(function (require, exports) {
             {
                 "null": sourceRef,
                 "to": {
-                    "obj": "shapeStyle",
-                    "value": {
+                    "_obj": "shapeStyle",
+                    "_value": {
                         "strokeStyle": shape.shapeFillObject(false)
                     }
                 }
@@ -418,8 +418,8 @@ define(function (require, exports) {
             {
                 "null": sourceRef,
                 "to": {
-                    "obj": "shapeStyle",
-                    "value": {
+                    "_obj": "shapeStyle",
+                    "_value": {
                         "strokeStyle": shape.shapeStrokeObject(false)
                     }
                 }
@@ -448,11 +448,11 @@ define(function (require, exports) {
             {
                 "null": sourceRef,
                 "to": {
-                    "obj": "shapeStyle",
-                    "value": {
+                    "_obj": "shapeStyle",
+                    "_value": {
                         "strokeStyle": {
-                            "obj": "strokeStyle",
-                            "value": {
+                            "_obj": "strokeStyle",
+                            "_value": {
                                 "strokeEnabled": true,
                                 "strokeStyleLineWidth": unitsIn.pixels(strokeWidth),
                                 "strokeStyleVersion": 2
@@ -487,26 +487,26 @@ define(function (require, exports) {
             {
                 "null": sourceRef,
                 "to": {
-                    "obj": "shapeStyle",
-                    "value": {
+                    "_obj": "shapeStyle",
+                    "_value": {
                         "strokeStyle": {
-                            "obj": "strokeStyle",
-                            "value": {
+                            "_obj": "strokeStyle",
+                            "_value": {
                                 "strokeEnabled": true,
                                 "strokeStyleContent": {
-                                    "obj": "patternLayer",
-                                    "value": {
+                                    "_obj": "patternLayer",
+                                    "_value": {
                                         "align": true,
                                         "pattern": {
-                                            "obj": "pattern",
-                                            "value": {
+                                            "_obj": "pattern",
+                                            "_value": {
                                                 "ID": _patternName[fillTypePatternName][0],
                                                 "name": _patternName[fillTypePatternName][1]
                                             }
                                         },
                                         "phase": {
-                                            "obj": "paint",
-                                            "value": {
+                                            "_obj": "paint",
+                                            "_value": {
                                                 "horizontal": 0,
                                                 "vertical": 0
                                             }
@@ -546,22 +546,22 @@ define(function (require, exports) {
             {
                 "null": sourceRef,
                 "to": {
-                    "obj": "shapeStyle",
-                    "value": {
+                    "_obj": "shapeStyle",
+                    "_value": {
                         "fillContents": {
-                            "obj": "patternLayer",
-                            "value": {
+                            "_obj": "patternLayer",
+                            "_value": {
                                 "align": true,
                                 "pattern": {
-                                    "obj": "pattern",
-                                    "value": {
+                                    "_obj": "pattern",
+                                    "_value": {
                                         "ID": _patternName[fillTypePatternName][0],
                                         "name": _patternName[fillTypePatternName][1]
                                     }
                                 },
                                 "phase": {
-                                    "obj": "paint",
-                                    "value": {
+                                    "_obj": "paint",
+                                    "_value": {
                                         "horizontal": 0,
                                         "vertical": 0
                                     }
@@ -591,8 +591,8 @@ define(function (require, exports) {
             {
                 "null": sourceRef,
                 to: {
-                    "obj": "deleteShapeStyle",
-                    "value": {}
+                    "_obj": "deleteShapeStyle",
+                    "_value": {}
                 }
             }
         );
@@ -620,8 +620,8 @@ define(function (require, exports) {
             {
                 "null": sourceRef,
                 "to": {
-                    "obj": "offset",
-                    "value": {
+                    "_obj": "_offset",
+                    "_value": {
                         "horizontal": unitsIn.distance(hVal),
                         "vertical": unitsIn.distance(vVal)
                     }
@@ -693,32 +693,32 @@ define(function (require, exports) {
             {
                 "null": sourceRef,
                 "using": {
-                    "obj": "contentLayer",
-                    "value": {
+                    "_obj": "contentLayer",
+                    "_value": {
                         "shape": shape.shapeObj(typeShape, shapeVal),
                         "strokeStyle": {
-                            "obj": "strokeStyle",
-                            "value": {
+                            "_obj": "strokeStyle",
+                            "_value": {
                                 "fillEnabled": fillEnabledVal,
                                 "strokeEnabled": strokeEnabledVal,
                                 "strokeStyleBlendMode": {
-                                    "enum": "blendMode",
-                                    "value": "normal"
+                                    "_enum": "blendMode",
+                                    "_value": "normal"
                                 },
                                 "strokeStyleContent": shape.fillContentsObject(fillContentStroke, fillContentStrokeVal),
                                 "strokeStyleLineAlignment": {
-                                    "enum": "strokeStyleLineAlignment",
-                                    "value": alignmentTypes[strokeAlignment]
+                                    "_enum": "strokeStyleLineAlignment",
+                                    "_value": alignmentTypes[strokeAlignment]
                                 },
                                 "strokeStyleLineCapType": {
-                                    "enum": "strokeStyleLineCapType",
-                                    "value": _strokeCap[cap]
+                                    "_enum": "strokeStyleLineCapType",
+                                    "_value": _strokeCap[cap]
                                 },
                                 "strokeStyleLineDashOffset": unitsIn.points(0),
                                 "strokeStyleLineDashSet": [],
                                 "strokeStyleLineJoinType": {
-                                    "enum": "strokeStyleLineJoinType",
-                                    "value": _strokeCorner[corner]
+                                    "_enum": "strokeStyleLineJoinType",
+                                    "_value": _strokeCorner[corner]
                                 },
                                 "strokeStyleLineWidth": unitsIn.points(strokeWidth),
                                 "strokeStyleMiterLimit": 100,
@@ -753,23 +753,23 @@ define(function (require, exports) {
         return new PlayObject("changePathDetails", {
             "keyActionChangeAllCorners": true,
             "keyOriginRRectRadii": {
-                "obj": "radii",
-                "value": {
+                "_obj": "radii",
+                "_value": {
                     "topLeft": {
-                        "unit": "pixelsUnit",
-                        "value": topLeft
+                        "_unit": "pixelsUnit",
+                        "_value": topLeft
                     },
                     "topRight": {
-                        "unit": "pixelsUnit",
-                        "value": topRight
+                        "_unit": "pixelsUnit",
+                        "_value": topRight
                     },
                     "bottomLeft": {
-                        "unit": "pixelsUnit",
-                        "value": bottomLeft
+                        "_unit": "pixelsUnit",
+                        "_value": bottomLeft
                     },
                     "bottomRight": {
-                        "unit": "pixelsUnit",
-                        "value": bottomRight
+                        "_unit": "pixelsUnit",
+                        "_value": bottomRight
                     },
                     "unitValueQuadVersion": 1
                 }

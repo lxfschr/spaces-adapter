@@ -31,8 +31,8 @@ define(function (require, exports) {
      */
     var _unit = function (kind, val) {
         return {
-            unit: kind + "Unit",
-            value: val
+            _unit: kind + "Unit",
+            _value: val
         };
     };
 
@@ -45,8 +45,8 @@ define(function (require, exports) {
     // };
     // 
     // var toPixels = function (unitValue, resolution) {
-    //     var rawValue = unitValue.value;
-    //     var unit = unitValue.unit;
+    //     var rawValue = unitValue._value;
+    //     var unit = unitValue._unit;
     // 
     //     var factor = unit === "pixelsUnit" ? 1 : resolution * _toInches[unit];
     // 

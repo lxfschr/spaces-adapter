@@ -69,47 +69,52 @@ define(function (require, exports) {
                 resolution: settings.resolution
             },
             fileType,
-            strIndex = sourceRef.path.lastIndexOf(".");
+            strIndex = sourceRef._path.lastIndexOf(".");
+
         if (strIndex !== -1) {
             strIndex++;
-            fileType = sourceRef.path.substring(strIndex);
+            fileType = sourceRef._path.substring(strIndex);
         }
+
         var desc = {
             "null": sourceRef
         };
+
         if (fileType === "ai") {
-            desc.as.obj = "PDFGenericFormat";
-            desc.as.value.selection = {
-                "enum": "pdfSelection",
-                "value": params.pdfSelection
+            desc.as._obj = "PDFGenericFormat";
+            desc.as._value.selection = {
+                "_enum": "pdfSelection",
+                "_value": params.pdfSelection
             };
-            desc.as.value.suppressWarnings = params.suppressWarnings;
-            desc.as.value.pageNumber = params.pageNumber;
+            desc.as._value.suppressWarnings = params.suppressWarnings;
+            desc.as._value.pageNumber = params.pageNumber;
             if (params.pdfSelection === "page") {
-                desc.as.value = {
+                desc.as._value = {
                     "antiAlias": params.bAntiAlias,
                     "constrainProportions": params.bConstrainProportions,
                     "crop": {
-                        "enum": "cropTo",
-                        "value": openDocument.cropTo[params.box]
+                        "_enum": "cropTo",
+                        "_value": openDocument.cropTo[params.box]
                     },
                     "depth": params.bitDepth,
                     "width": unitsIn.pixels(params.width),
                     "height": unitsIn.pixels(params.height),
                     "mode": {
-                        "enum": "colorSpace",
-                        "value": openDocument.mode[params.colorSpace]
+                        "_enum": "colorSpace",
+                        "_value": openDocument.mode[params.colorSpace]
                     },
                     "name": params.name,
                     "resolution": unitsIn.density(params.resolution)
                 };
             }
         }
+
         return new PlayObject(
             "open",
             desc
         );
     };
+
     openDocument.cropTo = {
         bounding: "boundingBox",
         media: "mediaBox",
@@ -118,6 +123,7 @@ define(function (require, exports) {
         trim: "trimBox",
         art: "artBox"
     };
+
     openDocument.mode = {
         rgb: "RGBColorMode",
         gray: "grayscaleMode",
@@ -142,8 +148,8 @@ define(function (require, exports) {
 
         if (save) {
             desc.saving = {
-                "enum": "yesNo",
-                "value": save
+                "_enum": "yesNo",
+                "_value": save
             };
         }
 
@@ -205,48 +211,48 @@ define(function (require, exports) {
 
         if (fileType === "gif") {
             saveAs = {
-                "obj": "GIFFormat",
-                "value": {
+                "_obj": "GIFFormat",
+                "_value": {
                     "interfaceIconFrameDimmed": saveDocument.gifRowOrder[params.gifRowOrder]
                 }
             };
             saveTo = {
-                "obj": "indexedColorMode",
-                "value": {
+                "_obj": "indexedColorMode",
+                "_value": {
                     "palette": {
-                        "enum": "colorPalette",
-                        "value": saveDocument.gifColorPalette[params.gifColorPalette]
+                        "_enum": "colorPalette",
+                        "_value": saveDocument.gifColorPalette[params.gifColorPalette]
                     },
                     "forcedColors": {
-                        "enum": "forcedColors",
-                        "value": saveDocument.gifForcedColors[params.gifForcedColors]
+                        "_enum": "forcedColors",
+                        "_value": saveDocument.gifForcedColors[params.gifForcedColors]
                     },
                     "transparency": params.gitTransparency
                 }
             };
         } else if (fileType === "psd") {
             saveAs = {
-                "obj": "photoshop35Format",
-                "value": {}
+                "_obj": "photoshop35Format",
+                "_value": {}
             };
         } else if (fileType === "jpg") {
             saveAs = {
-                "obj": "JPEG",
-                "value": {
+                "_obj": "JPEG",
+                "_value": {
                     "extendedQuality": params.jpgExtendedQuality,
                     "matteColor": {
-                        "enum": "matteColor",
-                        "value": "none"
+                        "_enum": "matteColor",
+                        "_value": "none"
                     }
                 }
             };
         } else if (fileType === "png") {
             saveAs = {
-                "obj": "PNGFormat",
-                "value": {
+                "_obj": "PNGFormat",
+                "_value": {
                     "PNGInterlaceType": {
-                        "enum": "PNGInterlaceType",
-                        "value": saveDocument.pngInterlace[params.pngInterlace]
+                        "_enum": "PNGInterlaceType",
+                        "_value": saveDocument.pngInterlace[params.pngInterlace]
                     },
                     "compression": saveDocument.pngCompression[params.pngCompression]
                 }
@@ -255,7 +261,7 @@ define(function (require, exports) {
         desc = {
             "as": saveAs,
             "in": {
-                "path": path
+                "_path": path
             }
         };
         if (fileType === "gif") {
@@ -353,36 +359,39 @@ define(function (require, exports) {
      */
     var createDocument = function (settings) {
         var params = {
-                width: settings.width || 7,
-                height: settings.width || 5,
-                resolution: settings.resolution || 72,
-                fill: settings.fill || "white",
-                colorMode: settings.colorMode || "RGBColorMode",
-                depth: settings.depth || 8,
-                colorProfile: settings.colorProfile || "none",
-                pixelAspectRatio: settings.pixelAspectRatio || 1
-            };
+            width: settings.width || 7,
+            height: settings.width || 5,
+            resolution: settings.resolution || 72,
+            fill: settings.fill || "white",
+            colorMode: settings.colorMode || "RGBColorMode",
+            depth: settings.depth || 8,
+            colorProfile: settings.colorProfile || "none",
+            pixelAspectRatio: settings.pixelAspectRatio || 1
+        };
+
         var newObj = {
-            "obj": "document",
-            "value": {
+            "_obj": "document",
+            "_value": {
                 "width": unitsIn.distance(params.width),
                 "height": unitsIn.distance(params.height),
                 "resolution": unitsIn.density(params.resolution),
                 "fill": {
-                    "enum": "fill",
-                    "value": params.fill
+                    "_enum": "fill",
+                    "_value": params.fill
                 },
                 "mode": {
-                    "class": params.colorMode
+                    "_class": params.colorMode
                 },
                 "depth": params.depth,
                 "profile": params.colorProfile,
                 "pixelScaleFactor": params.pixelAspectRatio
             }
         };
+
         var desc = {
             "new": newObj
         };
+
         return new PlayObject(
             "make",
             desc
@@ -398,8 +407,8 @@ define(function (require, exports) {
     var createWithPreset = function (presetName) {
         var desc = {
                 "new": {
-                    "obj": "document",
-                    "value": {
+                    "_obj": "document",
+                    "_value": {
                         preset: presetName
                     }
                 }
@@ -428,18 +437,18 @@ define(function (require, exports) {
             "canvasSize",
             {
                 "canvasExtensionColorType": {
-                    "enum": "canvasExtensionColorType",
-                    "value": "backgroundColor"
+                    "_enum": "canvasExtensionColorType",
+                    "_value": "backgroundColor"
                 },
                 "height": height,
                 "width": width,
                 "horizontal": {
-                    "enum": "horizontalLocation",
-                    "value": horizontalExtension
+                    "_enum": "horizontalLocation",
+                    "_value": horizontalExtension
                 },
                 "vertical": {
-                    "enum": "verticalLocation",
-                    "value": verticalExtension
+                    "_enum": "verticalLocation",
+                    "_value": verticalExtension
                 }
             }
         );
@@ -457,10 +466,10 @@ define(function (require, exports) {
         assert(referenceOf(sourceRef) === "document", "setTargetPathVisible is passed a non-document reference");
 
         var reference = {
-            "ref": [
+            "_ref": [
                 {
-                    "ref": "property",
-                    "property": "targetPathVisibility"
+                    "_ref": "property",
+                    "_property": "targetPathVisibility"
                 },
                 sourceRef
             ]
@@ -486,10 +495,10 @@ define(function (require, exports) {
         assert(referenceOf(sourceRef) === "document", "setTargetPathVisible is passed a non-document reference");
 
         var reference = {
-            "ref": [
+            "_ref": [
                 {
-                    "ref": "property",
-                    "property": "artboards"
+                    "_ref": "property",
+                    "_property": "artboards"
                 },
                 sourceRef
             ]
@@ -516,13 +525,13 @@ define(function (require, exports) {
     var _buildGuidesDescriptor = function (guideType) {
         return {
             "null": {
-                "ref": [{
-                    "ref": "property",
-                    "property": guideType
+                "_ref": [{
+                    "_ref": "property",
+                    "_property": guideType
                 }, {
-                    "ref": "document",
-                    "enum": "ordinal",
-                    "value": "targetEnum"
+                    "_ref": "document",
+                    "_enum": "ordinal",
+                    "_value": "targetEnum"
                 }]
             }
         };
