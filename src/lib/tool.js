@@ -128,9 +128,115 @@ define(function (require, exports) {
             }
         );
     };
+
+
+    /**
+     * Resets the mode of shape tools back to "shape" from "path" or "pixel".
+     * 
+     * @return {PlayObject}
+     */
+    var defaultShapeTool = function () {
+        return new PlayObject(
+            "set",
+            {
+                null: {
+                    _ref: [
+                        {
+                            _ref: "property",
+                            _property: "baseShapeStyle"
+                        },
+                        {
+                            _ref: "document",
+                            _enum: "ordinal",
+                            _value: "targetEnum"
+                        }
+                    ]
+                },
+                "to": {
+                    _obj: "baseShapeStyle",
+                    _value: { "strokeStyle": {
+                        _obj: "strokeStyle",
+                        _value: {
+                            _strokeStyleLineDashSet: [
+                                { _unit: "noneUnit",
+                                _value: 1 }],
+                            _strokeStyleContent: {
+                                _obj: "solidColorLayer",
+                                _value: {
+                                    _color: {
+                                        _obj: "RGBColor",
+                                        _value: { "red": 217, "green": 217, "blue": 217 }
+                                    }
+                                }
+                            },
+                            _strokeStyleLineWidth: {
+                                _unit: "pixelsUnit",
+                                _value: 2 },
+                            _strokeStyleVersion: 2,
+                            _strokeStyleLineAlignment: "strokeStyleAlignInside",
+                            _strokeEnabled: true }
+                    },
+                        _fillContents: {
+                            _obj: "solidColorLayer",
+                            _value: {
+                                _color: {
+                                    _obj: "RGBColor",
+                                    _value: { "red": 157, "green": 157, "blue": 157 }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        );
+    };
     
+    /**
+     * Resets the mode of type tools back to a default font
+     * 
+     * @return {PlayObject}
+     */
+    var resetTypeTool = function () {
+        return new PlayObject(
+            "set",
+            {
+                "null": {
+                    _ref: {
+                            "_ref": "typeCreateOrEditTool"
+                        }
+                },
+                "to": {
+                    _obj: "null",
+                    _value: {
+                        "textToolCharacterOptions": {
+                            "obj": "null",
+                            "value": {
+                                "textStyle": {
+                                    "obj": "null",
+                                    "value": {
+                                        "fontName": "Myriad Pro",
+                                        "size": {
+                                            "unit": "pointsUnit",
+                                            "value": 16
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            {
+                canExecuteWhileModal: true
+            }
+
+        );
+    };
+
     exports.setTool = setTool;
     exports.setToolOptions = setToolOptions;
     exports.setDirectSelectOptionForAllLayers = setDirectSelectOptionForAllLayers;
     exports.resetShapeTool = resetShapeTool;
+    exports.defaultShapeTool = defaultShapeTool;
+    exports.resetTypeTool = resetTypeTool;
 });
