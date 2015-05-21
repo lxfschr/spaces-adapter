@@ -128,9 +128,142 @@ define(function (require, exports) {
             }
         );
     };
+
+
+    /**
+     * Resets the mode of shape tools back to "shape" from "path" or "pixel".
+     * 
+     * @return {PlayObject}
+     */
+    var defaultShapeTool = function () {
+        return new PlayObject(
+            "set",
+            {
+                null: {
+                    _ref: [
+                        {
+                            _ref: "property",
+                            _property: "baseShapeStyle"
+                        },
+                        {
+                            _ref: "document",
+                            _enum: "ordinal",
+                            _value: "targetEnum"
+                        }
+                    ]
+                },
+                "to": {
+                    _obj:"baseShapeStyle",
+                    _value:{
+                        "shapeStyle": {
+                            "strokeStyle": {
+                                _obj:"strokeStyle",
+                                _value: {
+                                    "strokeStyleLineDashSet":[],
+                                    "strokeStyleContent": {
+                                        _obj:"solidColorLayer",
+                                        _value:{
+                                            "color":{
+                                                _obj:"RGBColor",
+                                                _value:{
+                                                    "red":217,
+                                                    "green":217,
+                                                    "blue":217
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "strokeStyleLineWidth":{
+                                        _unit:"pixelsUnit",
+                                        _value:2
+                                    },
+                                    "strokeStyleVersion":2,
+                                    "strokeEnabled":true,
+                                    "strokeStyleOpacity":100,
+                                    "strokeStyleResolution":72
+                                }
+                            },
+                            "fillContents":{
+                                _obj:"solidColorLayer",
+                                _value:  {
+                                    "color":{
+                                        _obj:"RGBColor",
+                                        _value:{
+                                            "red":157,
+                                            "green":157,
+                                            "blue":157}
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        );
+    };
     
+    /**
+     * Resets the mode of type tools back to a default font
+     * 
+     * @return {PlayObject}
+     */
+    var resetTypeTool = function(){
+        return new PlayObject(
+            "set",
+            {
+                "null": {                 
+                    "_ref": "typeCreateOrEditTool"
+                },
+                "to": {
+                    _obj: "null",
+                    _value: {
+                        "textToolParagraphOptions": {
+                            _obj:"textToolParagraphOptions",
+                            _value: {
+                                "paragraphStyle": {
+                                    _obj: "paragraphStyle",
+                                    _value: {
+                                        "algin":"left"
+                                    }
+                                }
+                            }
+                        },
+                        "textToolCharacterOptions": {
+                            _obj:"textToolCharacterOptions",
+                            _value: {
+                                "textStyle": {
+                                    _obj:"textStyle", 
+                                    _value: {
+                                        "fontName":"Myriad Pro", 
+                                        "size": {
+                                            _unit: "pointsUnit", 
+                                            _value: 16
+                                        },
+                                         "color":{
+                                           _obj:"RGBColor",
+                                            _value:{
+                                                "red":0,
+                                                "green":0,
+                                                "blue":0
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            {
+                canExecuteWhileModal : true
+            }
+        );
+    };
+
     exports.setTool = setTool;
     exports.setToolOptions = setToolOptions;
     exports.setDirectSelectOptionForAllLayers = setDirectSelectOptionForAllLayers;
     exports.resetShapeTool = resetShapeTool;
+    exports.defaultShapeTool = defaultShapeTool;
+    exports.resetTypeTool = resetTypeTool;
 });
