@@ -49,8 +49,22 @@ define(function (require, exports, module) {
         EventEmitter.call(this);
 
         this._psEventHandler = this._psEventHandler.bind(this);
+        this._batchPlayAsync = Promise.promisify(_spaces.ps.descriptor.batchPlay, _spaces.ps.descriptor);
+        this._getAsync = Promise.promisify(_spaces.ps.descriptor.get, _spaces.ps.descriptor);
     };
     util.inherits(Descriptor, EventEmitter);
+
+    /**
+     * @private
+     * @type {function():Promise} Low-level promisified get function.
+     */
+    Descriptor.prototype._getAsync = null;
+
+    /**
+     * @private
+     * @type {function():Promise} Low-level promisified batchPlay function.
+     */
+    Descriptor.prototype._batchPlayAsync = null;
 
     /**
      * Event handler for events from the native bridge.
@@ -172,11 +186,9 @@ define(function (require, exports, module) {
             options = {};
         }
 
-        var wrappedReference = _wrap(reference),
-            getAsync = Promise.promisify(_spaces.ps.descriptor.get,
-                _spaces.ps.descriptor);
+        var wrappedReference = _wrap(reference);
 
-        return getAsync(wrappedReference, options);
+        return this._getAsync(wrappedReference, options);
     };
 
     /**
@@ -286,10 +298,7 @@ define(function (require, exports, module) {
             options.interactionMode = this.interactionMode.SILENT;
         }
 
-        var batchPlayAsync = Promise.promisify(_spaces.ps.descriptor.batchPlay,
-            _spaces.ps.descriptor);
-
-        return batchPlayAsync(commands, options)
+        return this._batchPlayAsync(commands, options)
             .then(function (response) {
                 // Never reject in continueOnError mode; the caller must always check the results
                 if (options.continueOnError) {
