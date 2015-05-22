@@ -42,6 +42,11 @@ define(function (require, exports) {
         }
     });
 
+    var revert = new PlayObject("revert", {
+        forceNotify: true
+    });
+
     exports.stepBackward = stepBackward;
     exports.stepForward = stepForward;
+    exports.revert = revert;
 });
