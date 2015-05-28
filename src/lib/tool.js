@@ -24,7 +24,9 @@
 define(function (require, exports) {
     "use strict";
     
-    var PlayObject = require("../playobject");
+    var PlayObject = require("../playobject"),
+        color = require("./color");
+
 
     /**
      * Sets the current tool to given tool
@@ -131,11 +133,16 @@ define(function (require, exports) {
 
 
     /**
-     * Resets the mode of shape tools back to "shape" from "path" or "pixel".
-     * 
+     * Sets the default values of the shape tool
+     *      
+     * @param {Array} strokeColor a 3 item array represetning the [r,g,b] value of the stroke
+     * @param {number} strokeWidth the width of the stroke
+     * @param {number} strokeOpacity the opacity of the stroke
+     * @param {Array} fillColor a 3 item array represetning the [r,g,b] value of the fill
+     *
      * @return {PlayObject}
      */
-    var defaultShapeTool = function () {
+    var defaultShapeTool = function (strokeColor,strokeWidth,strokeOpacity,fillColor) {
         return new PlayObject(
             "set",
             {
@@ -163,36 +170,23 @@ define(function (require, exports) {
                                     "strokeStyleContent": {
                                         _obj:"solidColorLayer",
                                         _value:{
-                                            "color":{
-                                                _obj:"RGBColor",
-                                                _value:{
-                                                    "red":217,
-                                                    "green":217,
-                                                    "blue":217
-                                                }
-                                            }
+                                            "color":color.colorObject(strokeColor)
                                         }
                                     },
                                     "strokeStyleLineWidth":{
                                         _unit:"pixelsUnit",
-                                        _value:2
+                                        _value:strokeWidth
                                     },
                                     "strokeStyleVersion":2,
                                     "strokeEnabled":true,
-                                    "strokeStyleOpacity":100,
+                                    "strokeStyleOpacity":strokeOpacity,
                                     "strokeStyleResolution":72
                                 }
                             },
                             "fillContents":{
                                 _obj:"solidColorLayer",
                                 _value:  {
-                                    "color":{
-                                        _obj:"RGBColor",
-                                        _value:{
-                                            "red":157,
-                                            "green":157,
-                                            "blue":157}
-                                    }
+                                    "color":color.colorObject(fillColor)
                                 }
                             }
                         }
@@ -205,9 +199,14 @@ define(function (require, exports) {
     /**
      * Resets the mode of type tools back to a default font
      * 
+     * @param {string} alignment  alignment of the style ("left") 
+     * @param {string} fontName the font name ("Myriad Pro")
+     * @param {number} pointSize the pointSize of the font
+     * @param {Array} textColor a 3 item array represetning the [r,g,b] value of the text
+     *
      * @return {PlayObject}
      */
-    var resetTypeTool = function(){
+    var resetTypeTool = function(alignment, fontName, pointSize, textColor){
         return new PlayObject(
             "set",
             {
@@ -223,7 +222,7 @@ define(function (require, exports) {
                                 "paragraphStyle": {
                                     _obj: "paragraphStyle",
                                     _value: {
-                                        "algin":"left"
+                                        "algin":alignment
                                     }
                                 }
                             }
@@ -234,19 +233,12 @@ define(function (require, exports) {
                                 "textStyle": {
                                     _obj:"textStyle", 
                                     _value: {
-                                        "fontName":"Myriad Pro", 
+                                        "fontName":fontName, 
                                         "size": {
                                             _unit: "pointsUnit", 
-                                            _value: 16
+                                            _value: pointSize
                                         },
-                                         "color":{
-                                           _obj:"RGBColor",
-                                            _value:{
-                                                "red":0,
-                                                "green":0,
-                                                "blue":0
-                                            }
-                                        }
+                                        "color":color.colorObject(textColor)
                                     }
                                 }
                             }
