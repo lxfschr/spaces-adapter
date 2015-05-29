@@ -146,7 +146,7 @@ define(function (require, exports) {
      *
      * @return {PlayObject}
      */
-    var defaultShapeTool = function (strokeColor,strokeWidth,strokeOpacity,fillColor) {
+    var defaultShapeTool = function (strokeColor, strokeWidth, strokeOpacity, fillColor) {
         return new PlayObject(
             "set",
             {
@@ -164,33 +164,33 @@ define(function (require, exports) {
                     ]
                 },
                 "to": {
-                    _obj:"baseShapeStyle",
-                    _value:{
+                    _obj: "baseShapeStyle",
+                    _value: {
                         "shapeStyle": {
                             "strokeStyle": {
-                                _obj:"strokeStyle",
+                                _obj: "strokeStyle",
                                 _value: {
-                                    "strokeStyleLineDashSet":[],
+                                    "strokeStyleLineDashSet": [],
                                     "strokeStyleContent": {
-                                        _obj:"solidColorLayer",
-                                        _value:{
-                                            "color":color.colorObject(strokeColor)
+                                        _obj: "solidColorLayer",
+                                        _value: {
+                                            "color": color.colorObject(strokeColor)
                                         }
                                     },
-                                    "strokeStyleLineWidth":{
-                                        _unit:"pixelsUnit",
-                                        _value:strokeWidth
+                                    "strokeStyleLineWidth": {
+                                        _unit: "pixelsUnit",
+                                        _value: strokeWidth
                                     },
-                                    "strokeStyleVersion":2,
-                                    "strokeEnabled":true,
-                                    "strokeStyleOpacity":strokeOpacity,
-                                    "strokeStyleResolution":72
+                                    "strokeStyleVersion": 2,
+                                    "strokeEnabled": true,
+                                    "strokeStyleOpacity": strokeOpacity,
+                                    "strokeStyleResolution": 72
                                 }
                             },
-                            "fillContents":{
-                                _obj:"solidColorLayer",
-                                _value:  {
-                                    "color":color.colorObject(fillColor)
+                            "fillContents": {
+                                _obj: "solidColorLayer",
+                                _value: {
+                                    "color": color.colorObject(fillColor)
                                 }
                             }
                         }
@@ -206,43 +206,43 @@ define(function (require, exports) {
      * @param {string} alignment  alignment of the style ("left") 
      * @param {string} fontName the font name ("Myriad Pro")
      * @param {number} pointSize the pointSize of the font
-     * @param {Array} textColor a 3 item array represetning the [r,g,b] value of the text
+     * @param {Color} textColor a 3 item array represetning the [r,g,b] value of the text
      *
      * @return {PlayObject}
      */
-    var resetTypeTool = function(alignment, fontName, pointSize, textColor){
+    var resetTypeTool = function (alignment, fontName, pointSize, textColor) {
         return new PlayObject(
             "set",
             {
-                "null": {                 
+                "null": {
                     "_ref": "typeCreateOrEditTool"
                 },
                 "to": {
                     _obj: "null",
                     _value: {
                         "textToolParagraphOptions": {
-                            _obj:"textToolParagraphOptions",
+                            _obj: "textToolParagraphOptions",
                             _value: {
                                 "paragraphStyle": {
                                     _obj: "paragraphStyle",
                                     _value: {
-                                        "algin":alignment
+                                        "algin": alignment
                                     }
                                 }
                             }
                         },
                         "textToolCharacterOptions": {
-                            _obj:"textToolCharacterOptions",
+                            _obj: "textToolCharacterOptions",
                             _value: {
                                 "textStyle": {
-                                    _obj:"textStyle", 
+                                    _obj: "textStyle",
                                     _value: {
-                                        "fontName":fontName, 
+                                        "fontName": fontName,
                                         "size": {
-                                            _unit: "pointsUnit", 
+                                            _unit: "pointsUnit",
                                             _value: pointSize
                                         },
-                                        "color":color.colorObject(textColor)
+                                        "color": color.colorObject(textColor)
                                     }
                                 }
                             }
