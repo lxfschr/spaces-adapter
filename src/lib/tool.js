@@ -24,7 +24,9 @@
 define(function (require, exports) {
     "use strict";
     
-    var PlayObject = require("../playobject");
+    var PlayObject = require("../playobject"),
+        color = require("./color");
+
 
     /**
      * Sets the current tool to given tool
@@ -134,8 +136,17 @@ define(function (require, exports) {
      * Resets the mode of shape tools back to "shape" from "path" or "pixel".
      * 
      * @return {PlayObject}
+     *
+     * Sets the default values of the shape tool
+     *      
+     * @param {Color} strokeColor a 3 item array represetning the [r,g,b] value of the stroke
+     * @param {number} strokeWidth the width of the stroke
+     * @param {number} strokeOpacity the opacity of the stroke
+     * @param {Color} fillColor a 3 item array represetning the [r,g,b] value of the fill
+     *
+     * @return {PlayObject}
      */
-    var defaultShapeTool = function () {
+    var defaultShapeTool = function (strokeColor,strokeWidth,strokeOpacity,fillColor) {
         return new PlayObject(
             "set",
             {
@@ -153,35 +164,33 @@ define(function (require, exports) {
                     ]
                 },
                 "to": {
-                    _obj: "baseShapeStyle",
-                    _value: { "strokeStyle": {
-                        _obj: "strokeStyle",
-                        _value: {
-                            _strokeStyleLineDashSet: [
-                                { _unit: "noneUnit",
-                                _value: 1 }],
-                            _strokeStyleContent: {
-                                _obj: "solidColorLayer",
+                    _obj:"baseShapeStyle",
+                    _value:{
+                        "shapeStyle": {
+                            "strokeStyle": {
+                                _obj:"strokeStyle",
                                 _value: {
-                                    _color: {
-                                        _obj: "RGBColor",
-                                        _value: { "red": 217, "green": 217, "blue": 217 }
-                                    }
+                                    "strokeStyleLineDashSet":[],
+                                    "strokeStyleContent": {
+                                        _obj:"solidColorLayer",
+                                        _value:{
+                                            "color":color.colorObject(strokeColor)
+                                        }
+                                    },
+                                    "strokeStyleLineWidth":{
+                                        _unit:"pixelsUnit",
+                                        _value:strokeWidth
+                                    },
+                                    "strokeStyleVersion":2,
+                                    "strokeEnabled":true,
+                                    "strokeStyleOpacity":strokeOpacity,
+                                    "strokeStyleResolution":72
                                 }
                             },
-                            _strokeStyleLineWidth: {
-                                _unit: "pixelsUnit",
-                                _value: 2 },
-                            _strokeStyleVersion: 2,
-                            _strokeStyleLineAlignment: "strokeStyleAlignInside",
-                            _strokeEnabled: true }
-                    },
-                        _fillContents: {
-                            _obj: "solidColorLayer",
-                            _value: {
-                                _color: {
-                                    _obj: "RGBColor",
-                                    _value: { "red": 157, "green": 157, "blue": 157 }
+                            "fillContents":{
+                                _obj:"solidColorLayer",
+                                _value:  {
+                                    "color":color.colorObject(fillColor)
                                 }
                             }
                         }
@@ -194,31 +203,46 @@ define(function (require, exports) {
     /**
      * Resets the mode of type tools back to a default font
      * 
+     * @param {string} alignment  alignment of the style ("left") 
+     * @param {string} fontName the font name ("Myriad Pro")
+     * @param {number} pointSize the pointSize of the font
+     * @param {Array} textColor a 3 item array represetning the [r,g,b] value of the text
+     *
      * @return {PlayObject}
      */
-    var resetTypeTool = function () {
+    var resetTypeTool = function(alignment, fontName, pointSize, textColor){
         return new PlayObject(
             "set",
             {
-                "null": {
-                    _ref: {
-                            "_ref": "typeCreateOrEditTool"
-                        }
+                "null": {                 
+                    "_ref": "typeCreateOrEditTool"
                 },
                 "to": {
                     _obj: "null",
                     _value: {
+                        "textToolParagraphOptions": {
+                            _obj:"textToolParagraphOptions",
+                            _value: {
+                                "paragraphStyle": {
+                                    _obj: "paragraphStyle",
+                                    _value: {
+                                        "algin":alignment
+                                    }
+                                }
+                            }
+                        },
                         "textToolCharacterOptions": {
-                            "obj": "null",
-                            "value": {
+                            _obj:"textToolCharacterOptions",
+                            _value: {
                                 "textStyle": {
-                                    "obj": "null",
-                                    "value": {
-                                        "fontName": "Myriad Pro",
+                                    _obj:"textStyle", 
+                                    _value: {
+                                        "fontName":fontName, 
                                         "size": {
-                                            "unit": "pointsUnit",
-                                            "value": 16
-                                        }
+                                            _unit: "pointsUnit", 
+                                            _value: pointSize
+                                        },
+                                        "color":color.colorObject(textColor)
                                     }
                                 }
                             }
@@ -229,7 +253,6 @@ define(function (require, exports) {
             {
                 canExecuteWhileModal: true
             }
-
         );
     };
 
