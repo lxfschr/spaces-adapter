@@ -24,7 +24,9 @@
 define(function (require, exports) {
     "use strict";
     
-    var PlayObject = require("../playobject");
+    var PlayObject = require("../playobject"),
+        color = require("./color");
+
 
     /**
      * Sets the current tool to given tool
@@ -128,9 +130,136 @@ define(function (require, exports) {
             }
         );
     };
+
+
+    /**
+     * Resets the mode of shape tools back to "shape" from "path" or "pixel".
+     * 
+     * @return {PlayObject}
+     *
+     * Sets the default values of the shape tool
+     *      
+     * @param {Color} strokeColor a 3 item array represetning the [r,g,b] value of the stroke
+     * @param {number} strokeWidth the width of the stroke
+     * @param {number} strokeOpacity the opacity of the stroke
+     * @param {Color} fillColor a 3 item array represetning the [r,g,b] value of the fill
+     *
+     * @return {PlayObject}
+     */
+    var defaultShapeTool = function (strokeColor, strokeWidth, strokeOpacity, fillColor) {
+        return new PlayObject(
+            "set",
+            {
+                null: {
+                    _ref: [
+                        {
+                            _ref: "property",
+                            _property: "baseShapeStyle"
+                        },
+                        {
+                            _ref: "document",
+                            _enum: "ordinal",
+                            _value: "targetEnum"
+                        }
+                    ]
+                },
+                "to": {
+                    _obj: "baseShapeStyle",
+                    _value: {
+                        "shapeStyle": {
+                            "strokeStyle": {
+                                _obj: "strokeStyle",
+                                _value: {
+                                    "strokeStyleLineDashSet": [],
+                                    "strokeStyleContent": {
+                                        _obj: "solidColorLayer",
+                                        _value: {
+                                            "color": color.colorObject(strokeColor)
+                                        }
+                                    },
+                                    "strokeStyleLineWidth": {
+                                        _unit: "pixelsUnit",
+                                        _value: strokeWidth
+                                    },
+                                    "strokeStyleVersion": 2,
+                                    "strokeEnabled": true,
+                                    "strokeStyleOpacity": strokeOpacity,
+                                    "strokeStyleResolution": 72
+                                }
+                            },
+                            "fillContents": {
+                                _obj: "solidColorLayer",
+                                _value: {
+                                    "color": color.colorObject(fillColor)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        );
+    };
     
+    /**
+     * Resets the mode of type tools back to a default font
+     * 
+     * @param {string} alignment  alignment of the style ("left") 
+     * @param {string} fontName the font name ("Myriad Pro")
+     * @param {number} pointSize the pointSize of the font
+     * @param {Color} textColor a 3 item array represetning the [r,g,b] value of the text
+     *
+     * @return {PlayObject}
+     */
+    var resetTypeTool = function (alignment, fontName, pointSize, textColor) {
+        return new PlayObject(
+            "set",
+            {
+                "null": {
+                    "_ref": "typeCreateOrEditTool"
+                },
+                "to": {
+                    _obj: "null",
+                    _value: {
+                        "textToolParagraphOptions": {
+                            _obj: "textToolParagraphOptions",
+                            _value: {
+                                "paragraphStyle": {
+                                    _obj: "paragraphStyle",
+                                    _value: {
+                                        "algin": alignment
+                                    }
+                                }
+                            }
+                        },
+                        "textToolCharacterOptions": {
+                            _obj: "textToolCharacterOptions",
+                            _value: {
+                                "textStyle": {
+                                    _obj: "textStyle",
+                                    _value: {
+                                        "fontName": fontName,
+                                        "size": {
+                                            _unit: "pointsUnit",
+                                            _value: pointSize
+                                        },
+                                        "color": color.colorObject(textColor)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            {
+                canExecuteWhileModal: true
+            }
+        );
+    };
+
     exports.setTool = setTool;
     exports.setToolOptions = setToolOptions;
     exports.setDirectSelectOptionForAllLayers = setDirectSelectOptionForAllLayers;
     exports.resetShapeTool = resetShapeTool;
+    exports.defaultShapeTool = defaultShapeTool;
+    exports.resetTypeTool = resetTypeTool;
 });
