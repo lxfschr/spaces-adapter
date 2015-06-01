@@ -32,15 +32,17 @@ define(function (require, exports) {
      * The point is (x,y) where (0,0) is the top left of the document and 
      * x is horizontal vs y is vertical
      * 
+     * @param {object} documentRef Target document
      * @param {number} px X coordinate - horizontal
      * @param {number} py Y coordinate - vertical
      * @return {PlayObject}
      *
      */
-    var layerIDsAtPoint = function (px, py) {
+    var layerIDsAtPoint = function (documentRef, px, py) {
         return new PlayObject(
             "hitTest",
             {
+                "null": documentRef,
                 "x": px,
                 "y": py
             }
@@ -52,20 +54,17 @@ define(function (require, exports) {
      * using current Eye dropper tool settings
      * colorSampler is available when sampleData is true
      *
+     * @param {object} documentRef Target document
      * @param {number} px X coordinate - horizontal
      * @param {[type]} py Y coordinate - vertical
      *
      * @return {{sampleData: <boolean>, colorSampler: <object>}} [description]
      */
-    var colorSampleAtPoint = function (px, py) {
+    var colorSampleAtPoint = function (documentRef, px, py) {
         return new PlayObject(
             "colorSampler",
             {
-                "null": {
-                    "_ref": "document",
-                    "_enum": "ordinal",
-                    "_value": "targetEnum"
-                },
+                "null": documentRef,
                 "samplePoint": {
                     "_obj": "samplePoint",
                     "_value": {
