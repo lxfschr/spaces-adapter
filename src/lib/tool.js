@@ -139,6 +139,7 @@ define(function (require, exports) {
      *
      * Sets the default values of the shape tool
      *      
+     * @param {string} toolName the name of the tool we're using "ellipseTool" or "rectangleTool"
      * @param {Color} strokeColor a 3 item array represetning the [r,g,b] value of the stroke
      * @param {number} strokeWidth the width of the stroke
      * @param {number} strokeOpacity the opacity of the stroke
@@ -146,51 +147,50 @@ define(function (require, exports) {
      *
      * @return {PlayObject}
      */
-    var defaultShapeTool = function (strokeColor, strokeWidth, strokeOpacity, fillColor) {
+    var defaultShapeTool = function (toolName, strokeColor, strokeWidth, strokeOpacity, fillColor) {
         return new PlayObject(
             "set",
             {
-                null: {
-                    _ref: [
-                        {
-                            _ref: "property",
-                            _property: "baseShapeStyle"
-                        },
-                        {
-                            _ref: "document",
-                            _enum: "ordinal",
-                            _value: "targetEnum"
-                        }
-                    ]
-                },
+                null: { _ref: toolName },
                 "to": {
-                    _obj: "baseShapeStyle",
+                    _obj: "null",
                     _value: {
+                        "geometryToolMode": {
+                            _enum: "geometryToolMode",
+                            _value: "shape" },
+                        "makeShapeLayers": true,
                         "shapeStyle": {
-                            "strokeStyle": {
-                                _obj: "strokeStyle",
-                                _value: {
-                                    "strokeStyleLineDashSet": [],
-                                    "strokeStyleContent": {
-                                        _obj: "solidColorLayer",
-                                        _value: {
-                                            "color": color.colorObject(strokeColor)
-                                        }
-                                    },
-                                    "strokeStyleLineWidth": {
-                                        _unit: "pixelsUnit",
-                                        _value: strokeWidth
-                                    },
-                                    "strokeStyleVersion": 2,
-                                    "strokeEnabled": true,
-                                    "strokeStyleOpacity": strokeOpacity,
-                                    "strokeStyleResolution": 72
-                                }
-                            },
-                            "fillContents": {
-                                _obj: "solidColorLayer",
-                                _value: {
-                                    "color": color.colorObject(fillColor)
+                            _obj: "shapeStyle",
+                            _value: {
+                                "strokeStyle": {
+                                    _obj: "strokeStyle",
+                                    _value: {
+                                        "strokeStyleLineDashSet": [],
+                                        "strokeStyleContent": {
+                                            _obj: "solidColorLayer",
+                                            _value: {
+                                                "color": color.colorObject(strokeColor)
+                                            }
+                                        },
+                                        "strokeStyleLineWidth": {
+                                            _unit: "pixelsUnit",
+                                            _value: strokeWidth
+                                        },
+                                        "strokeStyleLineAlignment": {
+                                            _enum: "strokeStyleLineAlignment",
+                                            _value: "strokeStyleAlignInside"
+                                        },
+                                        "strokeStyleVersion": 2,
+                                        "strokeEnabled": true,
+                                        "strokeStyleOpacity": strokeOpacity,
+                                        "strokeStyleResolution": 72
+                                    }
+                                },
+                                "fillContents": {
+                                    _obj: "solidColorLayer",
+                                    _value: {
+                                        "color": color.colorObject(fillColor)
+                                    }
                                 }
                             }
                         }
