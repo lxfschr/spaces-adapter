@@ -41,23 +41,19 @@ define(function (require, exports) {
     };
 
     /**
-     * Determine whether v1 is less than or equal to v2.
+     * Determine whether v1 is compatible to v2.
      * 
      * @private
      * @param {{major: number=, minor: number=, patch: number=}} v1
      * @param {{major: number=, minor: number=, patch: number=}} v2
      * @return {boolean}
      */
-    var _versionLessThanOrEqualTo = function (v1, v2) {
-        if (v1.hasOwnProperty("major") && v1.major > v2.major) {
+    var _versionCompatible = function (v1, v2) {
+        if (v1.hasOwnProperty("major") && v1.major !== v2.major) {
             return false;
         }
 
         if (v1.hasOwnProperty("minor") && v1.minor > v2.minor) {
-            return false;
-        }
-
-        if (v1.hasOwnProperty("patch") && v1.patch > v2.patch) {
             return false;
         }
 
@@ -85,7 +81,7 @@ define(function (require, exports) {
     var _assertPluginVersionIsCompatible = function () {
         var pluginVersion = _spaces.version;
 
-        if (!_versionLessThanOrEqualTo(COMPATIBLE_PLUGIN_VERSION, pluginVersion)) {
+        if (!_versionCompatible(COMPATIBLE_PLUGIN_VERSION, pluginVersion)) {
             var message = "Plugin version " + _formatVersion(pluginVersion) +
                 " is incompatible with the minimum required version, " +
                  _formatVersion(COMPATIBLE_PLUGIN_VERSION);
