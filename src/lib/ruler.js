@@ -26,6 +26,37 @@ define(function (require, exports) {
 
     var PlayObject = require("../playobject");
 
+    /**
+     * Set Photoshop to use the ruler unit preference of our choice
+     *
+     * @param {string} type -  ruler unit type ie "rulerPixels"
+     * @returns {PlayObject} 
+     */
+    var setRulerUnits = function (type) {
+        return new PlayObject("set", {
+            "null": {
+                "_ref": [
+                    {
+                        "_property": "unitsPrefs",
+                        "_ref": "property"
+                    },
+                    {
+                        "_enum": "ordinal",
+                        "_ref": "application",
+                        "_value": "targetEnum"
+                    }
+                ]
+            },
+            "to": {
+                "_obj": "unitsPrefs",
+                "rulerUnits": {
+                    "_enum": "rulerUnits",
+                    "_value": type
+                }
+            }
+        });
+    };
+
     var setRulerVisibility = function (visible) {
         return new PlayObject("set", {
             "null": {
@@ -45,5 +76,6 @@ define(function (require, exports) {
         });
     };
 
+    exports.setRulerUnits = setRulerUnits;
     exports.setRulerVisibility = setRulerVisibility;
 });
