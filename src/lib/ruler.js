@@ -32,8 +32,6 @@ define(function (require, exports) {
      * @param {string} type -  ruler unit type ie "rulerPixels"
      * @returns {PlayObject} 
      */
-
-
     var setRulerUnits = function (type) {
         return new PlayObject("set", {
             "null": {
