@@ -21,9 +21,9 @@
     "jscs-trailing-whitespace-in-source": "0.0.1"
   },
   "dependencies": {
-    "wolfy-eventemitter": "^0.1.0",
-    "bluebird": "^2.9.24",
-    "lodash": "^3.7.0"
+    "bluebird": "^2.9.30",
+    "events": "^1.0.2",
+    "lodash": "^3.9.3"
   },
   "browserify": {
     "transform": [
