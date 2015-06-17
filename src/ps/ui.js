@@ -33,7 +33,8 @@ define(function (require, exports, module) {
     /**
      * Promisified version of low-level keyboard focus functions
      */
-    var _ui = Promise.promisifyAll(_spaces.ps.ui);
+    var _ui = Promise.promisifyAll(_spaces.ps.ui),
+        _setOverlayCloaking = Promise.promisify(_spaces.window.setOverlayCloaking);
 
     /* jshint bitwise: false */
     /**
@@ -368,6 +369,29 @@ define(function (require, exports, module) {
         return _ui.setOverlayOffsetsAsync({
             offset: offset
         });
+    };
+
+    /**
+     * Defines an area that will be erased immediately on given notifications
+     * and will be disabled on the given condition
+     *
+     * @param {Object} area Area to blit
+     * @param {number} area.left
+     * @param {number} area.top
+     * @param {number} area.right
+     * @param {number} area.bottom
+     * @param {Array.<string>} enablers PS notifications that will cause cloaking
+     * @param {"afterPaint"|"manual"} disabler Either redraw after a new paint command, 
+     * or manually only when this API is called with an empty area
+     * @return {Promise}
+     */
+    UI.prototype.setOverlayCloaking = function (area, enablers, disabler) {
+        return _setOverlayCloaking({
+            list: [area],
+            debug: false, // If this is set to true, we'll see red rectangles on blit areas
+            enable: enablers,
+            disable: disabler
+        }, {});
     };
 
     /**
