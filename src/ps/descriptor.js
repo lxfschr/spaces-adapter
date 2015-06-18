@@ -241,6 +241,42 @@ define(function (require, exports, module) {
     };
 
     /**
+     * Get a list of properties on a continguous range of references, (e.g.,
+     * layers at a contiguous range of layer indices).
+     * 
+     * @param {object} reference
+     * @param {{range: string, index: number=, count: number=}} rangeOpts
+     * @param {Array.<string>} properties
+     * @param {object=} options
+     */
+    Descriptor.prototype.getPropertiesRange = function (reference, rangeOpts, properties, options) {
+        var range = rangeOpts.range,
+            index = rangeOpts.hasOwnProperty("index") ? rangeOpts.index : 1,
+            count = rangeOpts.hasOwnProperty("count") ? rangeOpts.count : -1;
+
+        if (options === undefined) {
+            options = {};
+        }
+
+        var multiRef = {
+            _multiGetRef: [
+                {
+                    _propertyList: properties
+                },
+                {
+                    _range: range,
+                    _index: index,
+                    _count: count
+                },
+                reference
+            ]
+        };
+
+        return this._getAsync(multiRef, options).get("list");
+    };
+
+
+    /**
      * Defines an enumeration of three constants that control dialog display
      * while executing action descriptors: DONT_DISPLAY, DISPLAY and SILENT.
      * 
@@ -464,7 +500,6 @@ define(function (require, exports, module) {
 
         return this.batchGetProperties(refObjs, options);
     };
-
 
     /**
      * @type {Descriptor} The Descriptor singleton
