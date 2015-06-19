@@ -245,7 +245,9 @@ define(function (require, exports, module) {
      * layers at a contiguous range of layer indices).
      * 
      * @param {object} reference
-     * @param {{range: string, index: number=, count: number=}} rangeOpts
+     * @param {{range: string, index: number=, count: number=}} rangeOpts By default,
+     *  count is -1, which indicates that the rest of the range should be fetched, and
+     *  index is 1.
      * @param {Array.<string>} properties
      * @param {object=} options
      */
