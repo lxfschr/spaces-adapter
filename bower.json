@@ -12,7 +12,7 @@
   ],
   "main": "main.js",
   "location": "lib",
-  "license": "Closed",
+  "license": "MIT",
   "private": true,
   "ignore": [
     "**/.*",
