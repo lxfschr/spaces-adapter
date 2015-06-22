@@ -27,8 +27,10 @@ define(function (require, exports, module) {
     "use strict";
 
     var EventEmitter = require("eventEmitter"),
-        util = require("../util"),
-        Promise = require("bluebird");
+        Promise = require("bluebird"),
+        _ = require("lodash");
+
+    var util = require("../util");
 
     /**
      * The Descriptor object provides helper methods for dealing with the
@@ -123,29 +125,40 @@ define(function (require, exports, module) {
      * For objects, leaves them as is.
      * 
      * @private
-     * @param {(string|Array.<object>|object)} toWrap object to reference to
+     * @param {(string|Array.<object>|object)} reference object to reference to
+     * @param {Array.<string>=} multiGetProperties For multiGet references, the
+     *  list of properties to include in the wrapped reference.
      * @return {object} Reference to the toWrap object in a form .get will accept
      */
-    var _wrap = function (toWrap) {
-        var reference;
-
-        if (Array.isArray(toWrap)) {
+    var _wrap = function (reference, multiGetProperties) {
+        if (Array.isArray(reference)) {
+            reference = _.chain(reference)
+                .map(function (ref) {
+                    return _wrap(ref);
+                })
+                .reverse()
+                .value();
+        } else if (typeof reference === "string") {
             reference = {
-                _ref: toWrap.map(_wrap).reverse()
-            };
-        } else if (typeof toWrap === "string") {
-            reference = {
-                _ref: toWrap,
+                _ref: reference,
                 _enum: "ordinal",
                 _value: "targetEnum"
             };
-        } else {
-            reference = toWrap;
-            
+        } else if (reference.hasOwnProperty("null")) {
             // Special case for play objects
-            if (reference.hasOwnProperty("null")) {
-                reference["null"] = _wrap(reference["null"]);
-            }
+            reference["null"] = _wrap(reference["null"]);
+        }
+
+        if (multiGetProperties) {
+            reference = {
+                _multiGetRef: [{
+                    _propertyList: multiGetProperties
+                }].concat(reference)
+            };
+        } else if (Array.isArray(reference)) {
+            reference = {
+                _ref: reference
+            };
         }
 
         return reference;
@@ -250,6 +263,7 @@ define(function (require, exports, module) {
      *  index is 1.
      * @param {Array.<string>} properties
      * @param {object=} options
+     * @return {Promise.<Array.<Object.<string, *>>>}
      */
     Descriptor.prototype.getPropertiesRange = function (reference, rangeOpts, properties, options) {
         var range = rangeOpts.range,
@@ -277,6 +291,23 @@ define(function (require, exports, module) {
         return this._getAsync(multiRef, options).get("list");
     };
 
+    /**
+     * Get a single property on a continguous range of references, (e.g.,
+     * layers at a contiguous range of layer indices).
+     * 
+     * @see Descriptor.prototype.getPropertiesRange
+     * @param {object} reference
+     * @param {{range: string, index: number=, count: number=}} rangeOpts
+     * @param {string} property
+     * @param {object=} options
+     * @return {Promise.<Array.<*>>}
+     */
+    Descriptor.prototype.getPropertyRange = function (reference, rangeOpts, property, options) {
+        return this.getPropertiesRange(reference, rangeOpts, [property], options)
+            .then(function (results) {
+                return _.pluck(results, property);
+            });
+    };
 
     /**
      * Defines an enumeration of three constants that control dialog display
@@ -501,6 +532,102 @@ define(function (require, exports, module) {
         });
 
         return this.batchGetProperties(refObjs, options);
+    };
+
+    /**
+     * Efficiently get a set of properties on an arbitrary set of references.
+     * 
+     * @param {Array.<object|string|Array.<object>>} references
+     * @param {Array.<string>} properties
+     * @param {object=} options Use continueOnError to allow some properties to
+     *  not be returned
+     * @return {Promise.<Array.<Object.<string, *>>>}
+     */
+    Descriptor.prototype.batchMultiGetProperties = function (references, properties, options) {
+        if (properties.length === 0) {
+            return Promise.resolve([{}]);
+        }
+
+        if (options === undefined) {
+            options = {};
+        }
+
+        var multiGetOptions = {
+            useMultiGet: true,
+            failOnMissingProperty: !options.continueOnError
+        };
+
+        var commands = references.map(function (reference) {
+            var descriptor = {
+                null: _wrap(reference, properties)
+            };
+
+            return {
+                name: "get",
+                descriptor: descriptor,
+                options: multiGetOptions
+            };
+        });
+
+        return this.batchPlay(commands, options)
+            .then(function (response) {
+                if (options.continueOnError) {
+                    return response[0];
+                } else {
+                    return response;
+                }
+            });
+    };
+
+    /**
+     * Efficiently get a set of properties on a single reference. Not all
+     * properties need be present.
+     * 
+     * @param {object|string|Array.<object>} reference
+     * @param {Array.<string>} properties
+     * @param {object=} options Use continueOnError to allow some properties to
+     *  not be returned
+     * @return {Promise.<Object.<string, *>>}
+     */
+    Descriptor.prototype.multiGetOptionalProperties = function (reference, properties, options) {
+        if (properties.length === 0) {
+            return Promise.resolve({});
+        }
+
+        if (options === undefined) {
+            options = {};
+        }
+
+        return this._getAsync(_wrap(reference, properties), options);
+    };
+
+    /**
+     * Effeciently get a set of properties on a single reference.
+     * 
+     * @param {object|string|Array.<object>} reference
+     * @param {Array.<string>} properties
+     * @param {object=} options Use continueOnError to allow some properties to
+     *  not be returned
+     * @return {Promise.<Object.<string, *>>}
+     */
+    Descriptor.prototype.multiGetProperties = function (reference, properties, options) {
+        if (options === undefined) {
+            options = {};
+        }
+
+        // FIXME: This following option doesn't work when properties ===
+        // ["targetLayers"], which is why the .tap below is needed.
+        // See Watson 4010314 for details.
+        options.failOnMissingProperty = true;
+
+        return this.multiGetOptionalProperties(reference, properties, options)
+            .tap(function (obj) {
+                properties.forEach(function (property) {
+                    if (!obj.hasOwnProperty(property)) {
+                        throw new Error("No such property: " + property);
+                    }
+                });
+            });
     };
 
     /**
