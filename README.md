@@ -1,4 +1,4 @@
-Photoshop Spaces Adapter [![Build Status](https://travis-ci.org/adobe-photoshop/spaces-adapter.svg)](https://travis-ci.org/adobe-photoshop/spaces-adapter)
+Photoshop Spaces Adapter [![Build Status](https://travis-ci.org/adobe-photoshop/spaces-adapter.svg?branch=master)](https://travis-ci.org/adobe-photoshop/spaces-adapter)
 =================
 
 This repository contains:
