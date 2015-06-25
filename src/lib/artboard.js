@@ -24,7 +24,7 @@
 define(function (require, exports) {
     "use strict";
     
-    var PlayObject = require("../playobject"),
+    var PlayObject = require("../playObject"),
         referenceLib = require("./reference");
 
     var assert = require("../util").assert;

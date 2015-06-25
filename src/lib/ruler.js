@@ -24,7 +24,7 @@
 define(function (require, exports) {
     "use strict";
 
-    var PlayObject = require("../playobject");
+    var PlayObject = require("../playObject");
 
     /**
      * Set Photoshop to use the ruler unit preference of our choice
