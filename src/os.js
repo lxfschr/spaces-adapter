@@ -204,7 +204,10 @@ define(function (require, exports, module) {
         return _os.resetCursorAsync(options);
     };
 
-    /** @type {OS} The OS singleton */
+    /**
+     * The OS singleton
+     * @type {OS}
+     */
     var theOS = new OS();
 
     // bind native phtooshop event handler to our handler function

@@ -33,7 +33,7 @@ define(function (require, exports) {
      * Creates a new artboard at the given location
      *
      * @param {ActionDescriptor} layerRef Reference object to layers that will be added to artboard
-     * @param {bottom: <number>, top: <number>, left: <number>, right: <number>} boundingBox
+     * @param {{bottom: number, top: number, left: number, right: number}} boundingBox
      * @return {PlayObject}
      */
     var makeArtboard = function (layerRef, boundingBox) {
@@ -61,7 +61,7 @@ define(function (require, exports) {
      * Moves/resized the referenced artboard layer to a new bounding box
      *
      * @param {ActionDescriptor} ref - Artboard layer reference
-     * @param {bottom: <number>, top: <number>, left: <number>, right: <number>} boundingBox
+     * @param {{bottom: number, top: number, left: number, right: number}} boundingBox
      * @return {PlayObject}
      */
     var transformArtboard = function (ref, boundingBox) {

@@ -57,14 +57,16 @@ define(function (require, exports, module) {
     util.inherits(Descriptor, EventEmitter);
 
     /**
+     * Low-level promisified get function.
      * @private
-     * @type {function():Promise} Low-level promisified get function.
+     * @type {function():Promise}
      */
     Descriptor.prototype._getAsync = null;
 
     /**
+     * Low-level promisified batchPlay function.
      * @private
-     * @type {function():Promise} Low-level promisified batchPlay function.
+     * @type {function():Promise}
      */
     Descriptor.prototype._batchPlayAsync = null;
 
@@ -90,7 +92,7 @@ define(function (require, exports, module) {
      * Emit the named event with the given arguments as parameters. Throws if the
      * event is "error" and there are no listeners.
      * 
-     * @override EventEmitter.prototype.emitEvent
+     * @see EventEmitter.prototype.emitEvent
      * @param {string|RegExp} event Name of the event to emit and execute listeners for
      * @param {Array=} args Optional array of arguments to be passed to each listener
      * @return {object} Current instance for chaining
@@ -314,7 +316,7 @@ define(function (require, exports, module) {
      * while executing action descriptors: DONT_DISPLAY, DISPLAY and SILENT.
      * 
      * @const
-     * @type {Object.<string: number>}
+     * @type {Object.<string, number>}
      */
     Descriptor.prototype.interactionMode = _spaces.ps.descriptor.interactionMode;
 
@@ -631,7 +633,8 @@ define(function (require, exports, module) {
     };
 
     /**
-     * @type {Descriptor} The Descriptor singleton
+     * The Descriptor singleton
+     * @type {Descriptor} 
      */
     var descriptor = new Descriptor();
 

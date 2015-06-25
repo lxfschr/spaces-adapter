@@ -29,8 +29,8 @@ define(function (require, exports) {
     var Promise = require("bluebird");
 
     /**
-     * @private
      * Promisified version of _spaces.ps functions.
+     * @private
      */
     var _ps = Promise.promisifyAll(_spaces.ps);
 

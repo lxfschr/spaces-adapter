@@ -49,13 +49,23 @@ module.exports = function (grunt) {
             options: {
                 config: ".jscsrc"
             }
+        },
+        jsdoc: {
+            dist: {
+                src: ["src"],
+                options: {
+                    destination: "docs",
+                    recurse: true
+                }
+            }
         }
     });
 
     grunt.loadNpmTasks("grunt-contrib-jshint");
     grunt.loadNpmTasks("grunt-jscs");
+    grunt.loadNpmTasks("grunt-jsdoc");
 
-    grunt.registerTask("test", ["jshint", "jscs"]);
+    grunt.registerTask("test", ["jshint", "jscs", "jsdoc"]);
 
     grunt.registerTask("default", ["test"]);
 };
