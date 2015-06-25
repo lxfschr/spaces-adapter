@@ -26,7 +26,7 @@ define(function (require, exports) {
 
     var _ = require("lodash");
 
-    var PlayObject = require("../playobject"),
+    var PlayObject = require("../playObject"),
         referenceBy = require("./reference").wrapper("layer"),
         referenceOf = require("./reference").refersTo,
         inUnits = require("./unit"),
