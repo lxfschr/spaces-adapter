@@ -138,7 +138,7 @@ define(function (require, exports, module) {
      * Overscroll modes
      * 
      * @const
-     * @type{object.<number>}
+     * @type{Object.<string, number>}
      */
     UI.prototype.overscrollMode = _spaces.ps.ui.overscrollMode;
 
@@ -395,7 +395,8 @@ define(function (require, exports, module) {
     };
 
     /**
-     * @type {UI} The UI singleton
+     * The UI singleton
+     * @type {UI}
      */
     var ui = new UI();
 

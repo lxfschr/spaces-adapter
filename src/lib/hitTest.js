@@ -56,9 +56,9 @@ define(function (require, exports) {
      *
      * @param {object} documentRef Target document
      * @param {number} px X coordinate - horizontal
-     * @param {[type]} py Y coordinate - vertical
+     * @param {number} py Y coordinate - vertical
      *
-     * @return {{sampleData: <boolean>, colorSampler: <object>}} [description]
+     * @return {{sampleData: boolean, colorSampler: object}} [description]
      */
     var colorSampleAtPoint = function (documentRef, px, py) {
         return new PlayObject(
