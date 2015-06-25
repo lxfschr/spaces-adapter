@@ -8,6 +8,11 @@ This repository contains:
 
 These modules are a dependency of the Photoshop Design Space application. For more information, see the [spaces-design repository](https://github.com/adobe-photoshop/spaces-design/).
 
+CONTRIBUTING
+------------
+
+We welcome your contributions! Please see [CONTRIBUTING.md](https://github.com/adobe-photoshop/spaces-adapter/blob/master/CONTRIBUTING.md) for more details.
+
 LICENSE
 -------
 
