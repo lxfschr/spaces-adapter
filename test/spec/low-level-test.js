@@ -22,13 +22,16 @@
  */
 
 /* global _spaces, module, console, performance, define */
-/* global test, asyncTest, expect, start, ok, strictEqual, deepEqual */
+/* global QUnit, test, asyncTest, expect, start, ok, strictEqual, deepEqual */
 /* jshint unused:false */
 
 define(function () {
     "use strict";
 
     module("low-level");
+
+    // QUnit per-test global timeout value in ms
+    QUnit.config.testTimeout = 5000;
 
     // VALIDATION HELPERS
     // ------------------
@@ -61,7 +64,7 @@ define(function () {
                 logstr = "err is null";
                 break;
             }
-            if (!err instanceof Error) {
+            if ((err instanceof Error) === false) {
                 logstr = "err is not a proper Error object";
                 break;
             }
@@ -216,6 +219,8 @@ define(function () {
             "_spaces.notifierGroup.INTERACTION");
         ok(typeof _spaces.notifierGroup.TOUCH === "string",
             "_spaces.notifierGroup.TOUCH");
+        ok(typeof _spaces.notifierGroup.DIRECT === "string",
+            "_spaces.notifierGroup.DIRECT");
     });
 
     /* _spaces.setNotifier() function
@@ -916,14 +921,13 @@ define(function () {
      * functional: makes valid requiest for the active tool and checks that the returned value has expected keys
      */
     asyncTest("_spaces.ps.getActiveTool() functional (valid request)", function () {
-        expect(6);
+        expect(5);
 
         ok(typeof _spaces.ps.getActiveTool === "function",
             "_spaces.ps.getActiveTool() function defined");
 
         _spaces.ps.getActiveTool(function (err, info) {
             _validateNotifierResult(err);
-            ok(!err, "Call succeeded");
 
             ok(typeof info.title === "string",
                 "_spaces.ps.getActiveTool. info result.title");
@@ -944,6 +948,36 @@ define(function () {
     test("_spaces.ps.requestImage() defined", function () {
         ok(typeof _spaces.ps.requestImage === "function",
             "_spaces.ps.requestImage() function defined");
+    });
+
+    /* _spaces.ps.processQueuedCommands(): functional: options.invalidateMenus
+     * Validates: defined, type, functional: call and callback args
+     */
+    asyncTest("_spaces.ps.processQueuedCommands() functional: options.invalidateMenus", function () {
+        expect(2);
+
+        ok(typeof _spaces.ps.processQueuedCommands === "function",
+             "_spaces.ps.processQueuedCommands() function defined");
+        var options = { "invalidateMenus": true };
+        _spaces.ps.processQueuedCommands(options, function (err) {
+            _validateNotifierResult(err);
+            start();
+        });
+    });
+
+    /* _spaces.ps.processQueuedCommands(): functional: empty options
+     * Validates: defined, type, functional: call and callback args
+     */
+    asyncTest("_spaces.ps.processQueuedCommands() functional: empty options", function () {
+        expect(2);
+
+        ok(typeof _spaces.ps.processQueuedCommands === "function",
+             "_spaces.ps.processQueuedCommands() function defined");
+        var options = {};
+        _spaces.ps.processQueuedCommands(options, function (err) {
+            _validateNotifierResult(err);
+            start();
+        });
     });
 
     // ---------------------- _spaces.ps.descriptor ---------------------------
@@ -1061,7 +1095,7 @@ define(function () {
         expect(2);
 
         var reference = {
-            "_ref": "xxx-ref-does-not-exist-xxx",
+            "_ref": "ad-ref-does-not-exist-get-semantic-failure",
             "_enum": "$Ordn",
             "_value": "$Trgt"
         };
@@ -1080,7 +1114,7 @@ define(function () {
     asyncTest("_spaces.ps.descriptor.get(): argument failure", function () {
         expect(2);
         var options = {};
-        _spaces.ps.descriptor.get("xxx-ref-does-not-exist-xxx", options, function (err, descriptor) {
+        _spaces.ps.descriptor.get("ad-ref-does-not-exist-get-argument-failure", options, function (err, descriptor) {
             _validateNotifierResultError(err, _spaces.errorCodes.ARGUMENT_ERROR);
             ok(!descriptor, "Call failed");
 
@@ -1092,13 +1126,12 @@ define(function () {
      * functional (positive/valid input)
      */
     asyncTest("_spaces.ps.descriptor.play(): (positive/valid input)", function () {
-        expect(5);
+        expect(4);
 
         ok(typeof _spaces.ps.descriptor.play === "function",
             "_spaces.ps.descriptor.play() function defined");
         _spaces.ps.descriptor.play("jsonAction", {}, {}, function (err, descriptor) {
             _validateNotifierResult(err);
-            ok(!err, "Call succeeded");
             strictEqual(typeof descriptor, "object", "Result is a descriptor");
             deepEqual(descriptor, {}, "Result object is empty");
 
@@ -1140,7 +1173,7 @@ define(function () {
     asyncTest("_spaces.ps.descriptor.play(): (negative: semantic failure)", function () {
         expect(2);
 
-        _spaces.ps.descriptor.play("xxx-ref-does-not-exist-xxx", {}, {}, function (err, descriptor) {
+        _spaces.ps.descriptor.play("ad-ref-does-not-exist-play-semantic-failure", {}, {}, function (err, descriptor) {
             _validateNotifierResultError(err, _spaces.errorCodes.SUITEPEA_ERROR);
             ok(!descriptor, "Call failed");
 
@@ -1152,7 +1185,7 @@ define(function () {
      * functional (positive/valid input)
      */
     asyncTest("_spaces.ps.descriptor.batchPlay(): (positive/valid input)", function () {
-        expect(14);
+        expect(13);
 
         ok(typeof _spaces.ps.descriptor.batchPlay === "function",
             "_spaces.ps.descriptor.batchPlay() function defined");
@@ -1174,7 +1207,6 @@ define(function () {
 
         _spaces.ps.descriptor.batchPlay(commands, {}, function (err, descriptors, errors) {
             _validateNotifierResult(err);
-            ok(!err, "Call succeeded");
 
             strictEqual(descriptors.length, 3, "Received three possible results");
             strictEqual(errors.length, 3, "Received three possible errors");
@@ -1199,7 +1231,7 @@ define(function () {
      * functional (negative: partial semantic failure)
      */
     asyncTest("_spaces.ps.descriptor.batchPlay(): (negative: partial semantic failure)", function () {
-        expect(9);
+        expect(8);
 
         var commands = [
             {
@@ -1207,7 +1239,7 @@ define(function () {
                 descriptor: {}
             },
             {
-                name: "xxx-no-such-descriptor-xxx",
+                name: "ad-no-such-descriptor-batchPlay-partial-semantic-failure",
                 descriptor: {}
             },
             {
@@ -1218,7 +1250,6 @@ define(function () {
 
         _spaces.ps.descriptor.batchPlay(commands, {}, function (err, descriptors, errors) {
             _validateNotifierResult(err);
-            ok(!err, "Call succeeded");
 
             strictEqual(descriptors.length, 2, "Received three possible results");
             strictEqual(errors.length, 2, "Received three possible errors");
@@ -1246,7 +1277,7 @@ define(function () {
                 descriptor: {}
             },
             {
-                "xxx-bad-property-name-xxx": "jsonAction",
+                "ad-bad-property-name-batchPlay-partial-argument-failure": "jsonAction",
                 descriptor: {}
             },
             {
@@ -1268,7 +1299,7 @@ define(function () {
      * functional (negative: with continueOnError: partial argument failure)
      */
     asyncTest("_spaces.ps.descriptor.batchPlay(): with continueOnError/partial semantic failure", function () {
-        expect(12);
+        expect(11);
 
         var commands = [
             {
@@ -1276,7 +1307,7 @@ define(function () {
                 descriptor: {}
             },
             {
-                name: "xxx-no-such-descriptor-xxx",
+                name: "ad-no-such-descriptor-batchPlay-with-continueOnError-partial-semantic-failure",
                 descriptor: {}
             },
             {
@@ -1291,7 +1322,6 @@ define(function () {
 
         _spaces.ps.descriptor.batchPlay(commands, options, function (err, descriptors, errors) {
             _validateNotifierResult(err);
-            ok(!err, "Call succeeded");
 
             strictEqual(descriptors.length, 3, "Received three possible results");
             strictEqual(errors.length, 3, "Received three possible errors");
@@ -1311,6 +1341,31 @@ define(function () {
         });
     });
 
+    /* _spaces.ps.descriptor.sendDirectMessage() function
+     * Validates: defined, type
+     * THIS TEST SHOULD BE EXPANDED TO A FUNCTIONAL ONE WHEN WE HAVE A SAFE
+     * USE CASE
+     */
+    test("_spaces.ps.descriptor.sendDirectMessage() function", function () {
+        ok(typeof _spaces.ps.descriptor.sendDirectMessage === "function",
+            "_spaces.ps.descriptor.sendDirectMessage defined, type");
+    });
+
+    /* _spaces.ps.descriptor.sendDirectMessage(): negative: empty 'name'/'descriptor' args
+     * Validates: callback 'err' object reflects expected failure
+     *
+     * Test case expected to fail but callback is called with err === undefined instead.
+     * review with Jesper later...
+     * https://watsonexp.corp.adobe.com/#bug=4010904
+     */
+    // asyncTest("_spaces.ps.descriptor.sendDirectMessage(): negative: empty 'name'/'descriptor' args", function () {
+    //     expect(2);
+    //     _spaces.ps.descriptor.sendDirectMessage("", {}, {}, function (err, descriptor) {
+    //         _validateNotifierResultError(err, _spaces.errorCodes.SUITEPEA_ERROR);
+    //         deepEqual(descriptor, {}, "descriptor on failure");
+    //         start();
+    //     });
+    // });
 
     // --------------------------- _spaces.ps.ui ------------------------------
 
@@ -1370,6 +1425,8 @@ define(function () {
             "_spaces.ps.ui.pointerPropagationMode.ALWAYS_PROPAGATE");
         ok(typeof _spaces.ps.ui.pointerPropagationMode.NEVER_PROPAGATE === "number",
             "_spaces.ps.ui.pointerPropagationMode.NEVER_PROPAGATE");
+        ok(typeof _spaces.ps.ui.pointerPropagationMode.ALPHA_PROPAGATE_WITH_NOTIFY === "number",
+            "_spaces.ps.ui.pointerPropagationMode.ALPHA_PROPAGATE_WITH_NOTIFY");
     });
 
     /* _spaces.ps.ui.getPointerPropagationMode()
@@ -1388,7 +1445,8 @@ define(function () {
 
             var modeValidation = (mode === _spaces.ps.ui.pointerPropagationMode.ALPHA_PROPAGATE ||
                 mode === _spaces.ps.ui.pointerPropagationMode.NEVER_PROPAGATE ||
-                mode === _spaces.ps.ui.pointerPropagationMode.ALWAYS_PROPAGATE);
+                mode === _spaces.ps.ui.pointerPropagationMode.ALWAYS_PROPAGATE ||
+                mode === _spaces.ps.ui.pointerPropagationMode.ALPHA_PROPAGATE_WITH_NOTIFY);
 
             ok(modeValidation, "mode factor validation");
             if (!modeValidation) {
@@ -1408,7 +1466,7 @@ define(function () {
         // It gets called 4 times, once after getting the initial value, then 3 more times
         // following a set for each of the pointerPropagationMode constants to validate
         // the set calls.
-        expect(14);
+        expect(18);
 
         // getPointerPropagationMode() callback
         var getModeCallback = function (err, mode) {
@@ -1521,16 +1579,16 @@ define(function () {
         // It gets called 4 times, once after getting the initial value, then 3 more times
         // following a set for each of the keyboardPropagationMode constants to validate
         // the set calls.
-        expect(14);
+        expect(6);
 
         // getKeyboardPropagationMode() callback
         var getModeCallback = function (err, mode) {
             _validateNotifierResult(err);
             // Set up a mode "set" list with the initial setting last
             if (setModeList.length === 0) {
-                for (var key in _spaces.ps.ui.pointerPropagationMode) {
-                    if (_spaces.ps.ui.pointerPropagationMode[key] !== mode) {
-                        setModeList.push(_spaces.ps.ui.pointerPropagationMode[key]);
+                for (var key in _spaces.ps.ui.KeyboardPropagationMode) {
+                    if (_spaces.ps.ui.keyboardPropagationMode[key] !== mode) {
+                        setModeList.push(_spaces.ps.ui.keyboardPropagationMode[key]);
                     }
                 }
                 setModeList.push(mode);
@@ -1953,6 +2011,8 @@ define(function () {
             "_spaces.os.eventKind.FLAGS_CHANGED");
         ok(typeof _spaces.os.eventKind.MOUSE_WHEEL === "number",
             "_spaces.os.eventKind.MOUSE_WHEEL");
+        ok(typeof _spaces.os.eventKind.MOUSE_MOVE === "number",
+            "_spaces.os.eventKind.MOUSE_MOVE");
     });
 
     /* _spaces.os.eventModifiers constants object
@@ -2044,7 +2104,6 @@ define(function () {
     });
 
     /* _spaces.os.notifierKind constants object
-     * (renamed from DEPRECATED _spaces.os.eventTypes)
      * Validates: defined, type, number of elements, their type, ref by name
      */
     test("_spaces.os.notifierKind constants object", function () {
@@ -2057,6 +2116,8 @@ define(function () {
             "_spaces.os.notifierKind.ACTIVATION_CHANGED");
         ok(typeof _spaces.os.notifierKind.KEYBOARDFOCUS_CHANGED === "string",
             "_spaces.os.notifierKind.KEYBOARDFOCUS_CHANGED");
+        ok(typeof _spaces.os.notifierKind.EXTERNAL_MOUSE_MOVE === "string",
+            "_spaces.os.notifierKind.EXTERNAL_MOUSE_MOVE");
         ok(typeof _spaces.os.notifierKind.EXTERNAL_MOUSE_DOWN === "string",
             "_spaces.os.notifierKind.EXTERNAL_MOUSE_DOWN");
         ok(typeof _spaces.os.notifierKind.EXTERNAL_MOUSE_WHEEL === "string",
@@ -2886,6 +2947,269 @@ define(function () {
              "_spaces.os.resetCursor() function defined");
         var options = {}; // 'options' arg currently unused
         _spaces.os.resetCursor(options, function (err) {
+            _validateNotifierResult(err);
+            start();
+        });
+    });
+
+    // -------------------------- _spaces.window ------------------------------
+
+    /* _spaces.window property/object
+     * Validates: defined, type
+     */
+    test("_spaces.window property defined, type", function () {
+        ok(!!_spaces.window, "_spaces.window property defined");
+        ok(typeof _spaces.window === "object", "_spaces.window property type");
+    });
+
+    /* _spaces.window.getBounds() negative (no contextual HTML surface)
+     * Validates: defined, type, error returned
+     * 'Operations on bounds is only allowed on contextual HTML surfaces'
+     */
+    asyncTest("_spaces.window.getBounds(): negative (no contextual HTML surface)", function () {
+        expect(4);
+
+        ok(typeof _spaces.window.getBounds === "function",
+            "_spaces.window.getBounds() function defined");
+
+        var options = {};   // reserved/currently unused
+
+        _spaces.window.getBounds(options, function (err, result) {
+            _validateNotifierResultError(err, _spaces.errorCodes.ARGUMENT_ERROR);
+            var expMessage = "Operations on bounds is only allowed on contextual HTML surfaces";
+            var re = new RegExp("^(" + expMessage + ").*$");
+            ok(re.test(err.message), "err.message");
+            ok(typeof result == "undefined", "result arg should not be defined");
+            start();
+        });
+    });
+
+    /* _spaces.window.getBounds() negative (no contextual HTML surface)
+     * Validates: defined, type, error code and message returned
+     * 'Operations on bounds is only allowed on contextual HTML surfaces'
+     */
+    asyncTest("_spaces.window.getBounds(): negative (no contextual HTML surface)", function () {
+        expect(4);
+
+        ok(typeof _spaces.window.getBounds === "function",
+            "_spaces.window.getBounds() function defined");
+
+        var options = {};   // reserved/currently unused
+
+        _spaces.window.getBounds(options, function (err, result) {
+            _validateNotifierResultError(err, _spaces.errorCodes.ARGUMENT_ERROR);
+            var expMessage = "Operations on bounds is only allowed on contextual HTML surfaces";
+            var re = new RegExp("^(" + expMessage + ").*$");
+            ok(re.test(err.message), "err.message");
+            ok(typeof result == "undefined", "result arg should not be defined");
+            start();
+        });
+    });
+
+    /* _spaces.window.changeBounds() negative (no contextual HTML surface)
+     * Validates: defined, type, error returned
+     * 'Operations on bounds is only allowed on contextual HTML surfaces'
+     */
+    asyncTest("_spaces.window.changeBounds(): negative (no contextual HTML surface)", function () {
+        expect(3);
+
+        ok(typeof _spaces.window.changeBounds === "function",
+            "_spaces.window.changeBounds() function defined");
+
+        var info = { "bounds": { "left": 0.0, "top": 0.0, "right": 100.0, "bottom": 100.0 } };
+        var options = {};   // reserved/currently unused
+
+        _spaces.window.changeBounds(info, options, function (err) {
+            _validateNotifierResultError(err, _spaces.errorCodes.ARGUMENT_ERROR);
+            var expMessage = "Operations on bounds is only allowed on contextual HTML surfaces";
+            var re = new RegExp("^(" + expMessage + ").*$");
+            ok(re.test(err.message), "err.message");
+            start();
+        });
+    });
+
+    /* _spaces.window.setOverlayCloaking(): functional, set/reset
+     * Validates: defined, type, callback, "list", "enable", "disable" ("afterPaint", "manual")
+     */
+    asyncTest("_spaces.window.setOverlayCloaking(): functional, set/reset", function () {
+        expect(4);
+
+        ok(typeof _spaces.window.setOverlayCloaking === "function",
+            "_spaces.window.setOverlayCloaking() function defined");
+
+        var infoManual = { "list": [ { "left": 0.0, "top": 0.0, "right": 100.0, "bottom": 100.0 } ],
+                     "debug": false,
+                     "enable": "immediate",
+                     "disable": "manual" };
+        var options = {};   // reserved/currently unused
+
+        _spaces.window.setOverlayCloaking(infoManual, options, function (err) {
+            _validateNotifierResult(err);
+            var infoAfterPaint = { "list": [ { "left": 150.0, "top": 170.0, "right": 180.0, "bottom": 180.0 } ],
+                               "enable": "immediate",
+                               "disable": "afterPaint" };
+            _spaces.window.setOverlayCloaking(infoAfterPaint, options, function (err) {
+                _validateNotifierResult(err);
+                var infoReset = { "list": [],
+                              "enable": "immediate",
+                              "disable": "manual" };
+                _spaces.window.setOverlayCloaking(infoReset, options, function (err) {
+                    _validateNotifierResult(err);
+                    start();
+                });
+            });
+        });
+    });
+
+    /* _spaces.window.setOverlayCloaking(): negative: undefined 'info'
+     * Validates: err returned
+     */
+    asyncTest("_spaces.window.setOverlayCloaking(): negative: undefined 'info'", function () {
+        expect(2);
+
+        var info;           // intentionally undefined
+        var options = {};   // reserved/currently unused
+
+        _spaces.window.setOverlayCloaking(info, options, function (err) {
+            _validateNotifierResultError(err, _spaces.errorCodes.CONVERSION_ERROR);
+            var expMessage = "value conversion failed";
+            var re = new RegExp("^(" + expMessage + ").*$");
+            ok(re.test(err.message), "err.message");
+            start();
+        });
+    });
+
+    /* _spaces.window.setOverlayCloaking(): negative: invalid info.list
+     * "list" is supposed to be an array of 'rect' object(s)
+     * Validates: err returned
+     */
+    asyncTest("_spaces.window.setOverlayCloaking(): negative: invalid info.list", function () {
+        expect(2);
+
+        var info = { "list": { "left": 0.0, "top": 0.0, "right": 100.0, "bottom": 100.0 },
+                     "debug": true,
+                     "enable": "immediate",
+                     "disable": "afterPaint" };
+        var options = {};   // reserved/currently unused
+
+        _spaces.window.setOverlayCloaking(info, options, function (err) {
+            _validateNotifierResultError(err, _spaces.errorCodes.ARGUMENT_ERROR);
+            var expMessage = "Missing or incorrect type of 'list' value.";
+            var re = new RegExp("^(" + expMessage + ").*$");
+            ok(re.test(err.message), "err.message");
+            start();
+        });
+    });
+
+    /* _spaces.window.setOverlayCloaking(): negative: invalid info.list 'rect'
+     * Validates: err returned
+     */
+    asyncTest("_spaces.window.setOverlayCloaking(): negative: invalid info.list 'rect'", function () {
+        expect(2);
+
+        var info = { "list": [ { "blah": 0.0 } ],
+                     "debug": true,
+                     "enable": "immediate",
+                     "disable": "afterPaint" };
+        var options = {};   // reserved/currently unused
+
+        _spaces.window.setOverlayCloaking(info, options, function (err) {
+            _validateNotifierResultError(err, _spaces.errorCodes.UNKNOWN_ERROR);
+            var expMessage = "key: top does not exist";
+            var re = new RegExp("^(" + expMessage + ").*$");
+            ok(re.test(err.message), "err.message");
+            start();
+        });
+    });
+
+    /* _spaces.window.setOverlayCloaking(): negative: missing info.enable key
+     * Validates: err returned
+     */
+    asyncTest("_spaces.window.setOverlayCloaking(): negative: missing info.enable key", function () {
+        expect(2);
+
+        var info = { "list": [ { "left": 0.0, "top": 0.0, "right": 100.0, "bottom": 100.0 } ],
+                     "disable": "afterPaint" };
+        var options = {};   // reserved/currently unused
+
+        _spaces.window.setOverlayCloaking(info, options, function (err) {
+            _validateNotifierResultError(err, _spaces.errorCodes.ARGUMENT_ERROR);
+            var expMessage = "Missing 'enable' value";
+            var re = new RegExp("^(" + expMessage + ").*$");
+            ok(re.test(err.message), "err.message");
+            start();
+        });
+    });
+
+    /* _spaces.window.setOverlayCloaking(): negative: bogus info.enable value
+     * Validates: err returned
+     */
+    asyncTest("_spaces.window.setOverlayCloaking(): negative: bogus info.enable value", function () {
+        expect(2);
+
+        var info = { "list": [ { "left": 0.0, "top": 0.0, "right": 100.0, "bottom": 100.0 } ],
+                     "enable": "BOGUS",
+                     "disable": "afterPaint" };
+        var options = {};   // reserved/currently unused
+
+        _spaces.window.setOverlayCloaking(info, options, function (err) {
+            _validateNotifierResultError(err, _spaces.errorCodes.ARGUMENT_ERROR);
+            var expMessage = "Unknown string value for 'enable' value";
+            var re = new RegExp("^(" + expMessage + ").*$");
+            ok(re.test(err.message), "err.message");
+            start();
+        });
+    });
+
+    /* _spaces.window.setOverlayCloaking(): negative: missing info.disable key
+     * Validates: err returned
+     */
+    asyncTest("_spaces.window.setOverlayCloaking(): negative: missing info.disable key", function () {
+        expect(2);
+
+        var info = { "list": [ { "left": 0.0, "top": 0.0, "right": 100.0, "bottom": 100.0 } ],
+                     "enable": "immediate" };
+        var options = {};   // reserved/currently unused
+
+        _spaces.window.setOverlayCloaking(info, options, function (err) {
+            _validateNotifierResultError(err, _spaces.errorCodes.ARGUMENT_ERROR);
+            var expMessage = "Missing or incorrect type of 'disable' value";
+            var re = new RegExp("^(" + expMessage + ").*$");
+            ok(re.test(err.message), "err.message");
+            start();
+        });
+    });
+
+    /* _spaces.window.setOverlayCloaking(): negative: bogus info.disable value
+     * Validates: err returned
+     */
+    asyncTest("_spaces.window.setOverlayCloaking(): negative: bogus info.disable value", function () {
+        expect(2);
+
+        var info = { "list": [ { "left": 0.0, "top": 0.0, "right": 100.0, "bottom": 100.0 } ],
+                     "enable": "immediate",
+                     "disable": "BOGUS" };
+        var options = {};   // reserved/currently unused
+
+        _spaces.window.setOverlayCloaking(info, options, function (err) {
+            _validateNotifierResultError(err, _spaces.errorCodes.ARGUMENT_ERROR);
+            var expMessage = "Incorrect value of 'disable' key";
+            var re = new RegExp("^(" + expMessage + ").*$");
+            ok(re.test(err.message), "err.message");
+            start();
+        });
+    });
+
+    /* _spaces.window.invalidate()
+     * Validates: defined, type, functional: call and callback args
+     */
+    asyncTest("_spaces.window.invalidate() functional", function () {
+        expect(2);
+
+        ok(typeof _spaces.window.invalidate === "function",
+             "_spaces.window.invalidate() function defined");
+        var options = {}; // 'options' arg currently unused
+        _spaces.window.invalidate(options, function (err) {
             _validateNotifierResult(err);
             start();
         });
