@@ -30,7 +30,11 @@ define(function (require) {
 
     module("version");
 
-    test("adapter.version is set to a string", function () {
-        ok(typeof adapter.version === "string", "type of adapter version is a string");
+    test("adapter.version is defined", function () {
+        var version = adapter.version;
+
+        ok(typeof version.major === "number", "type of adapter major version is a number");
+        ok(typeof version.minor === "number", "type of adapter minor version is a number");
+        ok(typeof version.patch === "number", "type of adapter patch version is a number");
     });
 });
