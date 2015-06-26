@@ -395,6 +395,15 @@ define(function (require, exports, module) {
     };
 
     /**
+     * Starts a modal edit state with the current active tool
+     *
+     * @return {Promise}
+     */
+    UI.prototype.startEditWithCurrentModalTool = function () {
+        return _ui.startEditWithCurrentModalToolAsync();
+    };
+
+    /**
      * The UI singleton
      * @type {UI}
      */
