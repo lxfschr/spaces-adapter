@@ -646,6 +646,64 @@ define(function (require, exports) {
     // Left overs:
     // _offsetCommand
     
+    /**
+     * build a reference for layerExtensionData
+     *
+     * @private
+     * @param {number} documentID
+     * @param {number} layerID
+     * @param {string} namespace top-level property within the layerExtensionData object
+     * @return {object}
+     */
+    var _extensionDataReference = function (documentID, layerID, namespace) {
+        return {
+            _ref: [
+                {
+                    _ref: null,
+                    _property: namespace
+                },
+                {
+                    _ref: null,
+                    _property: "layerExtensionData"
+                },
+                referenceBy.id(layerID),
+                referenceLib.wrapper("document").id(documentID)
+            ]
+        };
+    };
+
+    /**
+     * Build a PlayObject to get all extension data within a namespace (top-level property) for the given layer
+     *
+     * @param {number} documentID
+     * @param {number} layerID
+     * @param {string} namespace top-level property within the documentExtensionData Object
+     * @return {PlayObject}
+     */
+    var getExtensionData = function (documentID, layerID, namespace) {
+        return new PlayObject("get", { "null": _extensionDataReference(documentID, layerID, namespace) });
+    };
+
+    /**
+     * Build a PlayObject to set a single key/value pair within the given Extension Data namespace for the given layer
+     *
+     * @param {number} documentID
+     * @param {number} layerID
+     * @param {string} namespace top-level property within the documentExtensionData object
+     * @param {string} key sub-property name
+     * @param {string} value
+     * @return {PlayObject}
+     */
+    var setExtensionData = function (documentID, layerID, namespace, key, value) {
+        var to = {};
+        to[key] = value;
+        
+        return new PlayObject("set", {
+            "null": _extensionDataReference(documentID, layerID, namespace),
+            "to": to
+        });
+    };
+    
     exports.referenceBy = referenceBy;
     exports.layerKinds = layerKinds;
     
@@ -671,4 +729,6 @@ define(function (require, exports) {
     exports.setLocking = setLocking;
     exports.translate = translate;
     exports.unlockBackground = unlockBackgroundLayer;
+    exports.getExtensionData = getExtensionData;
+    exports.setExtensionData = setExtensionData;
 });
