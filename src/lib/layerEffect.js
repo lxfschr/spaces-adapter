@@ -143,6 +143,10 @@ define(function (require, exports) {
      * @return {object} PS friendly Properties
      */
     var _shadowProperties = function (properties) {
+        if (_isHiddenLayerProperties(properties)) {
+            return properties;
+        }
+
         var layerEffectPsProperties = {
             enabled: properties.enabled === undefined ? true : properties.enabled,
             useGlobalAngle: properties.useGlobalAngle === undefined ? true : properties.useGlobalAngle
@@ -170,6 +174,10 @@ define(function (require, exports) {
             layerEffectPsProperties.mode = _blendMode(properties.blendMode);
         }
         return layerEffectPsProperties;
+    };
+
+    var _isHiddenLayerProperties = function (properties) {
+        return properties.enabled === false && properties.present === false;
     };
 
     /**
