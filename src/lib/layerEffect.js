@@ -324,8 +324,59 @@ define(function (require, exports) {
         }
     };
 
+    /**
+     * Saves the given layer's effects in an .asl file with the thumbnail in a .png file
+     * in given locations
+     *
+     * @param {ActionDescriptor} ref Layer being referenced
+     * @param {string} filePath Where to save the temporary .asl file
+     * @param {string} thumbnailPath Where to save the temporary .png thumbnail
+     *
+     * @return {PlayObject}
+     */
+    var saveLayerStyleFile = function (ref, filePath, thumbnailPath) {
+        assert(referenceOf(ref) === "layer", "saveLayerStyle requires a layer reference");
+        
+        return new PlayObject(
+            "saveStyleFile",
+            {
+                "null": ref,
+                "to": {
+                    "_path": filePath
+                },
+                "thumbnail": {
+                    "_path": thumbnailPath
+                }
+            }
+        );
+    };
+
+    /**
+     * Applies the layer style at the given file path to 
+     * currently active layers
+     *
+     * @param {ActionDescriptor} ref Layer being referenced
+     * @param {string} filePath
+     *
+     * @return {PlayObject}
+     */
+    var applyLayerStyleFile = function (ref, filePath) {
+        return new PlayObject(
+            "applyStyleFile",
+            {
+                "null": ref,
+                "from": {
+                    "_path": filePath
+                }
+            }
+        );
+    };
+
     exports.referenceBy = referenceBy;
 
     exports.setLayerEffect = setLayerEffect;
     exports.setExtendedLayerEffect = setExtendedLayerEffect;
+
+    exports.saveLayerStyleFile = saveLayerStyleFile;
+    exports.applyLayerStyleFile = applyLayerStyleFile;
 });
