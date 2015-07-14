@@ -42,7 +42,7 @@ define(function (require, exports) {
      * @param {ActionDescriptor} ref layer(s) reference
      * @param {string} layerEffectType type of layerEffect (example: dropShadow)
      * @param {object} layerEffectValue object that can be supplied for "to._value" in the descriptor
-     * @param {boolean=} multi value that allows function to return the Multi Layer Effect friendly descriptor 
+     * @param {boolean=} multi value that allows function to return the Multi Layer Effect friendly descriptor
      *
      * @return {PlayObject}
      */
@@ -77,7 +77,7 @@ define(function (require, exports) {
             }
         );
     };
-    
+
     /**
      * Generically build an PlayObject for a layerEffect which uses the useExtendedReference option
      * The layerEffectValue parameter should be a fully constructed object that can be supplied to the "to._value"
@@ -90,7 +90,7 @@ define(function (require, exports) {
      *
      * @return {PlayObject}
      */
-    
+
     var _extendedLayerEffectDescriptor = function (ref, layerEffectType, layerEffectValue) {
         return new PlayObject(
             "set",
@@ -129,20 +129,24 @@ define(function (require, exports) {
     };
 
     /**
-     * Parse Shadow JS properties and assign units to make them acceptable to PS 
-     * 
+     * Parse Shadow JS properties and assign units to make them acceptable to PS
+     *
      * The expected format of the properties object is like:
      * {enabled: true, color: {r: 255, g: 0, b: 0}, blur: 20}
      * Distance/positions values in pixels
      * Angles in degrees
      * Opacity percentage [0,100]
-     * 
+     *
      * @private
      * @param {object} properties intermediate object format using Photoshop names, but without units
      *
-     * @return {object} PS friendly Properties 
+     * @return {object} PS friendly Properties
      */
     var _shadowProperties = function (properties) {
+        if (_isHiddenLayerProperties(properties)) {
+            return properties;
+        }
+
         var layerEffectPsProperties = {
             enabled: properties.enabled === undefined ? true : properties.enabled,
             useGlobalAngle: properties.useGlobalAngle === undefined ? true : properties.useGlobalAngle
@@ -172,9 +176,13 @@ define(function (require, exports) {
         return layerEffectPsProperties;
     };
 
+    var _isHiddenLayerProperties = function (properties) {
+        return properties.enabled === false && properties.present === false;
+    };
+
     /**
      * Return drop shadow descriptor for the given properties
-     * 
+     *
      * The expected format of the properties object is like:
      * {enabled: true, color: {r: 255, g: 0, b: 0}, blur: 20}
      * Distance/positions values in pixels
@@ -196,7 +204,7 @@ define(function (require, exports) {
 
     /**
      * Return inner shadow descriptor for the given properties
-     * 
+     *
      * The expected format of the properties object is like:
      * {enabled: true, color: {r: 255, g: 0, b: 0}, blur: 20}
      * Distance/positions values in pixels
@@ -219,13 +227,13 @@ define(function (require, exports) {
      * Update multiple drop shadow layer effect properties for the given layer(s)
      *
      * @param {ActionDescriptor} ref - Reference of layer(s) to update
-     * @param {Array.<object>} propertyArray Array of DropShadow properties 
+     * @param {Array.<object>} propertyArray Array of DropShadow properties
      *
      * @return {PlayObject}
      */
     var _setDropShadows = function (ref, propertyArray) {
         assert(referenceOf(ref) === "layer", "setDropShadow is passed a non-layer reference");
-        
+
         var descriptorArray = propertyArray.map(function (properties) {
             return _dropShadowDescriptor(properties);
         });
@@ -234,17 +242,17 @@ define(function (require, exports) {
     };
 
     /**
-     * Update multiple drop shadow layer effect properties for the given layer(s) without changing the 
+     * Update multiple drop shadow layer effect properties for the given layer(s) without changing the
      * parent layer effect
      *
      * @param {ActionDescriptor} ref - Reference of layer(s) to update
-     * @param {Array.<object>} propertyArray Array of DropShadow properties 
+     * @param {Array.<object>} propertyArray Array of DropShadow properties
      *
      * @return {PlayObject}
      */
     var _setExtendedDropShadows = function (ref, propertyArray) {
         assert(referenceOf(ref) === "layer", "setDropShadow is passed a non-layer reference");
-        
+
         var descriptorArray = propertyArray.map(function (properties) {
             return _dropShadowDescriptor(properties);
         });
@@ -256,13 +264,13 @@ define(function (require, exports) {
      * Update multiple inner shadow layer effect properties for the given layer(s)
      *
      * @param {ActionDescriptor} ref - Reference of layer(s) to update
-     * @param {Array.<object>} propertyArray Array of InnerShadow properties 
+     * @param {Array.<object>} propertyArray Array of InnerShadow properties
      *
      * @return {PlayObject}
      */
     var _setInnerShadows = function (ref, propertyArray) {
         assert(referenceOf(ref) === "layer", "setInnnerShadow is passed a non-layer reference");
-        
+
         var descriptorArray = propertyArray.map(function (properties) {
             return _innerShadowDescriptor(properties);
         });
@@ -271,17 +279,17 @@ define(function (require, exports) {
     };
 
     /**
-     * Update multiple inner shadow layer effect properties for the given layer(s) without changing the 
+     * Update multiple inner shadow layer effect properties for the given layer(s) without changing the
      * parent layer effect
      *
      * @param {ActionDescriptor} ref - Reference of layer(s) to update
-     * @param {Array.<object>} propertyArray Array of InnerShadow properties 
+     * @param {Array.<object>} propertyArray Array of InnerShadow properties
      *
      * @return {PlayObject}
      */
     var _setExtendedInnerShadows = function (ref, propertyArray) {
         assert(referenceOf(ref) === "layer", "setInnnerShadow is passed a non-layer reference");
-        
+
         var descriptorArray = propertyArray.map(function (properties) {
             return _innerShadowDescriptor(properties);
         });
@@ -290,11 +298,11 @@ define(function (require, exports) {
     };
 
     /**
-     * Update the given type of layer effect properties for the given layer(s) 
+     * Update the given type of layer effect properties for the given layer(s)
      *
      * @param {string} type - type of layer effect. currently "dropShadow" or "innerShadow"
      * @param {ActionDescriptor} ref - Reference of layer(s) to update
-     * @param {Array.<object>} propertyArray Array of InnerShadow properties 
+     * @param {Array.<object>} propertyArray Array of InnerShadow properties
      *
      * @return {PlayObject}
      */
@@ -306,17 +314,31 @@ define(function (require, exports) {
         }
     };
 
+
     /**
-     * Update the given type of layer effect properties for the given layer(s) without changing the 
+     * Representation of a hidden layer effect.
+     *
+     * @constant {object}
+     */
+    var HIDDEN_LAYER_EFFECT_PROPERTIES = { "enabled": false, "present": false };
+
+    /**
+     * Update the given type of layer effect properties for the given layer(s) without changing the
      * parent layer effect
      *
      * @param {string} type - type of layer effect. currently "dropShadow" or "innerShadow"
      * @param {ActionDescriptor} ref - Reference of layer(s) to update
-     * @param {Array.<object>} propertyArray Array of InnerShadow properties 
+     * @param {Array.<object>} propertyArray Array of InnerShadow properties. Passing an emptry arrary
+     * will remove all effects of the type.
      *
      * @return {PlayObject}
      */
     var setExtendedLayerEffect = function (type, ref, propertyArray) {
+        if (propertyArray.length === 0) {
+            // when deleting all effects, keep a hidden effect in Photoshop so that it won't break.
+            propertyArray.push(HIDDEN_LAYER_EFFECT_PROPERTIES);
+        }
+
         if (type === "innerShadow") {
             return _setExtendedInnerShadows(ref, propertyArray);
         } else if (type === "dropShadow") {
