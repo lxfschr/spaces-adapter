@@ -314,7 +314,14 @@ define(function (require, exports) {
         }
     };
 
+
+    /**
+     * Representation of a hidden layer effect.
+     *
+     * @constant {object}
+     */
     var HIDDEN_LAYER_EFFECT_PROPERTIES = { "enabled": false, "present": false };
+
     /**
      * Update the given type of layer effect properties for the given layer(s) without changing the
      * parent layer effect
