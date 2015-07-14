@@ -196,9 +196,36 @@ define(function (require, exports) {
             });
     };
 
+    /**
+     * Creates a thumbnail preview for the character style
+     *
+     * @param {string} path Location to save the thumbnail to
+     * @param {string} postscriptName Typeface postscript name
+     * @param {string} text Preview text to be written in thumbnail
+     * @param {number} size Size of the preview text in points
+     * @param {colorObject} color Color of the preview text @see lib/color.js
+     *
+     * @return {PlayObject}
+     */
+    var createTextThumbnail = function (path, postscriptName, text, size, color) {
+        return new PlayObject(
+            "textThumbnail",
+            {
+                "to": {
+                    "_path": path
+                },
+                "text": text,
+                "fontPostScriptName": postscriptName,
+                "fontSize": size,
+                "color": color
+            });
+    };
+
     exports.createElement = createElement;
     exports.chooseElement = chooseElement;
     exports.licenseElement = licenseElement;
     exports.exportLayer = exportLayer;
     exports.placeElement = placeElement;
+
+    exports.createTextThumbnail = createTextThumbnail;
 });

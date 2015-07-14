@@ -570,6 +570,77 @@ define(function (require, exports) {
         );
     };
 
+    /**
+     * Applies the given CC Library text style to the selected layers
+     *
+     * @param {ActionDescriptor} sourceRef
+     * @param {object} style Primary representation of the type style
+     *
+     * @return {PlayObject}
+     */
+    var applyTextStyle = function (sourceRef, style) {
+        // NOTE: See warning in setFace
+        assert(referenceOf(sourceRef) === "textLayer", "applyTextStyle expects a textLayer reference");
+        
+        sourceRef = {
+            "_ref": "textLayer",
+            "_value": "$Trgt",
+            "_enum": "$Ordn"
+        };
+
+        var styleDescriptor = {};
+
+        if (style.adbeFont && style.adbeFont.postScriptName) {
+            styleDescriptor.fontPostScriptName = style.adbeFont.postScriptName;
+        }
+
+        if (style.fontSize) {
+            styleDescriptor.size = unitsIn[style.fontSize.type](style.fontSize.value);
+        }
+
+        if (style.color && style.color[0] && style.color[0].value) {
+            assert(style.color[0].mode === "RGB", "text style being applied is not in RGB colorspace");
+            styleDescriptor.color = colorObject(style.color[0].value);
+        }
+
+        // This can be zero!
+        if (style.adbeTracking !== undefined) {
+            styleDescriptor.tracking = style.adbeTracking / 1000;
+        } else if (style.letterSpacing) {
+            styleDescriptor.tracking = style.letterSpacing.value;
+        }
+
+
+        if (style.adbeAutoLeading) {
+            styleDescriptor.autoLeading = style.adbeAutoLeading;
+        }
+
+        if (style.lineHeight) {
+            styleDescriptor.leading = unitsIn[style.lineHeight.type](style.lineHeight.value);
+            styleDescriptor.autoLeading = false;
+        }
+
+        return new PlayObject(
+            "set",
+            {
+                null: {
+                    _ref: [
+                        {
+                            _ref: "property",
+                            _property: "textStyle"
+                        },
+                        sourceRef
+                    ]
+                },
+                "merge": true,
+                "to": {
+                    "_obj": "textStyle",
+                    "_value": styleDescriptor
+                }
+            }
+        );
+    };
+
     exports.referenceBy = referenceBy;
     exports.createText = createText;
     exports.setPostScript = setPostScript;
@@ -584,4 +655,6 @@ define(function (require, exports) {
     exports.setOrientation = setOrientation;
     exports.setAntiAlias = setAntiAlias;
     exports.setRangeAndChangeTextStyle = setRangeAndChangeTextStyle;
+
+    exports.applyTextStyle = applyTextStyle;
 });
