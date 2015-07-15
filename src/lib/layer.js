@@ -643,6 +643,34 @@ define(function (require, exports) {
         );
     };
 
+    /**
+     * Construct an action descriptor to expand or collapse the given groups.
+     *
+     * @param {object|Array.<object>} layerRef
+     * @param {boolean} expand If true, the groups are expanded, and collapsed otherwise.
+     */
+    var setGroupExpansion = function (layerRef, expand) {
+        assert(referenceOf(layerRef) === "layer", "setGroupExpansion is passed a non-layer reference");
+
+        if (Array.isArray(layerRef)) {
+            layerRef = layerRef.slice(0).reverse();
+        } else {
+            layerRef = [layerRef];
+        }
+
+        layerRef.unshift({
+            _property: "layerSectionExpanded",
+            _ref: null
+        });
+
+        return new PlayObject("set", {
+            "null": {
+                _ref: layerRef
+            },
+            "to": expand
+        });
+    };
+
     // Left overs:
     // _offsetCommand
     
@@ -729,6 +757,7 @@ define(function (require, exports) {
     exports.setLocking = setLocking;
     exports.translate = translate;
     exports.unlockBackground = unlockBackgroundLayer;
+    exports.setGroupExpansion = setGroupExpansion;
     exports.getExtensionData = getExtensionData;
     exports.setExtensionData = setExtensionData;
 });
