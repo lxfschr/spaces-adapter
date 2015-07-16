@@ -648,6 +648,7 @@ define(function (require, exports) {
      *
      * @param {object|Array.<object>} layerRef
      * @param {boolean} expand If true, the groups are expanded, and collapsed otherwise.
+     * @return {object} Action descriptor that expands or collapses the given groups.
      */
     var setGroupExpansion = function (layerRef, expand) {
         assert(referenceOf(layerRef) === "layer", "setGroupExpansion is passed a non-layer reference");
