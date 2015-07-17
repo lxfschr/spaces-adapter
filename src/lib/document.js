@@ -592,11 +592,19 @@ define(function (require, exports) {
      * build a reference for documentExtensionData
      *
      * @private
-     * @param {number} documentID
+     * @param {number|object} docRef either a document ID or a document reference
      * @param {string} namespace top-level property within the documentExtensionData object
      * @return {object}
      */
-    var _extensionDataReference = function (documentID, namespace) {
+    var _extensionDataReference = function (docRef, namespace) {
+        var _docRef;
+        
+        if (Number.isFinite(docRef)) {
+            _docRef = referenceBy.id(docRef);
+        } else {
+            _docRef = docRef;
+        }
+
         return {
             _ref: [
                 {
@@ -607,7 +615,7 @@ define(function (require, exports) {
                     _ref: null,
                     _property: "documentExtensionData"
                 },
-                referenceBy.id(documentID)
+                _docRef
             ]
         };
     };
@@ -615,29 +623,29 @@ define(function (require, exports) {
     /**
      * Build a PlayObject to get all extension data within a namespace (top-level property)
      *
-     * @param {number} documentID
+     * @param {number|object} docRef either a document ID or a document reference
      * @param {string} namespace top-level property within the documentExtensionData Object
      * @return {PlayObject}
      */
-    var getExtensionData = function (documentID, namespace) {
-        return new PlayObject("get", { "null": _extensionDataReference(documentID, namespace) });
+    var getExtensionData = function (docRef, namespace) {
+        return new PlayObject("get", { "null": _extensionDataReference(docRef, namespace) });
     };
 
     /**
      * Build a PlayObject to set a single key/value pair within the given Extension Data namespace
      *
-     * @param {number} documentID
+     * @param {number|object} docRef either a document ID or a document reference
      * @param {string} namespace top-level property within the documentExtensionData object
      * @param {string} key sub-property name
      * @param {string} value
      * @return {PlayObject}
      */
-    var setExtensionData = function (documentID, namespace, key, value) {
+    var setExtensionData = function (docRef, namespace, key, value) {
         var to = {};
         to[key] = value;
         
         return new PlayObject("set", {
-            "null": _extensionDataReference(documentID, namespace),
+            "null": _extensionDataReference(docRef, namespace),
             "to": to
         });
     };
