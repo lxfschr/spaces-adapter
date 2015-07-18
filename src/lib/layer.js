@@ -679,12 +679,27 @@ define(function (require, exports) {
      * build a reference for layerExtensionData
      *
      * @private
-     * @param {number} documentID
-     * @param {number} layerID
+     * @param {number|object} docRef either a document ID or a document reference
+     * @param {number|object} layerRef either a layer ID or a layer reference
      * @param {string} namespace top-level property within the layerExtensionData object
      * @return {object}
      */
-    var _extensionDataReference = function (documentID, layerID, namespace) {
+    var _extensionDataReference = function (docRef, layerRef, namespace) {
+        var _docRef,
+            _layerRef;
+
+        if (Number.isFinite(docRef)) {
+            _docRef = referenceLib.wrapper("document").id(docRef);
+        } else {
+            _docRef = docRef;
+        }
+
+        if (Number.isFinite(layerRef)) {
+            _layerRef = referenceBy.id(layerRef);
+        } else {
+            _layerRef = layerRef;
+        }
+
         return {
             _ref: [
                 {
@@ -695,8 +710,8 @@ define(function (require, exports) {
                     _ref: null,
                     _property: "layerExtensionData"
                 },
-                referenceBy.id(layerID),
-                referenceLib.wrapper("document").id(documentID)
+                _layerRef,
+                _docRef
             ]
         };
     };
@@ -704,31 +719,31 @@ define(function (require, exports) {
     /**
      * Build a PlayObject to get all extension data within a namespace (top-level property) for the given layer
      *
-     * @param {number} documentID
-     * @param {number} layerID
+     * @param {number|object} docRef either a document ID or a document reference
+     * @param {number|object} layerRef either a layer ID or a layer reference
      * @param {string} namespace top-level property within the documentExtensionData Object
      * @return {PlayObject}
      */
-    var getExtensionData = function (documentID, layerID, namespace) {
-        return new PlayObject("get", { "null": _extensionDataReference(documentID, layerID, namespace) });
+    var getExtensionData = function (docRef, layerRef, namespace) {
+        return new PlayObject("get", { "null": _extensionDataReference(docRef, layerRef, namespace) });
     };
 
     /**
      * Build a PlayObject to set a single key/value pair within the given Extension Data namespace for the given layer
      *
-     * @param {number} documentID
-     * @param {number} layerID
+     * @param {number|object} docRef either a document ID or a document reference
+     * @param {number|object} layerRef either a layer ID or a layer reference
      * @param {string} namespace top-level property within the documentExtensionData object
      * @param {string} key sub-property name
      * @param {string} value
      * @return {PlayObject}
      */
-    var setExtensionData = function (documentID, layerID, namespace, key, value) {
+    var setExtensionData = function (docRef, layerRef, namespace, key, value) {
         var to = {};
         to[key] = value;
         
         return new PlayObject("set", {
-            "null": _extensionDataReference(documentID, layerID, namespace),
+            "null": _extensionDataReference(docRef, layerRef, namespace),
             "to": to
         });
     };
