@@ -1397,6 +1397,25 @@ _spaces.os.resetCursor = function (options, callback) {
     return osResetCursor(options, callback);
 };
 
+/** Obtain a "temporary" filename.
+This method will obtain a temporary unique filename from the underlying OS,
+suitable for storing user-specific data. This file is not guaranteed to persist
+across Spaces runtime sessions.
+@param options (object)
+    Argument specifying the seed name to use for temp filename.
+	The following keys are recognized:
+    "name" (optional, string)	the base filename to use. If this key is omitted,
+									Spaces will select a default base name of it's own.
+@param callback(err, info)
+	err		err argument
+	info	contains the following keys:
+			"path": path + filename of temporary file.
+*/
+_spaces.os.getTempFilename = function (options, callback) {
+    native function osGetTempFilename();
+    	return osGetTempFilename(options, callback);
+};
+
 // ==========================================================================
 // _spaces.os.keyboardFocus
 
