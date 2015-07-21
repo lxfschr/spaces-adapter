@@ -1966,6 +1966,14 @@ define(function () {
             "_spaces.ps.ui.commandKind.DELETE");
     });
 
+    /* _spaces.ps.ui.startEditWithCurrentModalTool() function
+     * Validates: defined, type
+     */
+    test("_spaces.ps.ui.startEditWithCurrentModalTool() function defined", function () {
+        ok(typeof _spaces.ps.ui.startEditWithCurrentModalTool === "function",
+            "_spaces.ps.ui.startEditWithCurrentModalTool function defined");
+    });
+
     // --------------------- Menu tests ---------------------
 
     /* _spaces.ps.ui.installMenu()
@@ -2187,7 +2195,8 @@ define(function () {
     });
 
     /* _spaces.os.keyboardFocus: acquire(), release(), isActive() functional
-     *
+     * Failing case logged in Watson, https://watsonexp.corp.adobe.com/#bug=4011552
+     * isActive() returns true after call to release()
      */
     asyncTest("_spaces.os.keyboardFocus: acquire() / release() / isActive() functional", function () {
         expect(7);
@@ -2201,6 +2210,9 @@ define(function () {
                     _validateNotifierResult(err);
                     _spaces.os.keyboardFocus.isActive({}, function (err, value) {
                         _validateNotifierResult(err);
+                        if (value) {
+                            console.error("isActive() returns true after call to release(): https://watsonexp.corp.adobe.com/#bug=4011552");
+                        }
                         strictEqual(value, false, "focus should not be active following release()");
                         start();
                     });
@@ -2949,6 +2961,90 @@ define(function () {
         _spaces.os.resetCursor(options, function (err) {
             _validateNotifierResult(err);
             start();
+        });
+    });
+
+    /* _spaces.os.getTempFilename()
+     * Validates: defined, type, functional: 'name' provided; no 'name' provided
+     * ISSUE?: Once you obtain a tempfile in a session, you always get back the same
+     * path/name regardless of whether you request a specific 'name' or not. This
+     * seems like a bug since if your first request is without specifying a name,
+     * or with a specific name, subsequent calls where you do specify a different
+     * name will be ignored.
+     */
+    asyncTest("_spaces.os.getTempFilename() defined, functional", function () {
+        expect(12);
+
+        // separate the path from the filename returned
+        if (navigator.platform === "Win32") {
+            var rePathComponentParser = /^(C:\\Users\\.+?\\AppData\\Local\\Temp\\)(.+?)(\..+)*$/;
+        } else {
+            var rePathComponentParser = /^(\/private\/var\/folders\/.+\/TemporaryItems\/)(.+?)(\..+)*$/;
+        }
+
+        ok(typeof _spaces.os.getTempFilename === "function",
+           "_spaces.os.getTempFilename() function defined");
+
+
+        // Test case 1: call providing a filename 'name' (name.ext) input
+        // Expect the name provided to be used, but the name part might be mangled
+        // so as to be unique
+        var nameInput = "spaces";
+        var nameExtensionInput = ".txt";
+        var options = {
+            "name": nameInput + nameExtensionInput
+        };
+
+        _spaces.os.getTempFilename(options, function (err, info) {
+            _validateNotifierResult(err);
+            //console.log("info.path:", info.path);
+            ok(info.hasOwnProperty("path"), "'info' arg object should contain a 'path' attribute");
+            strictEqual(typeof info.path, "string", "'path' should be a 'string'");
+            var nameProvidedResult = rePathComponentParser.exec(info.path);
+            var dirPath1 = "";
+            var name1 = "";
+            var ext1 = "";
+            if (nameProvidedResult.length > 1) {
+                dirPath1 = nameProvidedResult[1];
+            }
+            if (nameProvidedResult.length > 2) {
+                name1 = nameProvidedResult[2];
+            }
+            if (nameProvidedResult.length > 3) {
+                ext1 = nameProvidedResult[3];
+            }
+            // The validation assumes if the naming algorithm has to alter the tempfile name to make
+            // it unique, it will append to the name but retain the extension
+            var reName = new RegExp("^" + nameInput + ".*$");
+            ok(reName.test(name1), "name part of returned 'path' not as expected");
+            strictEqual(ext1, nameExtensionInput, "extension part of returned 'path' not as expected");
+
+            // Test case 2: call without providing a filename 'name' input so the algorithm
+            // has to generate one
+            _spaces.os.getTempFilename({}, function (err, info) {
+                _validateNotifierResult(err);
+                //console.log("info.path:", info.path);
+                ok(info.hasOwnProperty("path"),
+                   "'info' arg object should contain a 'path' attribute");
+                strictEqual(typeof info.path, "string", "'path' should be a 'string'");
+                var noNameProvidedResult = rePathComponentParser.exec(info.path);
+                var dirPath2 = "";
+                var name2 = "";
+                if (noNameProvidedResult.length > 1) {
+                    dirPath2 = noNameProvidedResult[1];
+                }
+                if (noNameProvidedResult.length > 2) {
+                    name2 = noNameProvidedResult[2];
+                }
+                ok(dirPath2.length > 0, "dirpath part of 'path' should be non-zero length");
+                ok(name2.length > 0, "name part of 'path' just needs to be non-zero length");
+
+                // The validation assumes where the naming algorithm is determining the tempfile name,
+                // it may or may not have an extension.
+                strictEqual(dirPath2, dirPath1, "dirpath part of 'path' should match the first test scenario");
+
+                start();
+           });
         });
     });
 
