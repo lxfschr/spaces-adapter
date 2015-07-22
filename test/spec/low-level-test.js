@@ -31,7 +31,11 @@ define(function () {
     module("low-level");
 
     // QUnit per-test global timeout value in ms
-    QUnit.config.testTimeout = 5000;
+    // tburbage (2015/07/21): Commenting out for now. Having this set causes test
+    // execution to time out while debugging (unless you made it a big value),
+    // but also the test seems to silently pass on timeout. That's definitely not
+    // what we would want...
+    // QUnit.config.testTimeout = 5000;
 
     // VALIDATION HELPERS
     // ------------------
@@ -1458,20 +1462,17 @@ define(function () {
     });
 
     /* _spaces.ps.ui.setPointerPropagationMode(), get/set.
-     * Gets the initial state, sets for each of the other supported states, then back to the initial state.
+     * Gets the initial state, does a set for each of the other supported modes,
+     * then sets back to the initial state.
      * Validates setPointerPropagationMode() and getPointerPropagationMode() callback args.
      */
     asyncTest("_spaces.ps.ui.setPointerPropagationMode() get/set", function () {
-        // Note all of the validation is in the getPointerPropagationMode() callback.
-        // It gets called 4 times, once after getting the initial value, then 3 more times
-        // following a set for each of the pointerPropagationMode constants to validate
-        // the set calls.
         expect(18);
 
         // getPointerPropagationMode() callback
         var getModeCallback = function (err, mode) {
             _validateNotifierResult(err);
-            // Set up a mode "set" list with the initial mode to be set last (i.e. reset)
+            // Set up a mode "set" list, with the initial get mode to be set last (i.e. reset)
             if (setModeList.length === 0) {
                 for (var key in _spaces.ps.ui.pointerPropagationMode) {
                     if (_spaces.ps.ui.pointerPropagationMode[key] !== mode) {
@@ -1480,7 +1481,9 @@ define(function () {
                 }
                 setModeList.push(mode);
             } else {
-                // Primary validation that get returns the same mode as had been set
+                // the get in this case is following a set. We compare the
+                // pointerPropagationMode returned in the 'mode' arg to the
+                // pointerPropagationMode value used in that set.
                 strictEqual(mode, setModeList[setModeIndex], "mode from get following set");
                 setModeIndex++;
             }
@@ -1499,15 +1502,15 @@ define(function () {
             _spaces.ps.ui.getPointerPropagationMode(getModeCallback);
         };
 
+        // setModeList will contain each of the mode values from the pointerPropagationMode
+        // object, with that for the value obtained on the initial get last (so at the end of
+        // the test, pointerPropagationMode should be reset to where we found it.
+        // setModeIndex is the index of the next pointerPropagationMode in setModeList that
+        // the next setPointerPropagationMode() call should use.
         var setModeList = [];
         var setModeIndex = 0;
         _spaces.ps.ui.getPointerPropagationMode(getModeCallback);
     });
-
-
-    // tburbage (2014/12/12): Intend to add functional test(s) for
-    // _spaces.ps.ui.setPointerEventPropagationPolicy()
-    // after definition of what are the supported set actions is resolved.
 
 
     /* _spaces.ps.ui.policyAction constants object
@@ -1571,33 +1574,32 @@ define(function () {
     });
 
     /* _spaces.ps.ui.setKeyboardPropagationMode(), get/set.
-     * Gets the initial state, sets for each of the other supported states, then back to the initial state.
+     * Gets the initial state, does a set for each of the other supported modes,
+     * then sets back to the initial state.
      * Validates setKeyboardPropagationMode() and getKeyboardPropagationMode() callback args.
      */
     asyncTest("_spaces.ps.ui.setKeyboardPropagationMode() get/set", function () {
-        // Note all of the validation is in the getKeyboardPropagationMode() callback.
-        // It gets called 4 times, once after getting the initial value, then 3 more times
-        // following a set for each of the keyboardPropagationMode constants to validate
-        // the set calls.
-        expect(6);
+        expect(14);
 
         // getKeyboardPropagationMode() callback
         var getModeCallback = function (err, mode) {
             _validateNotifierResult(err);
-            // Set up a mode "set" list with the initial setting last
+            // Set up a mode "set" list, with the initial get mode to be set last (i.e. reset)
             if (setModeList.length === 0) {
-                for (var key in _spaces.ps.ui.KeyboardPropagationMode) {
+                for (var key in _spaces.ps.ui.keyboardPropagationMode) {
                     if (_spaces.ps.ui.keyboardPropagationMode[key] !== mode) {
                         setModeList.push(_spaces.ps.ui.keyboardPropagationMode[key]);
                     }
                 }
                 setModeList.push(mode);
             } else {
-                // Primary validation that get returns the same mode as had been set
+                // the get in this case is following a set. We compare the
+                // pointerPropagationMode returned in the 'mode' arg to the
+                // pointerPropagationMode value used in that set.
                 strictEqual(mode, setModeList[setModeIndex], "mode from get following set");
                 setModeIndex++;
             }
-            ok(mode in setModeList, "mode on get should be a valid pointerPropagationMode member");
+            ok(mode in setModeList, "mode on get should be a valid keyboardPropagationMode member");
             if (setModeIndex < setModeList.length) {
                 var options = { defaultMode: setModeList[setModeIndex] };
                 _spaces.ps.ui.setKeyboardPropagationMode(options, setModeCallback);
