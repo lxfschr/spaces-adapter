@@ -26,6 +26,13 @@ define(function (require, exports) {
     
     var PlayObject = require("../playObject");
 
+    /**
+     * creates a rectangular work path with the given bounds descriptor 
+     *
+     * below each unit is a object of type {_value: number, _unit: type}
+     * @param {{top: unit, bottom: unit, left: unit, right: unit}} bounds the bounds object 
+     * @return {PlayObject}
+     */
     var makeBoundsWorkPath = function (bounds) {
         return new PlayObject("set", {
             "null": {
@@ -41,6 +48,11 @@ define(function (require, exports) {
         });
     };
 
+    /**
+     * Turn the workpath into a vector mask for the current layer
+     * 
+     * @return {PlayObject}
+     */
     var makeVectorMaskFromWorkPath = function () {
         var maskRef = {
             "_ref": [{
@@ -68,6 +80,11 @@ define(function (require, exports) {
         });
     };
 
+    /**
+     * Delete the current work path
+     * 
+     * @return {PlayObject}
+     */
     var deleteWorkPath = function () {
         return new PlayObject("delete", {
             "null": {
@@ -80,6 +97,11 @@ define(function (require, exports) {
     };
 
 
+    /**
+     * Target the vector mask of the current layer
+     * 
+     * @return {PlayObject}
+     */
     var editVectorMask = function () {
         var vectMaskRef = {
             "_ref": "path",
@@ -98,6 +120,11 @@ define(function (require, exports) {
         });
     };
 
+    /**
+     * activate the knots of the targeted vector mask
+     * 
+     * @return {PlayObject}
+     */
     var activateVectorMaskEditing = function () {
         return new PlayObject("activateVectorMaskEditing", {
             "null": {
