@@ -207,7 +207,7 @@ define(function (require, exports, module) {
     /**
      * Gets a temporary file location, with a given name if provided
      *
-     * @param {string?} name File name for the temporary file
+     * @param {string=} name File name for the temporary file
      *
      * @return {Promise.<string>} Resolves to the temporary path
      */
