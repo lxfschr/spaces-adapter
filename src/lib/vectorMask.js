@@ -136,7 +136,6 @@ define(function (require, exports) {
             }
         });
     };
-
     
     exports.editVectorMask = editVectorMask;
     exports.activateVectorMaskEditing = activateVectorMaskEditing;
