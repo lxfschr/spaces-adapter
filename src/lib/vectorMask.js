@@ -137,7 +137,6 @@ define(function (require, exports) {
         });
     };
     
-    exports.editVectorMask = editVectorMask;
     exports.activateVectorMaskEditing = activateVectorMaskEditing;
     exports.makeBoundsWorkPath = makeBoundsWorkPath;
     exports.editVectorMask = editVectorMask;
