@@ -50,6 +50,7 @@ define(function (require, exports, module) {
     var Descriptor = function () {
         EventEmitter.call(this);
 
+        this._transactions = new Map();
         this._psEventHandler = this._psEventHandler.bind(this);
         this._batchPlayAsync = Promise.promisify(_spaces.ps.descriptor.batchPlay, _spaces.ps.descriptor);
         this._getAsync = Promise.promisify(_spaces.ps.descriptor.get, _spaces.ps.descriptor);
@@ -69,6 +70,20 @@ define(function (require, exports, module) {
      * @type {function():Promise}
      */
     Descriptor.prototype._batchPlayAsync = null;
+
+    /**
+     * Transaction ID counter
+     * @private
+     * @type {number}
+     */
+    Descriptor.prototype._transactionIDCounter = 0;
+
+    /**
+     * Map of active transactions by transaction ID
+     * @private
+     * @type {Map.<number, {commands: Array.<object>, options: object}>}
+     */
+    Descriptor.prototype._transactions = null;
 
     /**
      * Event handler for events from the native bridge.
@@ -353,7 +368,8 @@ define(function (require, exports, module) {
     };
     
     /**
-     * Executes a low-level "batchPlay" call on the specified ActionDescriptors.
+     * Executes a low-level "batchPlay" call on the given commands immediately
+     * skipping transaction collection
      *
      * @param {Array.<{name: string, descriptor: object, options: object=}>} commands Array of 
      *  ActionDescriptors to play
@@ -362,9 +378,7 @@ define(function (require, exports, module) {
      *      with either an adapter error, or a single command error if not continueOnError mode. In
      *      continueOnError mode, always resolve with both the results and errors arrays.
      */
-    Descriptor.prototype.batchPlay = function (commands, options) {
-        options = options || {};
-
+    Descriptor.prototype._batchPlayImmediate = function (commands, options) {
         if (!options.hasOwnProperty("interactionMode")) {
             options.interactionMode = this.interactionMode.SILENT;
         }
@@ -392,6 +406,100 @@ define(function (require, exports, module) {
                 // if there are no errors, resolve with just the results
                 return response[0];
             });
+    };
+
+    /**
+     * Adds the given commands with the options to the given existing transaction
+     *
+     * @private
+     * @param {number} tid Transaction ID, must have been started with beginTransaction
+     * @param {Array.<{name: string, descriptor: object, options: object=}>} commands Array of 
+     *  ActionDescriptors to play
+     * @param {{continueOnError: boolean=}=} options Options applied to the execution of the batchPlay
+     */
+    Descriptor.prototype._addToTransaction = function (tid, commands, options) {
+        var transactionInfo = this._transactions.get(tid);
+        if (!transactionInfo) {
+            throw new Error("Invalid transaction ID: " + tid);
+        }
+
+        var nextOptions = _.merge(transactionInfo.options, options, function (a, b) {
+            if (a === undefined) {
+                return b;
+            } else if (b === undefined) {
+                return a;
+            } else if (!_.isEqual(a, b)) {
+                throw new Error("Incompatible options in transaction.");
+            } else {
+                return a;
+            }
+        });
+
+        transactionInfo.options = nextOptions;
+        transactionInfo.commands = transactionInfo.commands.concat(commands);
+
+        return Promise.resolve(new Array(commands.length));
+    };
+
+    /**
+     * Initiates a transaction, saving all batchPlay calls being added to this transaction
+     * from being played until @see endTransaction is called
+     *
+     * @param {{historyStateInfo: object}} options contains a single history state information for this
+     * transaction to apply
+     * @return {number} Initiated transaction ID
+     */
+    Descriptor.prototype.beginTransaction = function (options) {
+        var transactionID = this._transactionIDCounter++,
+            transactionInfo = {
+                txOptions: options || {},
+                options: {},
+                commands: []
+            };
+
+        this._transactions.set(transactionID, transactionInfo);
+
+        return transactionID;
+    };
+
+    /**
+     * Finalizes a transaction, playing all accumulated batchPlay objects
+     * under the same history state
+     *
+     * @param {number} tid Transaction ID
+     * @return {Promise.<Array.<object>>} Resolves with the list of ActionDescriptor results, or rejects
+     *      with either an adapter error, or a single command error if not continueOnError mode. In
+     *      continueOnError mode, always resolve with both the results and errors arrays.
+     */
+    Descriptor.prototype.endTransaction = function (tid) {
+        var transactionInfo = this._transactions.get(tid);
+        if (!transactionInfo) {
+            throw new Error("Invalid transaction ID: " + tid);
+        }
+
+        var finalOptions = _.merge(transactionInfo.options, transactionInfo.txOptions);
+
+        return this._batchPlayImmediate(transactionInfo.commands, finalOptions);
+    };
+
+    /**
+     * Executes a low-level "batchPlay" call on the specified ActionDescriptors.
+     *
+     * @param {Array.<{name: string, descriptor: object, options: object=}>} commands Array of 
+     *  ActionDescriptors to play
+     * @param {{continueOnError: boolean=}=} options Options applied to the execution of the batchPlay
+     * @return {Promise.<Array.<object>>} Resolves with the list of ActionDescriptor results, or rejects
+     *      with either an adapter error, or a single command error if not continueOnError mode. In
+     *      continueOnError mode, always resolve with both the results and errors arrays.
+     */
+    Descriptor.prototype.batchPlay = function (commands, options) {
+        options = options || {};
+
+        if (options.hasOwnProperty("transaction")) {
+            return this._addToTransaction(options.transaction, commands, options);
+        } else {
+            return this._batchPlayImmediate(commands, options);
+        }
     };
 
     /**
