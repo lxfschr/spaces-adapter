@@ -748,6 +748,60 @@ define(function (require, exports) {
         });
     };
 
+    /**
+     * When played, will replace the selected single smart object layer with 
+     * the file from the path
+     *
+     * @param {string} path Path to the file to replace contents from
+     * @return {PlayObject}
+     */
+    var replaceContents = function (path) {
+        return new PlayObject("placedLayerReplaceContents", {
+            "null": {
+                "_path": path
+            }
+        });
+    };
+
+    /**
+     * When played, will export the selected embedded smart object layer
+     * to the path
+     *
+     * @param {string} path
+     * @return {PlayObject}
+     */
+    var exportContents = function (path) {
+        return new PlayObject("placedLayerExportContents", {
+            "null": {
+                "_path": path
+            }
+        });
+    };
+
+    /**
+     * When played, will embed the selected linked smart object layer
+     *
+     * @return {PlayObject}
+     */
+    var embedLinked = function () {
+        return new PlayObject("placedLayerConvertToEmbedded", {});
+    };
+
+    /**
+     * When played, will relink the Cloud linked smart object
+     * to the local file in the given path
+     *
+     * @param {string} path
+     * @return {PlayObject}
+     */
+    var relinkToFile = function (path) {
+        return new PlayObject("placedLayerRelinkToFile", {
+            "null": {
+                "_path": path
+            }
+        });
+    };
+
     exports.referenceBy = referenceBy;
     exports.layerKinds = layerKinds;
     
@@ -776,4 +830,8 @@ define(function (require, exports) {
     exports.setGroupExpansion = setGroupExpansion;
     exports.getExtensionData = getExtensionData;
     exports.setExtensionData = setExtensionData;
+    exports.replaceContents = replaceContents;
+    exports.exportContents = exportContents;
+    exports.embedLinked = embedLinked;
+    exports.relinkToFile = relinkToFile;
 });
