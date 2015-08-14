@@ -158,6 +158,41 @@ define(function (require, exports) {
         }
     });
 
+    /**
+     * @param {ActionDescriptor} sourceRef Reference of layer(s) to edit
+     * @param {object} sourceStroke Stroke we're copying
+     */
+    var setStroke = function (sourceRef, sourceStroke) {
+        assert(referenceOf(sourceRef) === "contentLayer", "setStrokeAlignment is passed a non-layer reference");
+
+        var strokeObj = {
+            "strokeEnabled": sourceStroke.enabled,
+            "strokeStyleLineAlignment": {
+                "_enum": "strokeStyleLineAlignment",
+                "_value": alignmentTypes[sourceStroke.alignment]
+            },
+            "strokeStyleOpacity": unitsIn.percent(sourceStroke.color.opacity),
+            "strokeStyleLineWidth": unitsIn.pixels(sourceStroke.width),
+            "strokeStyleContent": shape.fillContentsObject("solidColorLayer", sourceStroke.color),
+            "strokeStyleVersion": 2
+        };
+
+        return new PlayObject(
+            "set",
+            {
+                "null": sourceRef,
+                "to": {
+                    "_obj": "shapeStyle",
+                    "_value": {
+                        "strokeStyle": {
+                            "_obj": "strokeStyle",
+                            "_value": strokeObj
+                        }
+                    }
+                }
+            }
+        );
+    };
 
     /**
      * @param {ActionDescriptor} sourceRef Reference to layer(s) to edit
@@ -783,6 +818,7 @@ define(function (require, exports) {
     exports.alignmentTypes = alignmentTypes;
     exports.originTypes = originTypes;
 
+    exports.setStroke = setStroke;
     exports.setStrokeAlignment = setStrokeAlignment;
     exports.setStrokeCap = setStrokeCap;
     exports.setStrokeCorner = setStrokeCorner;
