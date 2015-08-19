@@ -79,8 +79,7 @@ define(function (require, exports) {
             to: {
                 _obj: "pluginPicker",
                 _value: {
-                    generatorEnabled: desiredStatus,
-                    generatorDisabled: !desiredStatus
+                    generatorEnabled: desiredStatus
                 }
             }
         };
