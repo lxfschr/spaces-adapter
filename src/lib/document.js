@@ -484,6 +484,43 @@ define(function (require, exports) {
     };
 
     /**
+     * Creates a guide in the given position with given orientation in the document
+     *
+     * @param {object} sourceRef
+     * @param {"horizontal"|"vertical"} orientation Guide orientation
+     * @param {number} position Position of guide in pixels
+     * @return {PlayObject}
+     */
+    var insertGuide = function (sourceRef, orientation, position) {
+        assert(referenceOf(sourceRef) === "document", "insertGuide is passed a non-document reference");
+
+        var reference = {
+                "_ref": "guide"
+            },
+            guideReference = {
+                "_ref": [
+                    sourceRef,
+                    { "_class": "guide" }
+                ]
+            };
+              
+        var descriptor = {
+            null: reference,
+            new: {
+                "_obj": "guide",
+                "null": guideReference,
+                "orientation": {
+                    "_enum": "orientation",
+                    "_value": orientation
+                },
+                "position": unitsIn.pixels(position)
+            }
+        };
+
+        return new PlayObject("newGuide", descriptor);
+    };
+
+    /**
      * Sets the artboard auto-nesting and artboard auto-positioning of the document. 
      * This is available in the classic UI when artboard tool is selected under the gear icon.
      *
@@ -659,6 +696,7 @@ define(function (require, exports) {
     exports.create = createDocument;
     exports.createWithPreset = createWithPreset;
     exports.resize = resizeDocument;
+    exports.insertGuide = insertGuide;
     exports.setArtboardAutoAttributes = setArtboardAutoAttributes;
     exports.setTargetPathVisible = setTargetPathVisible;
     exports.getGuidesVisibility = getGuidesVisibility;
