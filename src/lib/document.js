@@ -489,9 +489,10 @@ define(function (require, exports) {
      * @param {object} sourceRef
      * @param {"horizontal"|"vertical"} orientation Guide orientation
      * @param {number} position Position of guide in pixels
+     * @param {boolean} isArtboardGuide If true, the guide will be created as an artboard guide
      * @return {PlayObject}
      */
-    var insertGuide = function (sourceRef, orientation, position) {
+    var insertGuide = function (sourceRef, orientation, position, isArtboardGuide) {
         assert(referenceOf(sourceRef) === "document", "insertGuide is passed a non-document reference");
 
         var reference = {
@@ -514,6 +515,10 @@ define(function (require, exports) {
                     "_value": orientation
                 },
                 "position": unitsIn.pixels(position)
+            },
+            "guideTarget": {
+                "_enum": "guideTarget",
+                "_value": isArtboardGuide ? "guideTargetSelectedArtboard" : "guideTargetDocument"
             }
         };
 
