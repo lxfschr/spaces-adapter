@@ -526,16 +526,23 @@ define(function (require, exports) {
     };
 
     /**
-     * Sets the artboard auto-nesting and artboard auto-positioning of the document. 
+     * Sets the artboard auto properties, given they're provided
      * This is available in the classic UI when artboard tool is selected under the gear icon.
      *
      * @param {object} sourceRef
-     * @param {boolean} enabled 
+     * @param {object} attributes
+     * @param {?boolean} attributes.autoNestEnabled When layers are moved, they will be automatically nested 
+     *                                              into the artboard they're over
+     * @param {?boolean} attributes.autoPositionEnabled When a layer being reordered into an artboard
+     *                                                  will be moved to be inside the artboard
+     * @param {?boolean} attributes.autoExpandEnabled When artboards are moved, if they go outside the canvas
+     *                                                it will be automatically expanded to fit everything
      * @return {PlayObject}
      */
-    var setArtboardAutoAttributes = function (sourceRef, enabled) {
-        assert(referenceOf(sourceRef) === "document", "setTargetPathVisible is passed a non-document reference");
-
+    var setArtboardAutoAttributes = function (sourceRef, attributes) {
+        assert(referenceOf(sourceRef) === "document", "setArtboardAutoAttributes is passed a non-document reference");
+        assert(attributes !== {}, "setArtboardAutoAttributes requires at least one attribute");
+        
         var reference = {
             "_ref": [
                 {
@@ -548,10 +555,7 @@ define(function (require, exports) {
 
         var descriptor = {
             null: reference,
-            to: {
-                autoNestEnabled: enabled,
-                autoPositionEnabled: enabled
-            }
+            to: attributes
         };
 
         return new PlayObject("set", descriptor);
