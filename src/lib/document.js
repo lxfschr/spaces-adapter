@@ -526,6 +526,31 @@ define(function (require, exports) {
     };
 
     /**
+     * Deletes the guide in the given position in the document
+     *
+     * @param {object} sourceRef
+     * @param {number} guideIndex Index of guide in the document
+     * @return {PlayObject}
+     */
+    var removeGuide = function (sourceRef, guideIndex) {
+        assert(referenceOf(sourceRef) === "document", "removeGuide is passed a non-document reference");
+
+        var descriptor = {
+            null: {
+                "_ref": [
+                    {
+                        "_ref": "guide",
+                        "_index": guideIndex
+                    },
+                    sourceRef
+                ]
+            }
+        };
+
+        return new PlayObject("delete", descriptor);
+    };
+
+    /**
      * Sets the artboard auto properties, given they're provided
      * This is available in the classic UI when artboard tool is selected under the gear icon.
      *
@@ -706,6 +731,7 @@ define(function (require, exports) {
     exports.createWithPreset = createWithPreset;
     exports.resize = resizeDocument;
     exports.insertGuide = insertGuide;
+    exports.removeGuide = removeGuide;
     exports.setArtboardAutoAttributes = setArtboardAutoAttributes;
     exports.setTargetPathVisible = setTargetPathVisible;
     exports.getGuidesVisibility = getGuidesVisibility;
