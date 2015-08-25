@@ -416,6 +416,8 @@ define(function (require, exports, module) {
      * @param {Array.<{name: string, descriptor: object, options: object=}>} commands Array of 
      *  ActionDescriptors to play
      * @param {{continueOnError: boolean=}=} options Options applied to the execution of the batchPlay
+     * @return {Promise.<Array>} An empty array with the expected length for selection dance
+     * to function correctly
      */
     Descriptor.prototype._addToTransaction = function (tid, commands, options) {
         var transactionInfo = this._transactions.get(tid);
@@ -445,7 +447,7 @@ define(function (require, exports, module) {
      * Initiates a transaction, saving all batchPlay calls being added to this transaction
      * from being played until @see endTransaction is called
      *
-     * @param {{historyStateInfo: object}} options contains a single history state information for this
+     * @param {{historyStateInfo: object}=} options contains a single history state information for this
      * transaction to apply
      * @return {number} Initiated transaction ID
      */
@@ -479,7 +481,11 @@ define(function (require, exports, module) {
 
         var finalOptions = _.merge(transactionInfo.options, transactionInfo.txOptions);
 
-        return this._batchPlayImmediate(transactionInfo.commands, finalOptions);
+        return this._batchPlayImmediate(transactionInfo.commands, finalOptions)
+            .bind(this)
+            .tap(function () {
+                this._transactions.delete(tid);
+            });
     };
 
     /**
@@ -487,7 +493,9 @@ define(function (require, exports, module) {
      *
      * @param {Array.<{name: string, descriptor: object, options: object=}>} commands Array of 
      *  ActionDescriptors to play
-     * @param {{continueOnError: boolean=}=} options Options applied to the execution of the batchPlay
+     * @param {object=} options Options applied to the execution of the batchPlay
+     * @param {boolean=} options.continueOnError If true, will not stop playing all commands
+     * @param {number=} options.transaction If provided, will save the commands into the transaction
      * @return {Promise.<Array.<object>>} Resolves with the list of ActionDescriptor results, or rejects
      *      with either an adapter error, or a single command error if not continueOnError mode. In
      *      continueOnError mode, always resolve with both the results and errors arrays.
