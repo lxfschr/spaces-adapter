@@ -56,24 +56,22 @@ define(function (require, exports) {
     /**
      * Build a play object that will set a Photoshop custom preference key value pair
      *
-     * Usually the value is an object.
-     * If the value is a simple string, it will store an object with a single "value" property
+     * The value is expected to be a simple object
      *
      * @param {string} key
-     * @param {string|object} value
+     * @param {object} value
      * @param {boolean=} persistent Optional, defaults to true
      * @return {PlayObject}
      */
     var setCustomPreference = function (key, value, persistent) {
-        var valueObj = (typeof value === "string") ? { value: value } : value,
-            desc = {
+        var desc = {
                 null: _customPrefRef,
                 keyword: key,
                 persistent: persistent === undefined ? true : !!persistent
             },
             obj = {
                 _obj: "object",
-                _value: valueObj
+                _value: value
             };
 
         desc[key] = obj;
