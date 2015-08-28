@@ -598,9 +598,9 @@ define(function (require, exports) {
             styleDescriptor.size = unitsIn[style.fontSize.type](style.fontSize.value);
         }
 
-        if (style.color && style.color[0] && style.color[0].value) {
-            assert(style.color[0].mode === "RGB", "text style being applied is not in RGB colorspace");
-            styleDescriptor.color = colorObject(style.color[0].value);
+        if (style.color && style.color.value) {
+            assert(style.color.mode === "RGB", "text style being applied is not in RGB colorspace");
+            styleDescriptor.color = colorObject(style.color.value);
         }
 
         // This can be zero!
