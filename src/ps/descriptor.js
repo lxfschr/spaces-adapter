@@ -410,6 +410,8 @@ define(function (require, exports, module) {
 
     /**
      * Adds the given commands with the options to the given existing transaction
+     * If any of the options already exist in the transactionOptions (txOptions)
+     * it will not throw
      *
      * @private
      * @param {number} tid Transaction ID, must have been started with beginTransaction
@@ -425,12 +427,20 @@ define(function (require, exports, module) {
             throw new Error("Invalid transaction ID: " + tid);
         }
 
-        var nextOptions = _.merge(transactionInfo.options, options, function (a, b) {
+        // If any of the batchPlay calls in the transaction disagree on some options
+        // and those options are not defined in the beginTransaction function's options
+        // we will throw an error
+        // 
+        // We still accept the existing options, but at the endTransaction method, whatever is
+        // in txOptions is the final truth. For example, most of the time, historyStateInfo
+        // will disagree between batchPlay options, so it needs to be declared at beginTransaction level
+        var txOptions = transactionInfo.txOptions,
+            nextOptions = _.merge(transactionInfo.options, options, function (a, b, key) {
             if (a === undefined) {
                 return b;
             } else if (b === undefined) {
                 return a;
-            } else if (!_.isEqual(a, b)) {
+            } else if (!txOptions.hasOwnProperty(key) && !_.isEqual(a, b)) {
                 throw new Error("Incompatible options in transaction.");
             } else {
                 return a;
