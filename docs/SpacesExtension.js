@@ -1268,6 +1268,11 @@ _spaces.os.notifierKind = {
     "convertibleSlateMode":  a boolean, true => tablet mode, false => laptop mode
     */
     CONVERTIBLE_SLATE_MODE_CHANGED: "convertibleSlateModeChanged",
+    
+    
+    /** This notifier is sent when display configuration changes
+    */
+    DISPLAY_CONFIGURATION_CHANGED: "displayConfigurationChanged",
 };
 
 // TODO: Delete after 8/20/2014
