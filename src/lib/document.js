@@ -37,6 +37,7 @@ define(function (require, exports) {
      * Open a document (psd, png, jpg, ai, gif)
      * 
      * @param {ActionDescriptor} sourceRef document reference
+     * @param {object} settings
      * @param {string} settings.pdfSelection "page" or "image"
      * @param {number} settings.pageNumber The number of the page
      * @param {boolean} settings.suppressWarnings true or false
@@ -49,6 +50,12 @@ define(function (require, exports) {
      * @param {number} settings.height The height of the image size
      * @param {string} settings.colorSpace The color space of the image mode.  See openDocument.mode vals
      * @param {number} settings.resolution The resolution value
+     * @param {object} settings.externalPreview Make photoshop create a preview of the document after save.
+     * @param {object} settings.externalPreview.path File path of the preview.
+     * @param {object} settings.externalPreview.width Pixel width of the preview.
+     * @param {object} settings.externalPreview.height Pixel height of the preview.
+     *
+     * TODO doc
      *
      * @return {PlayObject}
      *
@@ -66,7 +73,8 @@ define(function (require, exports) {
                 width: settings.width || sourceRef.width,
                 height: settings.height || sourceRef.height,
                 colorSpace: settings.colorSpace || "RGBColorMode",
-                resolution: settings.resolution
+                resolution: settings.resolution,
+                externalPreview: settings.externalPreview
             },
             fileType,
             strIndex = sourceRef._path.lastIndexOf(".");
@@ -79,8 +87,19 @@ define(function (require, exports) {
         var desc = {
             "null": sourceRef
         };
+        
+        if (params.externalPreview) {
+            desc.externalPreviewParams = {
+                "in": {
+                    "_path": params.externalPreview.path
+                },
+                "pixelWidth": params.externalPreview.width,
+                "pixelHeight": params.externalPreview.height
+            };
+        }
 
         if (fileType === "ai") {
+            desc.as = {};
             desc.as._obj = "PDFGenericFormat";
             desc.as._value.selection = {
                 "_enum": "pdfSelection",
@@ -88,6 +107,7 @@ define(function (require, exports) {
             };
             desc.as._value.suppressWarnings = params.suppressWarnings;
             desc.as._value.pageNumber = params.pageNumber;
+            
             if (params.pdfSelection === "page") {
                 desc.as._value = {
                     "antiAlias": params.bAntiAlias,
