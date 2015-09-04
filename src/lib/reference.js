@@ -129,7 +129,7 @@ define(function (require, exports, module) {
             /**
              * @returns {ActionDescriptor} Reference to all the objects
              */
-            all: enumBy("ordinal", "all"),
+            all: enumBy("ordinal", "allEnum"),
             
             /**
              * @returns {ActionDescriptor} Reference to none of the objects

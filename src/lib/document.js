@@ -585,7 +585,7 @@ define(function (require, exports) {
                     {
                         "_ref": "guide",
                         "_enum": "ordinal",
-                        "_value": "all"
+                        "_value": "allEnum"
                     },
                     sourceRef
                 ]
