@@ -633,6 +633,24 @@ _spaces.ps.descriptor.play = function (name, descriptor, options, callback) {
         when set to true, then any target reference in the provided descriptor is ignored
         if the host is in a modal dialog state, or in a modal tool state. This allows the
         request to be dispatched via the modal handler chain
+    "synchronous" (optional, boolean)
+        Default value is true.
+        This option determines whethger or not the command is executed synchronously by the
+        Photoshop API, or asynchronously via the Photoshop command queue. In the synchronous
+        case the API layer waits for Photoshop to complete the command, and while in this state
+        UI is not updated, and it is not possible to execute other commands.
+        In the asynchronous case, the commands is handed off to Photoshop for execution at a later
+        time, and while waiting for the result other commands can be executed and the UI is
+        live.
+        The asynchronous execution mode does not support the following features:
+            - continueOnError. The asynchronous mode will attempt to execute all commands regardless of
+                the result of the individual commands.
+            - historyStateInfo is not supported in the asynchronous mode.
+            - paintOptions is not supported in the asynchronous mode.
+            - ignoreTargetWhenModal is not supported in the asynchronous mode.
+            - multi-get references are not supported in the asynchronous mode.
+            - extended references are not supported in the asynchronous mode.
+ 
 @param callback (function) A callback notifier with the signature described below.
 
 callback(err, descriptors, errors)
@@ -673,16 +691,6 @@ callback(err, descriptor)
 */
 _spaces.ps.descriptor.get = function (reference, options, callback) {
     native function psDescGet();
-    
-    // legacy HTML calls this method with the following signature:
-    // (reference, callback)
-    // i.e. in legacy invocations has only two arguments (and the 3rd argument is undefined)
-    // 2015-04-07 Design Space use the legacy form in some cases.
-    if (callback === undefined) {
-        // legacy mode detected
-        callback = options;
-        options = {};
-    }
     
     return psDescGet(reference, options, callback);
 };
@@ -1275,34 +1283,6 @@ _spaces.os.notifierKind = {
     DISPLAY_CONFIGURATION_CHANGED: "displayConfigurationChanged",
 };
 
-// TODO: Delete after 8/20/2014
-_spaces.os.eventTypes = _spaces.os.notifierKind;
-
-/** Register an event listener with the OS.
-Note: Only one listener can be active at any time.
-TODO:REMOVE
-@param callback     (function)  A callback notifier with the signature described below.
-
-callback(err, eventType, eventInfo)
-@param eventType (number)   one of the values in _spaces.os.notifierKind
-@param eventInfo (variant)  specific to the provided event
-*/
-_spaces.os.registerEventListener = function (callback) {
-
-        console.log("_spaces.os.registerEventListener is deprecated. Please use _spaces.setNotifier");
-
-        _spaces.setNotifier(_spaces.notifierGroup.OS, {},
-            function(err, notifierKind, info) {
-                callback(err, notifierKind, info);
-            }
-        );
-};
-// TODO:REMOVE
-_spaces.os.unRegisterEventListener = function (callback) {
-        console.log("_spaces.os.unRegisterEventListener is deprecated. Please use _spaces.setNotifier");
-        _spaces.setNotifier(_spaces.notifierGroup.OS, {}, undefined);
-};
-
 /** Post an OS event to the event queue.
 @param eventInfo (object)	Describes the event that should be synthesized
     "eventInfo" has the following form for pointer events:
@@ -1668,6 +1648,3 @@ _spaces.getExecutionMode = function (callback) {
     native function pgGetExecutionMode();
     return pgGetExecutionMode(callback);
 };
-
-// temporary alias
-var _playground = _spaces;
