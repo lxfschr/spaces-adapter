@@ -35,9 +35,9 @@ define(function (require, exports) {
      * @type {{major: number=, minor: number=, patch: number=}}
      */
     var COMPATIBLE_PLUGIN_VERSION = {
-        major: 1,
+        major: 2,
         minor: 0,
-        patch: 36
+        patch: 1
     };
 
     /**
@@ -83,7 +83,7 @@ define(function (require, exports) {
 
         if (!_versionCompatible(COMPATIBLE_PLUGIN_VERSION, pluginVersion)) {
             var message = "Plugin version " + _formatVersion(pluginVersion) +
-                " is incompatible with the minimum required version, " +
+                " is incompatible with the required version, " +
                  _formatVersion(COMPATIBLE_PLUGIN_VERSION);
 
             throw new Error(message);
