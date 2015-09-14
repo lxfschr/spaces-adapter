@@ -160,7 +160,7 @@ define(function () {
         "value" (Number)    The number of open documents.
      */
     function getOpenDocumentCount(callback) {
-        _playground.ps.descriptor.get({_ref:[{_ref: null, _property: "numberOfDocuments"}, {_ref: "application", _enum: "ordinal", _value: "targetEnum"}]},
+        _spaces.ps.descriptor.get({_ref:[{_ref: null, _property: "numberOfDocuments"}, {_ref: "application", _enum: "ordinal", _value: "targetEnum"}]}, {},
                                       function (err, result) {
                                           var nDocuments;
                                           if (err === undefined) {
@@ -1365,6 +1365,55 @@ define(function () {
             start();
         });
     });
+// jesper
+    /* _spaces.ps.descriptor.batchPlay()
+     * functional (positive invoke PS testCommand with echo)
+     */
+    asyncTest("_spaces.ps.descriptor.batchPlay(): with invoke PS testCommand with echo", function () {
+        expect(1);
+
+        var commands = [
+            {
+                name: "testCommand",
+                descriptor: {"mode":"echo", "null": {_ref: "application", _enum: "ordinal", _value: "targetEnum"}}
+            },
+        ];
+
+        var options = {
+        };
+
+        _spaces.ps.descriptor.batchPlay(commands, options, function (err, descriptors, errors) {
+            _validateNotifierResult(err);
+
+            start();
+        });
+    });
+
+    /* _spaces.ps.descriptor.batchPlay()
+     * functional (positive asynchronous invoke PS testCommand with echo)
+     */
+    asyncTest("_spaces.ps.descriptor.batchPlay(): with asynchronous invoke PS testCommand with echo", function () {
+        expect(1);
+
+        var commands = [
+            {
+                name: "testCommand",
+                descriptor: {"mode":"echo", "null": {_ref: "application", _enum: "ordinal", _value: "targetEnum"}}
+            },
+        ];
+
+        var options = {
+        	"synchronous":false
+        };
+
+        _spaces.ps.descriptor.batchPlay(commands, options, function (err, descriptors, errors) {
+            _validateNotifierResult(err);
+
+            start();
+        });
+    });
+
+// repsej
 
     /* _spaces.ps.descriptor.sendDirectMessage() function
      * Validates: defined, type
@@ -2161,22 +2210,6 @@ define(function () {
            "_spaces.os.notifierKind.CONVERTIBLE_SLATE_MODE_CHANGED");
         ok(typeof _spaces.os.notifierKind.DISPLAY_CONFIGURATION_CHANGED === "string",
            "_spaces.os.notifierKind.DISPLAY_CONFIGURATION_CHANGED");
-    });
-
-    /* _spaces.os.registerEventListener()
-     * Validates: defined, type
-     */
-    test("_spaces.os.registerEventListener() defined", function () {
-        ok(typeof _spaces.os.registerEventListener === "function",
-            "_spaces.os.registerEventListener function defined");
-    });
-
-    /* _spaces.os.registerEventListener()
-     * Validates: defined, type
-     */
-    test("_spaces.os.unRegisterEventListener() defined", function () {
-        ok(typeof _spaces.os.unRegisterEventListener === "function",
-            "_spaces.os.unRegisterEventListener function defined");
     });
 
     /* _spaces.os.postEvent()
