@@ -628,16 +628,13 @@ define(function (require, exports) {
             y = _y || 0;
 
         return new PlayObject(
-            "transform",
+            "move",
             {
                 "null": ref,
-                "snapToDocBounds": true,
-                "position": {
-                    "_obj": "position",
-                    "_value": {
-                        "horizontal": inUnits.pixels(x),
-                        "vertical": inUnits.pixels(y)
-                    }
+                "to": {
+                    "_obj": "point",
+                    "horizontal": x,
+                    "vertical": y
                 }
             }
         );
