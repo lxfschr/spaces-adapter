@@ -525,22 +525,26 @@ define(function (require, exports) {
                 ]
             };
               
-        var descriptor = {
-            null: reference,
-            new: {
-                "_obj": "guide",
-                "null": guideReference,
-                "orientation": {
-                    "_enum": "orientation",
-                    "_value": orientation
-                },
-                "position": unitsIn.pixels(position)
-            },
-            "guideTarget": {
+        var guideTarget = {
                 "_enum": "guideTarget",
-                "_value": isArtboardGuide ? "guideTargetSelectedArtboard" : "guideTargetDocument"
-            }
-        };
+                "_value": "guideTargetSelectedArtboard"
+            },
+            descriptor = {
+                null: reference,
+                new: {
+                    "_obj": "guide",
+                    "null": guideReference,
+                    "orientation": {
+                        "_enum": "orientation",
+                        "_value": orientation
+                    },
+                    "position": unitsIn.pixels(position)
+                }
+            };
+
+        if (isArtboardGuide) {
+            descriptor.guideTarget = guideTarget;
+        }
 
         return new PlayObject("newGuide", descriptor);
     };
