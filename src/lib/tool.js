@@ -104,7 +104,11 @@ define(function (require, exports) {
         );
     };
 
-
+    /**
+     * Tool Mode possible values
+     *
+     * @type {Object.<string, number>}
+     */
     var toolModes = {
         SHAPE: 0,
         PATH: 1

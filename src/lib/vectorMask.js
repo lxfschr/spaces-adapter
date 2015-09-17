@@ -144,14 +144,14 @@ define(function (require, exports) {
      */
     var enterFreeTransformPathMode = function () {
         var layerRef = {
-            "_ref": "layer",
-            "_enum": "ordinal",
-            "_value": "targetEnum"
-        },
-        propertyRef = {
-            _ref: "property",
-            _property: "freeTransformWholePath"
-        };
+                "_ref": "layer",
+                "_enum": "ordinal",
+                "_value": "targetEnum"
+            },
+            propertyRef = {
+                _ref: "property",
+                _property: "freeTransformWholePath"
+            };
         
         return new PlayObject("set", {
             "null": {
