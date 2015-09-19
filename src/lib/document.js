@@ -54,8 +54,8 @@ define(function (require, exports) {
      * @param {object} settings.externalPreview.path File path of the preview.
      * @param {object} settings.externalPreview.width Pixel width of the preview.
      * @param {object} settings.externalPreview.height Pixel height of the preview.
-     *
-     * TODO doc
+     * @param {boolean=} settings.forceMRU Will save the image to Most Recently Used list only when true
+     *                                     default is true
      *
      * @return {PlayObject}
      *
@@ -77,7 +77,8 @@ define(function (require, exports) {
                 externalPreview: settings.externalPreview
             },
             fileType,
-            strIndex = sourceRef._path.lastIndexOf(".");
+            strIndex = sourceRef._path.lastIndexOf("."),
+            forceMRU = settings.forceMRU !== undefined ? settings.forceMRU : true;
 
         if (strIndex !== -1) {
             strIndex++;
@@ -128,6 +129,8 @@ define(function (require, exports) {
                 };
             }
         }
+
+        desc.forceMRU = forceMRU;
 
         return new PlayObject(
             "open",
