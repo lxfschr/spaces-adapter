@@ -32,6 +32,20 @@ define(function (require, exports) {
         inUnits = require("./unit"),
         color = require("./color"),
         assert = require("../util").assert;
+        
+    /**
+     * List of singular layer effect types. Each of these types can have only one effect in classic PS.
+     *
+     * @private
+     * @type {Set.<string>}
+     */
+    var _SINGULAR_EFFECT_TYPES = new Set([
+        "bevelEmboss", // Bevel & Emboss
+        "chromeFX", // Satin
+        "innerGlow", // Inner Glow
+        "outerGlow", // Outer Glow
+        "patternFill" // Pattern Overlay
+    ]);
 
     /**
      * Generically build a PlayObject for a layerEffect
@@ -42,21 +56,12 @@ define(function (require, exports) {
      * @param {ActionDescriptor} ref layer(s) reference
      * @param {string} layerEffectType type of layerEffect (example: dropShadow)
      * @param {object} layerEffectValue object that can be supplied for "to._value" in the descriptor
-     * @param {boolean=} multi value that allows function to return the Multi Layer Effect friendly descriptor
-     *
      * @return {PlayObject}
      */
-    var _layerEffectDescriptor = function (ref, layerEffectType, layerEffectValue, multi) {
+    var _layerEffectDescriptor = function (ref, layerEffectType, layerEffectValue) {
         var val = {};
 
-        if (multi) {
-            val[layerEffectType] = layerEffectValue;
-        } else {
-            val[layerEffectType] = {
-                _obj: layerEffectType,
-                _value: layerEffectValue
-            };
-        }
+        val[layerEffectType] = layerEffectValue;
 
         return new PlayObject(
             "set",
@@ -90,7 +95,6 @@ define(function (require, exports) {
      *
      * @return {PlayObject}
      */
-
     var _extendedLayerEffectDescriptor = function (ref, layerEffectType, layerEffectValue) {
         return new PlayObject(
             "set",
@@ -181,7 +185,7 @@ define(function (require, exports) {
     };
 
     /**
-     * Return drop shadow descriptor for the given properties
+     * Return layer effect descriptor for the given properties
      *
      * The expected format of the properties object is like:
      * {enabled: true, color: {r: 255, g: 0, b: 0}, blur: 20}
@@ -190,128 +194,49 @@ define(function (require, exports) {
      * Opacity percentage [0,100]
      *
      * @private
+     * @param {string} effectType
      * @param {object} properties intermediate object format using Photoshop names, but without units
      *
      * @return {Descriptor}
      */
-
-    var _dropShadowDescriptor = function (properties) {
+    var _effectDescriptor = function (effectType, properties) {
+        var value = properties;
+        
+        if (effectType === "innerShadow" || effectType === "dropShadow") {
+            value = _shadowProperties(properties);
+        }
+        
         return {
-            "_obj": "dropShadow",
-            "_value": _shadowProperties(properties)
+            "_obj": effectType,
+            "_value": value
         };
-    };
-
-    /**
-     * Return inner shadow descriptor for the given properties
-     *
-     * The expected format of the properties object is like:
-     * {enabled: true, color: {r: 255, g: 0, b: 0}, blur: 20}
-     * Distance/positions values in pixels
-     * Angles in degrees
-     * Opacity percentage [0,100]
-     *
-     * @private
-     * @param {object} properties intermediate object format using Photoshop names, but without units
-     *
-     * @return {Descriptor}
-     */
-
-    var _innerShadowDescriptor = function (properties) {
-        return {
-            "_obj": "innerShadow",
-            "_value": _shadowProperties(properties)
-        };
-    };
-    /**
-     * Update multiple drop shadow layer effect properties for the given layer(s)
-     *
-     * @param {ActionDescriptor} ref - Reference of layer(s) to update
-     * @param {Array.<object>} propertyArray Array of DropShadow properties
-     *
-     * @return {PlayObject}
-     */
-    var _setDropShadows = function (ref, propertyArray) {
-        assert(referenceOf(ref) === "layer", "setDropShadow is passed a non-layer reference");
-
-        var descriptorArray = propertyArray.map(function (properties) {
-            return _dropShadowDescriptor(properties);
-        });
-
-        return _layerEffectDescriptor(ref, "dropShadowMulti", descriptorArray, true);
-    };
-
-    /**
-     * Update multiple drop shadow layer effect properties for the given layer(s) without changing the
-     * parent layer effect
-     *
-     * @param {ActionDescriptor} ref - Reference of layer(s) to update
-     * @param {Array.<object>} propertyArray Array of DropShadow properties
-     *
-     * @return {PlayObject}
-     */
-    var _setExtendedDropShadows = function (ref, propertyArray) {
-        assert(referenceOf(ref) === "layer", "setDropShadow is passed a non-layer reference");
-
-        var descriptorArray = propertyArray.map(function (properties) {
-            return _dropShadowDescriptor(properties);
-        });
-
-        return _extendedLayerEffectDescriptor(ref, "dropShadowMulti", descriptorArray, true);
-    };
-
-    /**
-     * Update multiple inner shadow layer effect properties for the given layer(s)
-     *
-     * @param {ActionDescriptor} ref - Reference of layer(s) to update
-     * @param {Array.<object>} propertyArray Array of InnerShadow properties
-     *
-     * @return {PlayObject}
-     */
-    var _setInnerShadows = function (ref, propertyArray) {
-        assert(referenceOf(ref) === "layer", "setInnnerShadow is passed a non-layer reference");
-
-        var descriptorArray = propertyArray.map(function (properties) {
-            return _innerShadowDescriptor(properties);
-        });
-
-        return _layerEffectDescriptor(ref, "innerShadowMulti", descriptorArray, true);
-    };
-
-    /**
-     * Update multiple inner shadow layer effect properties for the given layer(s) without changing the
-     * parent layer effect
-     *
-     * @param {ActionDescriptor} ref - Reference of layer(s) to update
-     * @param {Array.<object>} propertyArray Array of InnerShadow properties
-     *
-     * @return {PlayObject}
-     */
-    var _setExtendedInnerShadows = function (ref, propertyArray) {
-        assert(referenceOf(ref) === "layer", "setInnnerShadow is passed a non-layer reference");
-
-        var descriptorArray = propertyArray.map(function (properties) {
-            return _innerShadowDescriptor(properties);
-        });
-
-        return _extendedLayerEffectDescriptor(ref, "innerShadowMulti", descriptorArray, true);
     };
 
     /**
      * Update the given type of layer effect properties for the given layer(s)
      *
-     * @param {string} type - type of layer effect. currently "dropShadow" or "innerShadow"
+     * @param {string} effectType - type of layer effect. 
      * @param {ActionDescriptor} ref - Reference of layer(s) to update
-     * @param {Array.<object>} propertyArray Array of InnerShadow properties
+     * @param {Array.<object>} propertyArray Array of effect properties
      *
      * @return {PlayObject}
      */
-    var setLayerEffect = function (type, ref, propertyArray) {
-        if (type === "innerShadow") {
-            return _setInnerShadows(ref, propertyArray);
-        } else if (type === "dropShadow") {
-            return _setDropShadows(ref, propertyArray);
+    var setLayerEffect = function (effectType, ref, propertyArray) {
+        assert(referenceOf(ref) === "layer", "Adapter.setLayerEffect: ref is a non-layer reference");
+        assert(propertyArray.length > 0, "Adapter.setLayerEffect: propertyArray cannot be empty");
+        
+        var descriptorArray = propertyArray.map(function (properties) {
+                return _effectDescriptor(effectType, properties);
+            }),
+            descriptorValue = descriptorArray;
+        
+        if (_SINGULAR_EFFECT_TYPES.has(effectType)) {
+            descriptorValue = descriptorArray[0];
+        } else {
+            effectType = effectType + "Multi";
         }
+
+        return _layerEffectDescriptor(ref, effectType, descriptorValue, true);
     };
 
 
@@ -324,26 +249,37 @@ define(function (require, exports) {
 
     /**
      * Update the given type of layer effect properties for the given layer(s) without changing the
-     * parent layer effect
+     * parent layer effect.
      *
-     * @param {string} type - type of layer effect. currently "dropShadow" or "innerShadow"
+     * @param {string} effectType - type of layer effect.
      * @param {ActionDescriptor} ref - Reference of layer(s) to update
-     * @param {Array.<object>} propertyArray Array of InnerShadow properties. Passing an emptry arrary
+     * @param {Array.<object>} propertyArray Array of effect properties. Passing an empty arrary
      * will remove all effects of the type.
      *
      * @return {PlayObject}
      */
-    var setExtendedLayerEffect = function (type, ref, propertyArray) {
+    var setExtendedLayerEffect = function (effectType, ref, propertyArray) {
+        assert(referenceOf(ref) === "layer", "Adapter.setExtendedLayerEffect: ref is a non-layer reference");
+        
         if (propertyArray.length === 0) {
-            // when deleting all effects, keep a hidden effect in Photoshop so that it won't break.
+            // We cannot delete all layer effects of specific type by sending an emptry property array 
+            // to Photoshop; this will break its layer effects feature. Instead, we replace the visible 
+            // effect(s) with a hidden one, which is equivalent to deleting them.
             propertyArray.push(HIDDEN_LAYER_EFFECT_PROPERTIES);
         }
-
-        if (type === "innerShadow") {
-            return _setExtendedInnerShadows(ref, propertyArray);
-        } else if (type === "dropShadow") {
-            return _setExtendedDropShadows(ref, propertyArray);
+        
+        var descriptorArray = propertyArray.map(function (properties) {
+                return _effectDescriptor(effectType, properties);
+            }),
+            descriptorValue = descriptorArray;
+            
+        if (_SINGULAR_EFFECT_TYPES.has(effectType)) {
+            descriptorValue = descriptorArray[0];
+        } else {
+            effectType = effectType + "Multi";
         }
+
+        return _extendedLayerEffectDescriptor(ref, effectType, descriptorValue);
     };
 
     /**
