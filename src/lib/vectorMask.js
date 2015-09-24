@@ -102,7 +102,7 @@ define(function (require, exports) {
      * 
      * @return {PlayObject}
      */
-    var editVectorMask = function () {
+    var selectVectorMask = function () {
         var vectMaskRef = {
             "_ref": "path",
             "_enum": "path",
@@ -137,9 +137,62 @@ define(function (require, exports) {
         });
     };
     
+    /**
+     * free transform the whole path of the targeted vector mask
+     * 
+     * @return {PlayObject}
+     */
+    var enterFreeTransformPathMode = function () {
+        var layerRef = {
+                "_ref": "layer",
+                "_enum": "ordinal",
+                "_value": "targetEnum"
+            },
+            propertyRef = {
+                _ref: "property",
+                _property: "freeTransformWholePath"
+            };
+        
+        return new PlayObject("set", {
+            "null": {
+                "_ref": [propertyRef, layerRef]
+            },
+            "_property": "freeTransformWholePath",
+            "suppressPlayLevelIncrease": true
+        });
+    };
+    /**
+     * create a reveal all vector mask on current layer
+     * 
+     * @return {PlayObject}
+     */
+    var createRevealAllMask = function () {
+        var desc = {
+            "null": {
+                "_ref": [{
+                    "_ref": "path"
+                }]
+            },
+            "at": {
+                "_ref": [{
+                    "_ref": "path",
+                    "_enum": "path",
+                    "_value": "vectorMask"
+                }]
+            },
+            "using": {
+                "_enum": "vectorMaskEnabled",
+                "_value": "revealAll"
+            }
+        };
+        return new PlayObject("make", desc);
+    };
+
+    exports.createRevealAllMask = createRevealAllMask;
+    exports.enterFreeTransformPathMode = enterFreeTransformPathMode;
     exports.activateVectorMaskEditing = activateVectorMaskEditing;
     exports.makeBoundsWorkPath = makeBoundsWorkPath;
-    exports.editVectorMask = editVectorMask;
+    exports.selectVectorMask = selectVectorMask;
     exports.deleteWorkPath = deleteWorkPath;
     exports.makeVectorMaskFromWorkPath = makeVectorMaskFromWorkPath;
 });
