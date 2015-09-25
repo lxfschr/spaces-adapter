@@ -635,7 +635,8 @@ define(function (require, exports) {
                     "_obj": "point",
                     "horizontal": x,
                     "vertical": y
-                }
+                },
+                "suppressPlayLevelIncrease": true
             }
         );
     };
