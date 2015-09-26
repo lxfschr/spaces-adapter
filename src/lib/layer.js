@@ -194,8 +194,8 @@ define(function (require, exports) {
     
     /**
      * @param {ActionDescriptor} ref - Reference of layer(s) to select
-     * @param {bool} makeVisible - Flag to hide/show the layer
-     * @param {string} modifier - Whether to select, add to selection, remove, or add upto
+     * @param {boolean=} makeVisible - Flag to hide/show the layer
+     * @param {string=} modifier - Whether to select, add to selection, remove, or add upto
      * 
      * @returns {PlayObject}
      */
