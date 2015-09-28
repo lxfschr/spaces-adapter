@@ -98,16 +98,38 @@ define(function (require, exports) {
 
 
     /**
+     * Delete the current vector mask on the current layer
+     * 
+     * @return {PlayObject}
+     */
+    var deleteVectorMask = function () {
+        var vectorMaskRef = {
+                "_ref": "path",
+                "_enum": "path",
+                "_value": "vectorMask" },
+            layerMaskRef = {
+                "_ref": "layer",
+                "_enum": "ordinal",
+                "_value": "targetEnum" };
+
+        return new PlayObject("delete", {
+            "null": {
+                "_ref": [vectorMaskRef, layerMaskRef]
+            }
+        });
+    };
+
+    /**
      * Target the vector mask of the current layer
      * 
      * @return {PlayObject}
      */
     var selectVectorMask = function () {
         var vectMaskRef = {
-            "_ref": "path",
-            "_enum": "path",
-            "_value": "vectorMask"
-        },
+                "_ref": "path",
+                "_enum": "path",
+                "_value": "vectorMask"
+            },
             layerMaskRef = {
                 "_ref": "layer",
                 "_enum": "ordinal",
@@ -194,5 +216,6 @@ define(function (require, exports) {
     exports.makeBoundsWorkPath = makeBoundsWorkPath;
     exports.selectVectorMask = selectVectorMask;
     exports.deleteWorkPath = deleteWorkPath;
+    exports.deleteVectorMask = deleteVectorMask;
     exports.makeVectorMaskFromWorkPath = makeVectorMaskFromWorkPath;
 });
