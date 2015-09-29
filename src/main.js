@@ -27,6 +27,10 @@ define(function (require, exports) {
     "use strict";
 
     var Promise = require("bluebird");
+    var descriptor = require("./ps/descriptor");
+    var elementLib = require("./lib/element");
+    var layerLib = require("./lib/layer");
+    var contentLayerLib = require("./lib/contentLayer");
 
     /**
      * The minimum-compatible plugin version number. 
@@ -146,4 +150,8 @@ define(function (require, exports) {
     exports.openURLInDefaultBrowser = openURLInDefaultBrowser;
     exports.getPropertyValue = getPropertyValue;
     exports.setPropertyValue = setPropertyValue;
+    exports.descriptor = descriptor;
+    exports.elementLib = elementLib;
+    exports.layerLib = layerLib;
+    exports.contentLayerLib = contentLayerLib;
 });
