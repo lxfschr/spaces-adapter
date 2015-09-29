@@ -46,6 +46,17 @@ define(function (require, exports) {
         "outerGlow", // Outer Glow
         "patternFill" // Pattern Overlay
     ]);
+    
+    /**
+     * List of editable layer effects.
+     *
+     * @private
+     * @type {string}
+     */
+    var _INNER_SHADOW = "innerShadow",
+        _DROP_SHADOW = "dropShadow",
+        _COLOR_OVERLAY = "solidFill",
+        _STROKE = "frameFX";
 
     /**
      * Generically build a PlayObject for a layerEffect
@@ -119,16 +130,17 @@ define(function (require, exports) {
             }
         );
     };
+    
     /**
-     * Helper Function to set blend mode correctly. We should have a blend mode object in the future
+     * Helper function to create value in enum/value pair.
      *
-     * @param {string} mode the blend mode
-     * @return {object} the PS friendly blend mode object
+     * @param {string} name
+     * @return {object} value
      */
-    var _blendMode = function (mode) {
+    var _enumerableValue = function (name, value) {
         return {
-            _enum: "blendMode",
-            _value: mode
+            _enum: name,
+            _value: value
         };
     };
 
@@ -147,10 +159,6 @@ define(function (require, exports) {
      * @return {object} PS friendly Properties
      */
     var _shadowProperties = function (properties) {
-        if (_isHiddenLayerProperties(properties)) {
-            return properties;
-        }
-
         var layerEffectPsProperties = {
             enabled: properties.enabled === undefined ? true : properties.enabled,
             useGlobalAngle: properties.useGlobalAngle === undefined ? true : properties.useGlobalAngle
@@ -175,8 +183,68 @@ define(function (require, exports) {
             layerEffectPsProperties.distance = inUnits.pixels(properties.distance);
         }
         if (_.isString(properties.blendMode)) {
-            layerEffectPsProperties.mode = _blendMode(properties.blendMode);
+            layerEffectPsProperties.mode = _enumerableValue("blendMode", properties.blendMode);
         }
+        return layerEffectPsProperties;
+    };
+    
+    /**
+     * Parse Color Overlay JS properties and assign units to make them acceptable to PS
+     * 
+     * @private
+     * @param {object} properties intermediate object format using Photoshop names, but without units
+     * @return {object} PS friendly Properties
+     */
+    var _colorOverlayProperties = function (properties) {
+        var layerEffectPsProperties = {
+            enabled: properties.enabled === undefined ? true : properties.enabled
+        };
+
+        if (_.isObject(properties.color)) {
+            layerEffectPsProperties.color = color.colorObject(properties.color);
+        }
+        if (_.isNumber(properties.opacity)) {
+            layerEffectPsProperties.opacity = inUnits.percent(properties.opacity);
+        }
+        if (_.isString(properties.blendMode)) {
+            layerEffectPsProperties.mode = _enumerableValue("blendMode", properties.blendMode);
+        }
+        
+        return layerEffectPsProperties;
+    };
+    
+    /**
+     * Parse Stroke JS properties and assign units to make them acceptable to PS
+     * 
+     * @private
+     * @param {object} properties intermediate object format using Photoshop names, but without units
+     * @return {object} PS friendly Properties
+     */
+    var _strokeProperties = function (properties) {
+        var layerEffectPsProperties = {
+            enabled: properties.enabled === undefined ? true : properties.enabled,
+            overprint: properties.overprint
+        };
+
+        if (_.isObject(properties.color)) {
+            layerEffectPsProperties.color = color.colorObject(properties.color);
+        }
+        if (_.isNumber(properties.opacity)) {
+            layerEffectPsProperties.opacity = inUnits.percent(properties.opacity);
+        }
+        if (_.isString(properties.blendMode)) {
+            layerEffectPsProperties.mode = _enumerableValue("blendMode", properties.blendMode);
+        }
+        if (_.isNumber(properties.size)) {
+            layerEffectPsProperties.size = inUnits.pixels(properties.size);
+        }
+        if (_.isString(properties.style)) {
+            layerEffectPsProperties.style = _enumerableValue("frameStyle", properties.style);
+        }
+        if (_.isString(properties.paintType)) {
+            layerEffectPsProperties.paintType = _enumerableValue("frameFill", properties.paintType);
+        }
+        
         return layerEffectPsProperties;
     };
 
@@ -202,8 +270,19 @@ define(function (require, exports) {
     var _effectDescriptor = function (effectType, properties) {
         var value = properties;
         
-        if (effectType === "innerShadow" || effectType === "dropShadow") {
-            value = _shadowProperties(properties);
+        if (!_isHiddenLayerProperties(properties)) {
+            switch (effectType) {
+                case _INNER_SHADOW:
+                case _DROP_SHADOW:
+                    value = _shadowProperties(properties);
+                    break;
+                case _COLOR_OVERLAY:
+                    value = _colorOverlayProperties(properties);
+                    break;
+                case _STROKE:
+                    value = _strokeProperties(properties);
+                    break;
+            }
         }
         
         return {
