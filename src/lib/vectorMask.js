@@ -27,6 +27,22 @@ define(function (require, exports) {
     var PlayObject = require("../playObject");
 
     /**
+     * common  obejcts used in PS references 
+     *
+     * @private
+     *
+     * @type {Object.<string, string>} 
+     */
+    var _layerRef = {
+            "_ref": "layer",
+            "_enum": "ordinal",
+            "_value": "targetEnum" },
+        _vectorMaskRef = {
+            "_ref": "path",
+            "_enum": "path",
+            "_value": "vectorMask" };
+
+    /**
      * creates a rectangular work path with the given bounds descriptor 
      *
      * below each unit is a object of type {_value: number, _unit: type}
@@ -55,11 +71,7 @@ define(function (require, exports) {
      */
     var makeVectorMaskFromWorkPath = function () {
         var maskRef = {
-            "_ref": [{
-                "_ref": "path",
-                "_enum": "path",
-                "_value": "vectorMask"
-            }]
+            "_ref": [_vectorMaskRef]
         },
             pathRef = {
                 "_ref": [{
@@ -98,24 +110,27 @@ define(function (require, exports) {
 
 
     /**
+     * Delete the current vector mask on the current layer
+     * 
+     * @return {PlayObject}
+     */
+    var deleteVectorMask = function () {
+        return new PlayObject("delete", {
+            "null": {
+                "_ref": [_vectorMaskRef, _layerRef]
+            }
+        });
+    };
+
+    /**
      * Target the vector mask of the current layer
      * 
      * @return {PlayObject}
      */
     var selectVectorMask = function () {
-        var vectMaskRef = {
-            "_ref": "path",
-            "_enum": "path",
-            "_value": "vectorMask"
-        },
-            layerMaskRef = {
-                "_ref": "layer",
-                "_enum": "ordinal",
-                "_value": "targetEnum"
-            };
         return new PlayObject("select", {
             "null": {
-                "_ref": [vectMaskRef, layerMaskRef]
+                "_ref": [_vectorMaskRef, _layerRef]
             }
         });
     };
@@ -128,11 +143,7 @@ define(function (require, exports) {
     var activateVectorMaskEditing = function () {
         return new PlayObject("activateVectorMaskEditing", {
             "null": {
-                "_ref": [{
-                    "_ref": "layer",
-                    "_enum": "ordinal",
-                    "_value": "targetEnum"
-                }]
+                "_ref": [_layerRef]
             }
         });
     };
@@ -143,19 +154,14 @@ define(function (require, exports) {
      * @return {PlayObject}
      */
     var enterFreeTransformPathMode = function () {
-        var layerRef = {
-                "_ref": "layer",
-                "_enum": "ordinal",
-                "_value": "targetEnum"
-            },
-            propertyRef = {
+        var propertyRef = {
                 _ref: "property",
                 _property: "freeTransformWholePath"
             };
         
         return new PlayObject("set", {
             "null": {
-                "_ref": [propertyRef, layerRef]
+                "_ref": [propertyRef, _layerRef]
             },
             "_property": "freeTransformWholePath",
             "suppressPlayLevelIncrease": true
@@ -174,11 +180,7 @@ define(function (require, exports) {
                 }]
             },
             "at": {
-                "_ref": [{
-                    "_ref": "path",
-                    "_enum": "path",
-                    "_value": "vectorMask"
-                }]
+                "_ref": [_vectorMaskRef]
             },
             "using": {
                 "_enum": "vectorMaskEnabled",
@@ -194,5 +196,6 @@ define(function (require, exports) {
     exports.makeBoundsWorkPath = makeBoundsWorkPath;
     exports.selectVectorMask = selectVectorMask;
     exports.deleteWorkPath = deleteWorkPath;
+    exports.deleteVectorMask = deleteVectorMask;
     exports.makeVectorMaskFromWorkPath = makeVectorMaskFromWorkPath;
 });
