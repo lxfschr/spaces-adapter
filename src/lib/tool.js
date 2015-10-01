@@ -104,31 +104,20 @@ define(function (require, exports) {
         );
     };
 
-    /**
-     * Tool Mode possible values
-     *
-     * @type {Object.<string, number>}
-     */
-    var toolModes = {
-        SHAPE: 0,
-        PATH: 1
-    };
 
     /**
-     * sets the mode of shape tools  0=vtmShapeLayer, 1=vtmPath, 2=vtmFill
-     *
-     * @param {number} toolMode The type that we are applying to the tool 
+     * Resets the mode of shape tools back to "shape" from "path" or "pixel".
      * 
      * @return {PlayObject}
      */
-    var setShapeToolMode = function (toolMode) {
+    var resetShapeTool = function () {
         return new PlayObject(
-            "set",
+            "reset",
             {
-                "null": {
+                null: {
                     _ref: [
                         {
-                            _ref: "property",
+                            _ref: null,
                             _property: "vectorToolMode"
                         },
                         {
@@ -137,8 +126,7 @@ define(function (require, exports) {
                             _value: "targetEnum"
                         }
                     ]
-                },
-                "to": toolMode
+                }
             }
         );
     };
@@ -268,11 +256,10 @@ define(function (require, exports) {
         );
     };
 
-    exports.toolModes = toolModes;
     exports.setTool = setTool;
     exports.setToolOptions = setToolOptions;
     exports.setDirectSelectOptionForAllLayers = setDirectSelectOptionForAllLayers;
-    exports.setShapeToolMode = setShapeToolMode;
+    exports.resetShapeTool = resetShapeTool;
     exports.defaultShapeTool = defaultShapeTool;
     exports.resetTypeTool = resetTypeTool;
 });

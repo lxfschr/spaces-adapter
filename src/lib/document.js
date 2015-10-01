@@ -37,7 +37,6 @@ define(function (require, exports) {
      * Open a document (psd, png, jpg, ai, gif)
      * 
      * @param {ActionDescriptor} sourceRef document reference
-     * @param {object} settings
      * @param {string} settings.pdfSelection "page" or "image"
      * @param {number} settings.pageNumber The number of the page
      * @param {boolean} settings.suppressWarnings true or false
@@ -50,12 +49,6 @@ define(function (require, exports) {
      * @param {number} settings.height The height of the image size
      * @param {string} settings.colorSpace The color space of the image mode.  See openDocument.mode vals
      * @param {number} settings.resolution The resolution value
-     * @param {object} settings.externalPreview Make photoshop create a preview of the document after save.
-     * @param {object} settings.externalPreview.path File path of the preview.
-     * @param {object} settings.externalPreview.width Pixel width of the preview.
-     * @param {object} settings.externalPreview.height Pixel height of the preview.
-     * @param {boolean=} settings.forceMRU Will save the image to Most Recently Used list only when true
-     *                                     default is true
      *
      * @return {PlayObject}
      *
@@ -73,12 +66,10 @@ define(function (require, exports) {
                 width: settings.width || sourceRef.width,
                 height: settings.height || sourceRef.height,
                 colorSpace: settings.colorSpace || "RGBColorMode",
-                resolution: settings.resolution,
-                externalPreview: settings.externalPreview
+                resolution: settings.resolution
             },
             fileType,
-            strIndex = sourceRef._path.lastIndexOf("."),
-            forceMRU = settings.forceMRU !== undefined ? settings.forceMRU : true;
+            strIndex = sourceRef._path.lastIndexOf(".");
 
         if (strIndex !== -1) {
             strIndex++;
@@ -88,19 +79,8 @@ define(function (require, exports) {
         var desc = {
             "null": sourceRef
         };
-        
-        if (params.externalPreview) {
-            desc.externalPreviewParams = {
-                "in": {
-                    "_path": params.externalPreview.path
-                },
-                "pixelWidth": params.externalPreview.width,
-                "pixelHeight": params.externalPreview.height
-            };
-        }
 
         if (fileType === "ai") {
-            desc.as = {};
             desc.as._obj = "PDFGenericFormat";
             desc.as._value.selection = {
                 "_enum": "pdfSelection",
@@ -108,7 +88,6 @@ define(function (require, exports) {
             };
             desc.as._value.suppressWarnings = params.suppressWarnings;
             desc.as._value.pageNumber = params.pageNumber;
-            
             if (params.pdfSelection === "page") {
                 desc.as._value = {
                     "antiAlias": params.bAntiAlias,
@@ -129,8 +108,6 @@ define(function (require, exports) {
                 };
             }
         }
-
-        desc.forceMRU = forceMRU;
 
         return new PlayObject(
             "open",
@@ -528,26 +505,22 @@ define(function (require, exports) {
                 ]
             };
               
-        var guideTarget = {
-                "_enum": "guideTarget",
-                "_value": "guideTargetSelectedArtboard"
+        var descriptor = {
+            null: reference,
+            new: {
+                "_obj": "guide",
+                "null": guideReference,
+                "orientation": {
+                    "_enum": "orientation",
+                    "_value": orientation
+                },
+                "position": unitsIn.pixels(position)
             },
-            descriptor = {
-                null: reference,
-                new: {
-                    "_obj": "guide",
-                    "null": guideReference,
-                    "orientation": {
-                        "_enum": "orientation",
-                        "_value": orientation
-                    },
-                    "position": unitsIn.pixels(position)
-                }
-            };
-
-        if (isArtboardGuide) {
-            descriptor.guideTarget = guideTarget;
-        }
+            "guideTarget": {
+                "_enum": "guideTarget",
+                "_value": isArtboardGuide ? "guideTargetSelectedArtboard" : "guideTargetDocument"
+            }
+        };
 
         return new PlayObject("newGuide", descriptor);
     };
@@ -568,31 +541,6 @@ define(function (require, exports) {
                     {
                         "_ref": "guide",
                         "_index": guideIndex
-                    },
-                    sourceRef
-                ]
-            }
-        };
-
-        return new PlayObject("delete", descriptor);
-    };
-
-    /**
-     * Deletes all the guides in the given document
-     *
-     * @param {object} sourceRef
-     * @return {PlayObject}
-     */
-    var clearGuides = function (sourceRef) {
-        assert(referenceOf(sourceRef) === "document", "clearGuides is passed a non-document reference");
-
-        var descriptor = {
-            null: {
-                "_ref": [
-                    {
-                        "_ref": "guide",
-                        "_enum": "ordinal",
-                        "_value": "allEnum"
                     },
                     sourceRef
                 ]
@@ -784,7 +732,6 @@ define(function (require, exports) {
     exports.resize = resizeDocument;
     exports.insertGuide = insertGuide;
     exports.removeGuide = removeGuide;
-    exports.clearGuides = clearGuides;
     exports.setArtboardAutoAttributes = setArtboardAutoAttributes;
     exports.setTargetPathVisible = setTargetPathVisible;
     exports.getGuidesVisibility = getGuidesVisibility;

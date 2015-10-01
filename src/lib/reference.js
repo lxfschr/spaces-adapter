@@ -129,22 +129,12 @@ define(function (require, exports, module) {
             /**
              * @returns {ActionDescriptor} Reference to all the objects
              */
-            all: enumBy("ordinal", "allEnum"),
+            all: enumBy("ordinal", "all"),
             
             /**
              * @returns {ActionDescriptor} Reference to none of the objects
              */
-            none: enumBy("ordinal", "none"),
-
-            /**
-             * @returns {ActionDescriptor} Reference to the object after the current one
-             */
-            next: enumBy("ordinal", "next"),
-
-            /**
-             * @returns {ActionDescriptor} Reference to the object before the current one
-             */
-            previous: enumBy("ordinal", "previous")
+            none: enumBy("ordinal", "none")
         };
     };
 
