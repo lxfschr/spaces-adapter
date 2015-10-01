@@ -1,6 +1,6 @@
 {
   "name": "spaces-adapter",
-  "version": "0.20.2",
+  "version": "0.20.3",
   "homepage": "https://github.com/adobe-photoshop/spaces-api",
   "authors": [
     "Joel Brandt <jobrandt@adobe.com>",
