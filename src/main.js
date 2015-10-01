@@ -27,10 +27,12 @@ define(function (require, exports) {
     "use strict";
 
     var Promise = require("bluebird");
+    var lib = require("./lib/index");
     var descriptor = require("./ps/descriptor");
-    var elementLib = require("./lib/element");
-    var layerLib = require("./lib/layer");
-    var contentLayerLib = require("./lib/contentLayer");
+    var os = require("./os");
+    var ui = require("./ps/ui");
+    var ps = require("./ps");
+    var util = require("./util");
 
     /**
      * The minimum-compatible plugin version number. 
@@ -39,9 +41,9 @@ define(function (require, exports) {
      * @type {{major: number=, minor: number=, patch: number=}}
      */
     var COMPATIBLE_PLUGIN_VERSION = {
-        major: 2,
+        major: 1,
         minor: 0,
-        patch: 3
+        patch: 36
     };
 
     /**
@@ -87,7 +89,7 @@ define(function (require, exports) {
 
         if (!_versionCompatible(COMPATIBLE_PLUGIN_VERSION, pluginVersion)) {
             var message = "Plugin version " + _formatVersion(pluginVersion) +
-                " is incompatible with the required version, " +
+                " is incompatible with the minimum required version, " +
                  _formatVersion(COMPATIBLE_PLUGIN_VERSION);
 
             throw new Error(message);
@@ -154,4 +156,9 @@ define(function (require, exports) {
     exports.elementLib = elementLib;
     exports.layerLib = layerLib;
     exports.contentLayerLib = contentLayerLib;
+    exports.lib = lib;
+    exports.os = os;
+    exports.ui = ui;
+    exports.ps = ps;
+    exports.util = util;
 });
