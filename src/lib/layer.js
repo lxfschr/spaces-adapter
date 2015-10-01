@@ -194,8 +194,8 @@ define(function (require, exports) {
     
     /**
      * @param {ActionDescriptor} ref - Reference of layer(s) to select
-     * @param {bool} makeVisible - Flag to hide/show the layer
-     * @param {string} modifier - Whether to select, add to selection, remove, or add upto
+     * @param {boolean=} makeVisible - Flag to hide/show the layer
+     * @param {string=} modifier - Whether to select, add to selection, remove, or add upto
      * 
      * @returns {PlayObject}
      */
@@ -628,17 +628,15 @@ define(function (require, exports) {
             y = _y || 0;
 
         return new PlayObject(
-            "transform",
+            "move",
             {
                 "null": ref,
-                "snapToDocBounds": true,
-                "position": {
-                    "_obj": "position",
-                    "_value": {
-                        "horizontal": inUnits.pixels(x),
-                        "vertical": inUnits.pixels(y)
-                    }
-                }
+                "to": {
+                    "_obj": "point",
+                    "horizontal": x,
+                    "vertical": y
+                },
+                "suppressPlayLevelIncrease": true
             }
         );
     };

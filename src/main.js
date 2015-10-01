@@ -153,9 +153,6 @@ define(function (require, exports) {
     exports.getPropertyValue = getPropertyValue;
     exports.setPropertyValue = setPropertyValue;
     exports.descriptor = descriptor;
-    exports.elementLib = elementLib;
-    exports.layerLib = layerLib;
-    exports.contentLayerLib = contentLayerLib;
     exports.lib = lib;
     exports.os = os;
     exports.ui = ui;
