@@ -31,7 +31,7 @@ define(function (require, exports) {
     var descriptor = require("./ps/descriptor");
     var os = require("./os");
     var ui = require("./ps/ui");
-    var ps = require("./ps");
+    var ps = require("./ps/index");
     var util = require("./util");
 
     /**
